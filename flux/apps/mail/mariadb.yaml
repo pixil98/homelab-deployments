@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: mail
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailserver
+      tier: database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mailserver
+        tier: database
+        logType: mariadb
+    spec:
+      containers:
+      - image: mariadb:10.4.10
+        name: mariadb
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-passwords
+              key: root
+              optional: false
+        ports:
+        - containerPort: 3306
+          name: mysql
+        livenessProbe:
+          exec:
+            command: ["sh", "-c", "exec mariadb-admin status -uroot -p$MYSQL_ROOT_PASSWORD"]
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command: ["sh", "-c", "exec mariadb-admin status -uroot -p$MYSQL_ROOT_PASSWORD"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mailserver-data
+        - name: configuration
+          mountPath: /etc/mysql/conf.d/mariadb-auth.cnf
+          subPath: mariadb-auth.cnf
+        - name: configuration
+          mountPath: /etc/mysql/conf.d/mariadb-sizing.cnf
+          subPath: mariadb-sizing.cnf
+        - name: configuration
+          mountPath: /etc/mysql/conf.d/mariadb-audit-log.cnf
+          subPath: mariadb-audit-log.cnf
+      volumes:
+      - name: mailserver-data
+        persistentVolumeClaim:
+            claimName: mariadb-data
+      - name: configuration
+        configMap:
+          name: mariadb

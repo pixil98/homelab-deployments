@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless-ngx
+  namespace: paperless
+  labels:
+    app: paperless
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless
+  template:
+    metadata:
+      labels:
+        app: paperless
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: data
+        - name: media
+          persistentVolumeClaim:
+            claimName: media
+        - name: export
+          emptyDir: {}
+        - name: consume
+          emptyDir: {}
+      containers:
+        - name: paperless
+          image: ghcr.io/paperless-ngx/paperless-ngx:1.8.0
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: PAPERLESS_PORT
+              value: "8000"
+            - name: PAPERLESS_URL
+              value: "https://paperless.reisman.org"
+            - name: PAPERLESS_REDIS
+              value: "redis://redis.paperless.svc.cluster.local:6379"
+          volumeMounts:
+            - mountPath: /usr/src/paperless/data
+              name: data
+            - mountPath: /usr/src/paperless/media
+              name: media
+            - mountPath: /usr/src/paperless/export
+              name: export
+            - mountPath: /usr/src/paperless/consume
+              name: consume
+              

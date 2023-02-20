@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postfixadmin
+  namespace: mail
+spec:
+  selector:
+    matchLabels:
+      app: mailserver
+      tier: postfixadmin
+  template:
+    metadata:
+      labels:
+        app: mailserver
+        tier: postfixadmin
+        logType: apache
+    spec:
+      containers:
+      - name: postfixadmin
+        image: technicalguru/mailserver-postfixadmin:3.3.11.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PFA_DB_HOST
+          value: "mariadb"
+        - name: PFA_DB_NAME
+          value: "mail"
+        - name: PFA_DB_USER
+          value: "postfix"
+        - name: PFA_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-passwords
+              key: postfix
+              optional: false
+        - name: PFA_SETUP_PASS
+          valueFrom:
+            secretKeyRef:
+              name: postfixadmin-password
+              key: password
+              optional: false
+        - name: PFA_POSTFIX_SERVER
+          value: "postfix"
+        - name: PFA_POSTFIX_PORT
+          value: "25"
+        - name: PFA_ABUSE_EMAIL
+          value: "abuse@reisman.org"
+        - name: PFA_HOSTMASTER_EMAIL
+          value: "hostmaster@reisman.org"
+        - name: PFA_POSTMASTER_EMAIL
+          value: "postmaster@reisman.org"
+        - name: PFA_WEBMASTER_EMAIL
+          value: "webmaster@reisman.org"
+        ports:
+        - containerPort: 80
+          name: http

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: necesse
+  namespace: games
+  labels:
+    app: necesse
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: necesse
+  template:
+    metadata:
+      labels:
+        app: necesse
+    spec:
+      volumes:
+        - name: necesse-config
+          persistentVolumeClaim:
+            claimName: necesse
+      containers:
+        - name: necesse
+          image: pixil/necesse:0.21.25.9650339
+          ports:
+            - name: necesse
+              containerPort: 14159
+              protocol: UDP
+          env:
+            - name: WORLD_NAME
+              value: "WayneManorEstate"
+          volumeMounts:
+            - mountPath: /config
+              name: necesse-config

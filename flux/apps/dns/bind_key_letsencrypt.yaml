@@ -1,0 +1,16 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: bind-letsencrypt-key
+  namespace: dns
+spec:
+  encryptedData:
+    letsencrypt_key.conf: AgA9qkAJxA8Tr+nPO9GETesoFKnZh8HZPxrD+tv847G4dUbtpQRycvWjLP5HXEl0OBfNIrRvqqWVofh9mqnzgBHnisPY4jaEakNMml5PsYmBizJfm2RXSDVXxWShC4O4e/k6vOmor5Xjxiyy+g9vKe2T97z4YHfkyTYYHQfPlf2oykOH7AltIUitPPb6vZM6n9gqniCAdn+H/PqUdr5u7jN68IJqCURos94/MQ5IvyLcuaWZ4ultrM3SesgAy97qHhU3mtSbhIOsJTSReXq8iiz+IP+ZlS4XhXxFVUJVFcmifFZuFhbeR+ZpM242tnoQqpi7lT6AtJDcjeNhOTJD7qdgZ+rnAicDrkBTl1WQzP2YjNA05ZyJUlKXEm4RrqvPzqQZmV3gM84MIY2fAwp8eUhdj/OaKCo+sKVjGSZu6x83FFUeGz6xRfjw/Pyc4wju8P9ZXc2n9lrNAQYcMcNv5xv59kx3Blx46FiJkxLqAM59tQf1MFdbayXLkVo4zLZBliJOm/EfbpIeHnXslmU69nxNx3tdEFNd8sMTaelr5mvGxdpFJKXRMX6WkNO0LbCl5IsHnbEVOaarlcUBY3yeEfW13oqBHXzUdtULL37/5skQ5ZrMXg8OzdIysUyQgaU2volGEGyRCyf/lC+4E68ulp1ylkhuep0dU7OmhOxbBF2wIqAMD08L2DnADsDcPdMisd7+lmr9rBTRhuYuzmDUgdQ7Oh90p4Sz9aFxeKCXOSCq2WNEeyMhAdZSxZ3kmBJxIW2p76oZncpH6odf8JcnoR2Fx8pcCNnlmzlON0e9G3B3rO4c7ysZYtiihv+chcsg+n7njNoRIBWV
+  template:
+    data: null
+    metadata:
+      creationTimestamp: null
+      name: bind-letsencrypt-key
+      namespace: dns
+    type: Opaque

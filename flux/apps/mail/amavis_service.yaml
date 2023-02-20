@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: amavis
+  namespace: mail
+spec:
+  selector:
+    app: mailserver
+    tier: amavis
+  ports:
+  - port: 10024
+    name: amavis
+    targetPort: amavis

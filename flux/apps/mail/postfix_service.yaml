@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postfix
+  namespace: mail
+spec:
+  selector:
+    app: mailserver
+    tier: postfix
+  ports:
+  - port: 25
+    name: smtp
+    targetPort: smtp
+  - port: 110
+    name: pop3
+    targetPort: pop3
+  - port: 143
+    name: imap
+    targetPort: imap
+  - port: 587
+    name: submission
+    targetPort: submission
+  - port: 993
+    name: imaps
+    targetPort: imaps
+  - port: 995
+    name: pop3s
+    targetPort: pop3s
+  type: LoadBalancer
+  loadBalancerIP: 192.168.2.15

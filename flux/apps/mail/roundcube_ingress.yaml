@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: roundcube
+  namespace: mail
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - "webmail.reisman.org"
+      secretName: roundcube-tls
+  rules:
+    - host: "webmail.reisman.org"
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "roundcube"
+                port:
+                  number: 80

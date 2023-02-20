@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 1m0s
   dependsOn:
-    - name: infrastructure
+    - name: infra
     - name: cert-manager-issuers
   sourceRef:
     kind: GitRepository

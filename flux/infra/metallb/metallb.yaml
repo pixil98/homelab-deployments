@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: "./flux/infrastructure/metallb/release"
+  path: "./flux/infra/metallb/release"
   prune: true
   sourceRef:
     kind: GitRepository
@@ -25,7 +25,7 @@ spec:
   interval: 5m
   dependsOn:
     - name: metallb-release
-  path: "./flux/infrastructure/metallb/config"
+  path: "./flux/infra/metallb/config"
   prune: true
   sourceRef:
     kind: GitRepository

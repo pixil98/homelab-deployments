@@ -30,7 +30,7 @@ spec:
               mountPath: /config
           containers:
           - name: libation
-            image: pixil/libation:9.0.19
+            image: rmcrackan/libation:10.0.2
             imagePullPolicy: IfNotPresent
             volumeMounts:
             - name: data

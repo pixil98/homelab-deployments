@@ -107,5 +107,7 @@
     ]
   },
   "MergeOpeningAndEndCredits": false,
-  "BetaOptIn": false
+  "BetaOptIn": false,
+  "FirstLaunch": false,
+  "MoveMoovToBeginning": true
 }

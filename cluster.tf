@@ -1,5 +1,5 @@
 module "k8s_cluster" {
-  source = "github.com/pixil98/homelab-tfmod-kubernetes.git?ref=initial-flux"
+  source = "github.com/pixil98/homelab-tfmod-kubernetes.git?ref=main"
 
   nodes              = ["luke", "flip"]
   namespace          = "production"

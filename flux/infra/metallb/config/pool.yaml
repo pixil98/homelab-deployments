@@ -1,9 +1,9 @@
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: reserved
+  name: default
   namespace: metallb-system
 spec:
   addresses:
-  - 192.168.2.11-192.168.2.99
-  autoAssign: false
+  - 192.168.2.100-192.168.2.119
+  autoAssign: true

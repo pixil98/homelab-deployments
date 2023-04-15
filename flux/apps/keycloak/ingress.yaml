@@ -4,8 +4,6 @@ kind: Ingress
 metadata:
   name: keycloak
   namespace: keycloak
-  annotations:
-    cert-manager.io/cluster-issuer: dev-issuer
 spec:
   tls:
     - hosts:

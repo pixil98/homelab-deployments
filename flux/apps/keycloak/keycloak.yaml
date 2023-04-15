@@ -27,10 +27,6 @@ spec:
           value: "admin"
         - name: KC_PROXY
           value: "edge"
-        - name: KC_HTTP_ENABLED
-          value: "true"
-        - name: KC_HTTP_PORT
-          value: "9000"
         ports:
         - name: http
           containerPort: 8080

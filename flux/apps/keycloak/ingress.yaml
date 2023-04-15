@@ -1,0 +1,21 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak
+  namespace: keycloak
+spec:
+  tls:
+    - hosts:
+      - keycloak.k8s.development.lab.reisman.org
+  rules:
+  - host: keycloak.k8s.development.lab.reisman.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: keycloak
+            port:
+              number: 8080

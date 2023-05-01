@@ -4,6 +4,6 @@ metadata:
   name: registry-lab
   namespace: flux-system
 spec:
+  type: "oci"
   interval: 1h0m0s
-  type: oci
   url: oci://registry.lab.reisman.org/helm

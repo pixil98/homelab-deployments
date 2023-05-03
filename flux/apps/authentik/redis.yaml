@@ -7,7 +7,7 @@ spec:
   interval: 5m
   chart:
     spec:
-      chart: bitnami/redis
+      chart: helm/bitnami/redis
       version: '>=17.0.0 <18.0.0'
       sourceRef:
         kind: HelmRepository

@@ -13,3 +13,10 @@ spec:
         kind: HelmRepository
         name: registry-lab
         namespace: flux-system
+  values:
+    architecture: standalone
+    image:
+      registry: registry.lab.reisman.org/proxy.docker.io
+    master:
+      persistence:
+        storageClass: nfs-client-nobackup

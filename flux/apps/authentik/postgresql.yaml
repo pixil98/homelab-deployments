@@ -19,6 +19,7 @@ spec:
       storageClass: nfs-client-nobackup
     architecture: standalone
     auth:
+      database: authentik
       existingSecret: postgresql-auth
       adminPasswordKey: postgres-password
       userPasswordKey: password

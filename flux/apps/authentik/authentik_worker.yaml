@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: authentik-worker
+  namespace: authentik
   labels:
     app.kubernetes.io/name: authentik
     app.kubernetes.io/component: worker

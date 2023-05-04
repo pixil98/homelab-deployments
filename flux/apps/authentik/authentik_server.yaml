@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: authentik
-          image: registry.lab.reisman.org/ghcr.io/goauthentik/server:2023.4.1
+          image: registry.lab.reisman.org/proxy.ghcr.io/goauthentik/server:2023.4.1
           imagePullPolicy: IfNotPresent
           args: ["server"]
           env:
@@ -53,7 +53,7 @@ spec:
             - name: AUTHENTIK_LOG_LEVEL
               value: "info"
             - name: AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE
-              value: "registry.lab.reisman.org/ghcr.io/goauthentik/%(type)s:%(version)s"
+              value: "registry.lab.reisman.org/proxy.ghcr.io/goauthentik/%(type)s:%(version)s"
             - name: AUTHENTIK_POSTGRESQL__HOST
               value: "postgresql"
             - name: AUTHENTIK_POSTGRESQL__NAME

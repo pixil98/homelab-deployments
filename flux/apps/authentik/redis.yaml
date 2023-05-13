@@ -22,4 +22,5 @@ spec:
       registry: registry.lab.reisman.org/proxy.docker.io
     master:
       persistence:
+        enabled: false
         storageClass: nfs-client-nobackup

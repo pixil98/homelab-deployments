@@ -5,8 +5,7 @@ metadata:
   namespace: mail
 data:
   00-nfs.conf: |
-    mail_nfs_index = yes
-    mail_nfs_storage = yes
+    mail_nfs_index = no
+    mail_nfs_storage = no
     mail_fsync = always
     mmap_disable = yes
-

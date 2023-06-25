@@ -40,7 +40,7 @@ spec:
         command:
           - "sh"
           - "-c"
-          - until mysql --host=mariadb.nextcloud.svc.cluster.local --user=${MYSQL_USER} --password=${MYSQL_PASSWORD} --execute="SELECT 1;"; do echo waiting for mysql; sleep 2; done;
+          - until mariadb --host=mariadb.nextcloud.svc.cluster.local --user=${MYSQL_USER} --password=${MYSQL_PASSWORD} --execute="SELECT 1;"; do echo waiting for mariadb; sleep 2; done;
       - name: html-load
         image: alpine:latest
         imagePullPolicy: Always

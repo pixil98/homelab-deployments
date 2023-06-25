@@ -9,4 +9,3 @@ data:
     mail_nfs_storage = no
     mail_fsync = always
     mmap_disable = yes
-    

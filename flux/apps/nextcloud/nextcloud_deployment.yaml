@@ -53,7 +53,7 @@ spec:
             name: html-root 
       containers:
       - name: nextcloud
-        image: nextcloud:25.0.0-apache
+        image: nextcloud:27.0.0-apache
         imagePullPolicy: IfNotPresent
         env:
         - name: NEXTCLOUD_TRUSTED_DOMAINS

@@ -11,10 +11,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-      - "authentik.development.lab.reisman.org"
+      - "auth.development.lab.reisman.org"
       secretName: authentik-tls
   rules:
-    - host: "authentik.development.lab.reisman.org"
+    - host: "auth.development.lab.reisman.org"
       http:
         paths:
           - path: "/"

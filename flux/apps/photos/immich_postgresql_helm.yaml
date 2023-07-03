@@ -16,11 +16,13 @@ spec:
   values:
     global:
       imageRegistry: registry.lab.reisman.org/proxy.docker.io
+      #TODO: back this up
       storageClass: nfs-client-nobackup
     architecture: standalone
     auth:
       database: immich
-      existingSecret: immich-secrets
-      adminPasswordKey: postgresql-admin-password
-      userPasswordKey: postgresql-user-password
       username: immich
+      existingSecret: immich-secrets
+      secretKeys:
+        adminPasswordKey: postgresql-admin-password
+        userPasswordKey: postgresql-user-password

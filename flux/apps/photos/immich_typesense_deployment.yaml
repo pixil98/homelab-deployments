@@ -66,6 +66,9 @@ spec:
             - name: http
               containerPort: 8108
               protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /tsdata
           livenessProbe:
             failureThreshold: 3
             httpGet:
@@ -82,3 +85,8 @@ spec:
             initialDelaySeconds: 0
             periodSeconds: 10
             timeoutSeconds: 1
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: immich-typesense-data
+

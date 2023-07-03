@@ -16,7 +16,7 @@ spec:
   values:
     architecture: standalone
     auth:
-      existingSecret: immich-postgresql-auth
+      existingSecret: immich-secrets
       existingSecretPasswordKey: redis-password 
     image:
       registry: registry.lab.reisman.org/proxy.docker.io

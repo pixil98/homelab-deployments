@@ -29,6 +29,7 @@ spec:
           args:
             - ./entrypoint.sh
           env:
+            #TODO: Figure out envvars
             - name: DB_DATABASE_NAME
               value: immich
             - name: DB_HOSTNAME

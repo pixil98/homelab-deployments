@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/instance: immich
     app.kubernetes.io/name: microservices
 spec:
-  revisionHistoryLimit: 3
   replicas: 1
   strategy:
     type: Recreate
@@ -21,10 +20,6 @@ spec:
         app.kubernetes.io/name: microservices
         app.kubernetes.io/instance: immich
     spec:
-      #serviceAccountName: default
-      #automountServiceAccountToken: true
-      #dnsPolicy: ClusterFirst
-      #enableServiceLinks: true
       containers:
         - name: immich-microservices
           image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-server:v1.53.0
@@ -54,6 +49,12 @@ spec:
               value: http://immich-web:3000
             - name: REDIS_HOSTNAME
               value: immich-redis-master
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: immich-secrets 
+                  key: redis-password
+                  optional: false
             - name: REVERSE_GEOCODING_DUMP_DIRECTORY
               value: /geodata-cache
             - name: TYPESENSE_API_KEY

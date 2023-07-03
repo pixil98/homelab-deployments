@@ -26,6 +26,20 @@ spec:
           env:
             - name: AUTHENTIK_AVATARS
               value: "gravatar"
+            - name: AUTHENTIK_BOOTSTRAP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-secrets
+                  key: boostrap-password
+                  optional: false
+            - name: AUTHENTIK_BOOTSTRAP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-secrets
+                  key: boostrap-token
+                  optional: false
+            - name: AUTHENTIK_BOOTSTRAP_EMAIL
+              value: "aaron@reisman.org"
             - name: AUTHENTIK_EMAIL__FROM
               value: "authentik@reisman.org"
             - name: AUTHENTIK_EMAIL__HOST

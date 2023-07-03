@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: authentik-server
-  namespace: authentik
+  name: authentik-worker
+  namespace: auth
   labels:
     app.kubernetes.io/name: authentik
-    app.kubernetes.io/component: server
+    app.kubernetes.io/component: worker
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: authentik
-      app.kubernetes.io/component: server
+      app.kubernetes.io/component: worker
   template:
     metadata:
       labels:
         app.kubernetes.io/name: authentik
-        app.kubernetes.io/component: server
+        app.kubernetes.io/component: worker
     spec:
       containers:
         - name: authentik
           image: registry.lab.reisman.org/proxy.ghcr.io/goauthentik/server:2023.4.1
           imagePullPolicy: IfNotPresent
-          args: ["server"]
+          args: ["worker"]
           env:
             - name: AUTHENTIK_AVATARS
               value: "gravatar"
@@ -55,52 +55,30 @@ spec:
             - name: AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE
               value: "registry.lab.reisman.org/proxy.ghcr.io/goauthentik/%(type)s:%(version)s"
             - name: AUTHENTIK_POSTGRESQL__HOST
-              value: "postgresql"
+              value: "authentik-postgresql"
             - name: AUTHENTIK_POSTGRESQL__NAME
               value: "authentik"
             - name: AUTHENTIK_POSTGRESQL__PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgresql-auth
-                  key: password
+                  name: authentik-secrets
+                  key: postgresql-user-password
                   optional: false
             - name: AUTHENTIK_POSTGRESQL__PORT
               value: "5432"
             - name: AUTHENTIK_POSTGRESQL__USER
               value: "authentik"
             - name: AUTHENTIK_REDIS__HOST
-              value: "redis-master"
+              value: "authentik-redis-master"
             - name: AUTHENTIK_REDIS__PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: redis-auth
-                  key: password
+                  name: authentik-secrets
+                  key: redis-password
                   optional: false
             - name: AUTHENTIK_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: authentik
-                  key: key
+                  name: authentik-secrets
+                  key: secret-key
                   optional: false
-          ports:
-            - name: http
-              containerPort: 9000
-              protocol: TCP
-            - name: http-metrics
-              containerPort: 9300
-              protocol: TCP
-            - name: https
-              containerPort: 9443
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /-/health/live/
-              port: http
-            initialDelaySeconds: 50
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /-/health/ready/
-              port: http
-            initialDelaySeconds: 50
-            periodSeconds: 10

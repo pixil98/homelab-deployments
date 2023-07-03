@@ -10,4 +10,4 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Tb
+      storage: 1Ti

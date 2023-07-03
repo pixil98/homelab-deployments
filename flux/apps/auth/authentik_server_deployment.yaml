@@ -31,7 +31,11 @@ spec:
             - name: AUTHENTIK_EMAIL__HOST
               value: "mail.reisman.org"
             - name: AUTHENTIK_EMAIL__PASSWORD
-              value: "email-pass"
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-secrets
+                  key: email-password
+                  optional: false
             - name: AUTHENTIK_EMAIL__PORT
               value: "587"
             - name: AUTHENTIK_EMAIL__TIMEOUT

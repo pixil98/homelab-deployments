@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-proxy
+  namespace: photos
+  labels:
+    app.kubernetes.io/service: immich-proxy
+    app.kubernetes.io/instance: immich
+    app.kubernetes.io/name: proxy
+  annotations:
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/instance: immich
+    app.kubernetes.io/name: proxy

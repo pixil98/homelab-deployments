@@ -40,7 +40,6 @@ spec:
                   name: immich-secrets 
                   key: postgresql-user-password
                   optional: false
-              value: immich
             - name: DB_USERNAME
               value: immich
             - name: IMMICH_MACHINE_LEARNING_URL

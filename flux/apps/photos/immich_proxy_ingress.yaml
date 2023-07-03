@@ -11,8 +11,8 @@ metadata:
 spec:
   tls:
     - hosts:
-      - "auth.dev.lab.reisman.org"
-      secretName: authentik-tls
+      - "immich.dev.lab.reisman.org"
+      secretName: immich-tls
   rules:
     #TODO: update host name
     - host: "immich.dev.lab.reisman.org"

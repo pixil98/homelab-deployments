@@ -92,4 +92,4 @@ spec:
           emptyDir: {}
         - name: library
           persistentVolumeClaim:
-            claimName: immich-library-pvc
+            claimName: immich-library

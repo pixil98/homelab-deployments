@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/service: immich-proxy
     app.kubernetes.io/instance: immich
     app.kubernetes.io/name: proxy
-  annotations:
 spec:
   type: ClusterIP
   ports:

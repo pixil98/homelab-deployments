@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/service: immich-typesense
     app.kubernetes.io/instance: immich
     app.kubernetes.io/name: typesense
-  annotations:
 spec:
   type: ClusterIP
   ports:

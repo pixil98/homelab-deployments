@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/service: immich-server
     app.kubernetes.io/instance: immich
     app.kubernetes.io/name: server
-  annotations:
 spec:
   type: ClusterIP
   ports:

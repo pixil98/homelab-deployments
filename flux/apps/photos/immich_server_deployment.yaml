@@ -29,6 +29,7 @@ spec:
           args:
             - ./start-server.sh
           env:
+            #TODO: Figure out envvars
             - name: DB_DATABASE_NAME
               value: immich
             - name: DB_HOSTNAME
@@ -56,7 +57,11 @@ spec:
                   key: redis-password
                   optional: false
             - name: TYPESENSE_API_KEY
-              value: typesense-api-key
+              valueFrom:
+                secretKeyRef:
+                  name: immich-secrets 
+                  key: typesense-api-key
+                  optional: false
             - name: TYPESENSE_ENABLED
               value: "true"
             - name: TYPESENSE_HOST

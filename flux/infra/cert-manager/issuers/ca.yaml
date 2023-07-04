@@ -1,31 +1,19 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: selfsigned-issuer
+  name: letsencrypt-production
 spec:
-  selfSigned: {}
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: my-ca
-  namespace: cert-manager
-spec:
-  isCA: true
-  commonName: my-ca
-  secretName: ca-secret
-  privateKey:
-    algorithm: ECDSA
-    size: 256
-  issuerRef:
-    name: selfsigned-issuer
-    kind: ClusterIssuer
-    group: cert-manager.io
----
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: dev-issuer
-spec:
-  ca:
-    secretName: ca-secret
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: aaron@reisman.org
+    privateKeySecretRef:
+      name: letsencrypt-production-dns
+    solvers:
+    - dns01:
+        rfc2136:
+          nameserver: ns1.reisman.org
+          tsigKeyName: letsencrypt-dev
+          tsigAlgorithm: HMACSHA512
+          tsigSecretSecretRef:
+            name: letsencrypt-dev-tsig
+            key: key

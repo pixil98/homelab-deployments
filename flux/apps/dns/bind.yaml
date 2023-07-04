@@ -65,7 +65,7 @@ spec:
         projected:
           sources:
           - secret:
-              name: bind-letsencrypt-key
+              name: bind-letsencrypt-keys
           - configMap:
               name: authoritative-config
       - name: zones

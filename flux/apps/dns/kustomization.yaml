@@ -5,7 +5,7 @@ resources:
   - namespace.yaml
   - bind.yaml
   - bind_service.yaml
-  - bind_key_letsencrypt.yaml
+  - bind_keys.yaml
 
 configMapGenerator:
   - name: authoritative-config

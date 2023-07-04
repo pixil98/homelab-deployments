@@ -36,14 +36,6 @@ spec:
               mountPath: /cache
             - name: library
               mountPath: /usr/src/app/upload
-          #TODO: Are these needed?
-          resources:
-            requests:
-              memory: "2Gi"
-              cpu: "250m"
-            limits:
-              memory: "3Gi"
-              #TODO: cpu: "500m"
           livenessProbe:
             failureThreshold: 3
             httpGet:

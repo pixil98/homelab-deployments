@@ -13,11 +13,11 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-      - "immich.dev.lab.reisman.org"
+      - "photos.dev.lab.reisman.org"
       secretName: immich-tls
   rules:
     #TODO: update host name
-    - host: "immich.dev.lab.reisman.org"
+    - host: "photos.dev.lab.reisman.org"
       http:
         paths:
           - path: "/"

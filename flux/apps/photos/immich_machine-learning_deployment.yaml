@@ -36,6 +36,7 @@ spec:
               mountPath: /cache
             - name: library
               mountPath: /usr/src/app/upload
+          #TODO: Are these needed?
           resources:
             requests:
               memory: "2Gi"
@@ -48,15 +49,15 @@ spec:
             httpGet:
               path: /ping
               port: http
-            initialDelaySeconds: 0
-            periodSeconds: 10
+            initialDelaySeconds: 120
+            periodSeconds: 10 
             timeoutSeconds: 1
           readinessProbe:
             failureThreshold: 3
             httpGet:
               path: /ping
               port: http
-            initialDelaySeconds: 0
+            initialDelaySeconds: 120
             periodSeconds: 10
             timeoutSeconds: 1
       volumes:

@@ -78,7 +78,7 @@ spec:
             - name: ANTIVIRUS_MAX_SCAN_SIZE
               value: "TODO"
             - name: ANTIVIRUS_EVENTS_ENDPOINT
-              value: nats:9233
+              value: ocis-nats:9233
           livenessProbe:
             httpGet:
               path: /healthz

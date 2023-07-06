@@ -132,7 +132,7 @@ spec:
             - name: GRAPH_CACHE_STORE_NODES
               value: "ocis-redis-master:6379"
             - name: GRAPH_EVENTS_ENDPOINT
-              value: nats:9233
+              value: ocis-nats:9233
             - name: GRAPH_APPLICATION_ID
               valueFrom:
                 configMapKeyRef:

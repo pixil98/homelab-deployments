@@ -62,7 +62,7 @@ spec:
             - name: POSTPROCESSING_STEPS
               value: "virusscan"
             - name: POSTPROCESSING_EVENTS_ENDPOINT
-              value: nats:9233
+              value: ocis-nats:9233
             - name: POSTPROCESSING_STORE
               value: "redis"
             - name: POSTPROCESSING_STORE_NODES

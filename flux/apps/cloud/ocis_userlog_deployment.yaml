@@ -66,7 +66,7 @@ spec:
             - name: USERLOG_STORE_NODES
               value: "ocis-redis-master:6379"
             - name: USERLOG_EVENTS_ENDPOINT
-              value: nats:9233
+              value: ocis-nats:9233
             - name: USERLOG_MACHINE_AUTH_API_KEY
               valueFrom:
                 secretKeyRef:

@@ -75,7 +75,7 @@ spec:
               value: "ocis-redis-master:6379"
 
             - name: EVENTHISTORY_EVENTS_ENDPOINT
-              value: nats:9233
+              value: ocis-nats:9233
           livenessProbe:
             httpGet:
               path: /healthz

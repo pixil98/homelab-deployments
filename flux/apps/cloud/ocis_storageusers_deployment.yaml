@@ -75,7 +75,7 @@ spec:
             # S3ng storage driver (decomposed filesystem)
             # events
             - name: STORAGE_USERS_EVENTS_ENDPOINT
-              value: nats:9233
+              value: ocis-nats:9233
             # Duration in seconds after which uploads will expire.
             - name: STORAGE_USERS_UPLOAD_EXPIRATION
               value: "86400"

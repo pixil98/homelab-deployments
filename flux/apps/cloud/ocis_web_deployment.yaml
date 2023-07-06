@@ -61,7 +61,7 @@ spec:
             - name: WEB_DEBUG_ADDR
               value: 0.0.0.0:9104
             - name: WEB_OIDC_AUTHORITY
-              value: "https://idp.owncloud.test/realms/ocis"
+              value: "https://auth.dev.lab.reisman.org/application/o/owncloud/"
             - name: WEB_OIDC_CLIENT_ID
               value: "rpxotWdhDpx02JYqv6i5SagU1Xs1KKWS2eB6K5mw"
             - name: WEB_UI_THEME_SERVER
@@ -71,9 +71,9 @@ spec:
             - name: WEB_OPTION_CONTEXTHELPERS_READ_MORE
               value: "true"
             - name: WEB_OPTION_LOGOUT_URL
-              value: "https://sessionManagementLink"
+              value: "https://auth.dev.lab.reisman.org/application/o/owncloud/end-session/"
             - name: WEB_OPTION_ACCOUNT_EDIT_LINK_HREF
-              value: "https://editAccountLink"
+              value: "https://auth.dev.lab.reisman.org/application/o/userinfo/"
             - name: WEB_JWT_SECRET
               valueFrom:
                 secretKeyRef:

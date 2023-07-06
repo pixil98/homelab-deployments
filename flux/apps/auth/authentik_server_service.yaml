@@ -18,4 +18,4 @@ spec:
       name: http
   selector:
     app.kubernetes.io/name: authentik
-    app.kubernetes.io/component: "server"
+    app.kubernetes.io/component: server

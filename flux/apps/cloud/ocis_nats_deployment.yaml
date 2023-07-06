@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocis-nats
+  namespace: cloud
+  labels:
+    app.kubernetes.io/name: nats
+    app.kubernetes.io/instance: ocis
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nats
+      app.kubernetes.io/instance: ocis
+  replicas: 1 #TODO: https://github.com/owncloud/ocis-charts/issues/12
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nats
+        app.kubernetes.io/instance: ocis
+    spec:
+      automountServiceAccountToken: true
+      securityContext:
+          fsGroup: 1000
+          fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: nats
+          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.2"
+          imagePullPolicy: IfNotPresent
+          command: ["ocis"]
+          args: ["nats", "server"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+          env:
+            - name: NATS_LOG_COLOR
+              value: "false"
+            - name: NATS_LOG_LEVEL
+              value: "info"
+            - name: NATS_LOG_PRETTY
+              value: "false"
+            # Tracing not yet implemented: https://github.com/owncloud/ocis/issues/6174
+            # - name: NATS_TRACING_ENABLED
+            #   value: "false"
+            # - name: NATS_TRACING_TYPE
+            #   value: "jaeger"
+            # - name: NATS_TRACING_ENDPOINT
+            #   value: ""
+            # - name: NATS_TRACING_COLLECTOR
+            #   value: ""
+            - name: NATS_DEBUG_PPROF
+              value: "false"
+            - name: NATS_NATS_HOST
+              value: "0.0.0.0"
+            - name: NATS_NATS_PORT
+              value: "9233"
+            - name: NATS_DEBUG_ADDR
+              value: 0.0.0.0:9234
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics-debug
+            timeoutSeconds: 10
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+          resources: {}
+          ports:
+            - name: nats
+              containerPort: 9233
+            - name: metrics-debug
+              containerPort: 9234
+          volumeMounts:
+            - name: nats-data
+              mountPath: /var/lib/ocis
+      volumes:
+        - name: nats-data
+          emptyDir: {}

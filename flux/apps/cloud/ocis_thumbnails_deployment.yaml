@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocis-thumbnails
+  namespace: cloud
+  labels:
+    app.kubernetes.io/name: thumbnails
+    app.kubernetes.io/instance: ocis
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: thumbnails
+      app.kubernetes.io/instance: ocis
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: thumbnails
+        app.kubernetes.io/instance: ocis
+    spec:
+      automountServiceAccountToken: true
+      securityContext:
+          fsGroup: 1000
+          fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: thumbnails
+          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.2"
+          imagePullPolicy: IfNotPresent
+          command: ["ocis"]
+          args: ["thumbnails", "server"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+          env:
+            - name: MICRO_REGISTRY
+              value: "kubernetes"
+            - name: MICRO_REGISTRY_ADDRESS
+              value: ""
+            - name: THUMBNAILS_LOG_COLOR
+              value: "false"
+            - name: THUMBNAILS_LOG_LEVEL
+              value: "info"
+            - name: THUMBNAILS_LOG_PRETTY
+              value: "false"
+            - name: THUMBNAILS_TRACING_ENABLED
+              value: "false"
+            - name: THUMBNAILS_TRACING_TYPE
+              value: "jaeger"
+            - name: THUMBNAILS_TRACING_ENDPOINT
+              value: ""
+            - name: THUMBNAILS_TRACING_COLLECTOR
+              value: ""
+            - name: THUMBNAILS_DEBUG_PPROF
+              value: "false"
+            - name: THUMBNAILS_GRPC_ADDR
+              value: 0.0.0.0:9185
+            - name: THUMBNAILS_HTTP_ADDR
+              value: 0.0.0.0:9186
+            - name: THUMBNAILS_DEBUG_ADDR
+              value: 0.0.0.0:9189
+            - name: THUMBNAILS_DATA_ENDPOINT
+              value: http://thumbnails:9186/thumbnails/data
+            - name: THUMBNAILS_WEBDAVSOURCE_INSECURE
+              value: "false"
+            - name: THUMBNAILS_CS3SOURCE_INSECURE
+              value: "false"
+            - name: THUMBNAILS_TRANSFER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: thumbnails-transfer-secret
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics-debug
+            timeoutSeconds: 10
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+          resources: {}
+          ports:
+            - name: grpc
+              containerPort: 9185
+            - name: http
+              containerPort: 9186
+            - name: metrics-debug
+              containerPort: 9189
+          volumeMounts:
+            - name: thumbnails-data
+              mountPath: /var/lib/ocis
+      volumes:
+        - name: thumbnails-data
+          emptyDir: {}

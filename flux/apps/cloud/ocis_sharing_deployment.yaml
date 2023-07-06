@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocis-sharing
+  namespace: cloud
+  labels:
+    app.kubernetes.io/name: sharing
+    app.kubernetes.io/instance: ocis
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sharing
+      app.kubernetes.io/instance: ocis
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sharing
+        app.kubernetes.io/instance: ocis
+    spec:
+      automountServiceAccountToken: true
+      securityContext:
+          fsGroup: 1000
+          fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: sharing
+          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.2"
+          imagePullPolicy: IfNotPresent
+          command: ["ocis"]
+          args: ["sharing", "server"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+          env:
+            - name: MICRO_REGISTRY
+              value: "kubernetes"
+            - name: MICRO_REGISTRY_ADDRESS
+              value: ""
+            - name: SHARING_LOG_COLOR
+              value: "false"
+            - name: SHARING_LOG_LEVEL
+              value: "info"
+            - name: SHARING_LOG_PRETTY
+              value: "false"
+            - name: SHARING_TRACING_ENABLED
+              value: "false"
+            - name: SHARING_TRACING_TYPE
+              value: "jaeger"
+            - name: SHARING_TRACING_ENDPOINT
+              value: ""
+            - name: SHARING_TRACING_COLLECTOR
+              value: ""
+            - name: SHARING_DEBUG_PPROF
+              value: "false"
+            - name: SHARING_GRPC_ADDR
+              value: 0.0.0.0:9150
+            - name: SHARING_DEBUG_ADDR
+              value: 0.0.0.0:9151
+            - name: SHARING_EVENTS_ENDPOINT
+              value: nats:9233
+            - name: SHARING_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: jwt-secret
+            - name: SHARING_PUBLIC_WRITEABLE_SHARE_MUST_HAVE_PASSWORD
+              value: "false"
+            # user sharing
+            - name: SHARING_USER_DRIVER
+              value: jsoncs3
+            - name: SHARING_USER_JSONCS3_SYSTEM_USER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: api-key
+            - name: SHARING_USER_JSONCS3_SYSTEM_USER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: user-id
+            # public sharing
+            - name: SHARING_PUBLIC_DRIVER
+              value: jsoncs3
+            - name: SHARING_PUBLIC_JSONCS3_SYSTEM_USER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: api-key
+            - name: SHARING_PUBLIC_JSONCS3_SYSTEM_USER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: user-id
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics-debug
+            timeoutSeconds: 10
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+          resources: {}
+          ports:
+            - name: grpc
+              containerPort: 9150
+            - name: metrics-debug
+              containerPort: 9151
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+            - name: ocis-config-tmp
+              mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path
+            - name: messaging-system-ca
+              mountPath: /etc/ocis/messaging-system-ca
+              readOnly: true
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+        - name: ocis-config-tmp
+          emptyDir: {}
+        - name: messaging-system-ca
+          emptyDir: {}

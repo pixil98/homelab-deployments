@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ocis-groups
+  namespace: cloud
+  labels:
+    ocis-metrics: enabled
+    app.kubernetes.io/name: groups
+    app.kubernetes.io/instance: ocis
+spec:
+  selector:
+    app.kubernetes.io/name: groups
+    app.kubernetes.io/instance: ocis
+  type: ClusterIP
+  ports:
+    - name: grpc
+      port: 9160
+      protocol: TCP
+    - name: metrics-debug
+      port: 9161
+      protocol: TCP

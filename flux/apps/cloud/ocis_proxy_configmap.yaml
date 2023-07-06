@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ocis-proxy-config
+  namespace: cloud
+  labels:
+    app.kubernetes.io/name: proxy
+    app.kubernetes.io/instance: ocis
+data:
+  proxy.yaml: |
+    ---
+    policy_selector:
+      static:
+        policy: ocis

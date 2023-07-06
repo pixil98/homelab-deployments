@@ -1,0 +1,159 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocis-users
+  namespace: cloud
+  labels:
+    app.kubernetes.io/name: users
+    app.kubernetes.io/instance: ocis
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: users
+      app.kubernetes.io/instance: ocis
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: users
+        app.kubernetes.io/instance: ocis
+    spec:
+      automountServiceAccountToken: true
+      securityContext:
+          fsGroup: 1000
+          fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: users
+          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.2"
+          imagePullPolicy: IfNotPresent
+          command: ["ocis"]
+          args: ["users", "server"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+          env:
+            - name: MICRO_REGISTRY
+              value: "kubernetes"
+            - name: MICRO_REGISTRY_ADDRESS
+              value: ""
+            - name: USERS_LOG_COLOR
+              value: "false"
+            - name: USERS_LOG_LEVEL
+              value: "info"
+            - name: USERS_LOG_PRETTY
+              value: "false"
+            - name: USERS_TRACING_ENABLED
+              value: "false"
+            - name: USERS_TRACING_TYPE
+              value: "jaeger"
+            - name: USERS_TRACING_ENDPOINT
+              value: ""
+            - name: USERS_TRACING_COLLECTOR
+              value: ""
+            - name: USERS_DEBUG_PPROF
+              value: "false"
+            - name: USERS_GRPC_ADDR
+              value: 0.0.0.0:9144
+            - name: USERS_DEBUG_ADDR
+              value: 0.0.0.0:9145
+            - name: USERS_LDAP_INSECURE
+              value: "false"
+            - name: USERS_LDAP_USER_BASE_DN
+              value: "ou=users,dc=owncloud,dc=com"
+            - name: USERS_LDAP_GROUP_BASE_DN
+              value: "ou=groups,dc=owncloud,dc=com"
+            - name: USERS_LDAP_USER_SCOPE
+              value: "sub"
+            - name: USERS_LDAP_GROUP_SCOPE
+              value: "sub"
+            - name: USERS_LDAP_USER_SUBSTRING_FILTER_TYPE
+              value: "any"
+            - name: USERS_LDAP_USER_FILTER
+              value: "TODO"
+            - name: USERS_LDAP_GROUP_FILTER
+              value: "TODO"
+            - name: USERS_LDAP_USER_OBJECTCLASS
+              value: "inetOrgPerson"
+            - name: USERS_LDAP_GROUP_OBJECTCLASS
+              value: "groupOfNames"
+            - name: USERS_LDAP_USER_SCHEMA_ID
+              value: "ownclouduuid"
+            - name: USERS_LDAP_GROUP_SCHEMA_ID
+              value: "ownclouduuid"
+            - name: USERS_LDAP_USER_SCHEMA_ID_IS_OCTETSTRING
+              value: "false"
+            - name: USERS_LDAP_GROUP_SCHEMA_ID_IS_OCTETSTRING
+              value: "false"
+            - name: USERS_LDAP_USER_SCHEMA_MAIL
+              value: "mail"
+            - name: USERS_LDAP_GROUP_SCHEMA_MAIL
+              value: "mail"
+            - name: USERS_LDAP_USER_SCHEMA_DISPLAYNAME
+              value: "displayname"
+            - name: USERS_LDAP_GROUP_SCHEMA_DISPLAYNAME
+              value: "cn"
+            - name: USERS_LDAP_USER_SCHEMA_USERNAME
+              value: "uid"
+            - name: USERS_LDAP_USER_TYPE_ATTRIBUTE
+              value: "ownCloudUserType"
+            - name: USERS_LDAP_GROUP_SCHEMA_GROUPNAME
+              value: "cn"
+            - name: USERS_LDAP_GROUP_SCHEMA_MEMBER
+              value: "member"
+            - name: USERS_LDAP_USER_ENABLED_ATTRIBUTE
+              value: "ownCloudUserEnabled"
+            - name: USERS_LDAP_DISABLE_USER_MECHANISM
+              value: "none"
+            - name: USERS_LDAP_DISABLED_USERS_GROUP_DN
+              value: "cn=DisabledUsersGroup,ou=groups,o=libregraph-idm"
+            - name: USERS_LDAP_URI
+              value: "ldaps://ldaps.owncloud.test"
+            - name: USERS_LDAP_CACERT
+              value: "" # no cert needed
+            - name: USERS_LDAP_BIND_DN
+              value: "uid=ocis,ou=system-users,dc=owncloud,dc=test"
+            - name: USERS_LDAP_BIND_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: reva-ldap-bind-password
+            - name: USERS_IDP_URL
+              value: "https://idp.owncloud.test/realms/ocis"
+            - name: USERS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: jwt-secret
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics-debug
+            timeoutSeconds: 10
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+          resources: {}
+          ports:
+            - name: grpc
+              containerPort: 9144
+            - name: metrics-debug
+              containerPort: 9145
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+            - name: ocis-config-tmp
+              mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path
+            - name: ldap-ca
+              mountPath: /etc/ocis/ldap-ca
+              readOnly: true
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+        - name: ocis-config-tmp
+          emptyDir: {}
+        - name: ldap-ca
+          emptyDir: {}

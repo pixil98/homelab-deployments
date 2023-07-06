@@ -1,0 +1,147 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocis-frontend
+  namespace: cloud
+  labels:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/instance: ocis
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: frontend
+      app.kubernetes.io/instance: ocis
+  replicas: 1
+  
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: frontend
+        app.kubernetes.io/instance: ocis
+    spec:
+      automountServiceAccountToken: true
+      
+      securityContext:
+          fsGroup: 1000
+          fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: frontend
+          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.2"
+          imagePullPolicy: IfNotPresent
+          command: ["ocis"]
+          args: ["frontend", "server"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+          env:
+            - name: MICRO_REGISTRY
+              value: "kubernetes"
+            - name: MICRO_REGISTRY_ADDRESS
+              value: ""
+
+            - name: FRONTEND_LOG_COLOR
+              value: "false"
+            - name: FRONTEND_LOG_LEVEL
+              value: "info"
+            - name: FRONTEND_LOG_PRETTY
+              value: "false"
+
+            - name: FRONTEND_TRACING_ENABLED
+              value: "false"
+            - name: FRONTEND_TRACING_TYPE
+              value: "jaeger"
+            - name: FRONTEND_TRACING_ENDPOINT
+              value: ""
+            - name: FRONTEND_TRACING_COLLECTOR
+              value: ""
+
+            - name: FRONTEND_DEBUG_PPROF
+              value: "false"
+
+            - name: FRONTEND_HTTP_ADDR
+              value: 0.0.0.0:9140
+            - name: FRONTEND_DEBUG_ADDR
+              value: 0.0.0.0:9141
+
+            - name: FRONTEND_PUBLIC_URL
+              value: "https://cloud.dev.lab.reisman.org"
+
+            - name: OCIS_LDAP_SERVER_WRITE_ENABLED
+              value: "false"
+            - name: FRONTEND_READONLY_USER_ATTRIBUTES
+              value: ""
+            - name: FRONTEND_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: jwt-secret
+
+            - name: FRONTEND_APP_HANDLER_INSECURE
+              value: "false"
+
+            - name: FRONTEND_ARCHIVER_INSECURE
+              value: "false"
+
+            - name: FRONTEND_OCS_PUBLIC_WRITEABLE_SHARE_MUST_HAVE_PASSWORD
+              value: "false"
+
+            - name: FRONTEND_SEARCH_MIN_LENGTH
+              value: "3"
+
+            - name: FRONTEND_ENABLE_RESHARING
+              value: "true"
+
+            - name: FRONTEND_ARCHIVER_MAX_SIZE
+              value: "1073741824"
+
+            - name: FRONTEND_ARCHIVER_MAX_NUM_FILES
+              value: "10000"
+
+            # cache
+            # the stat cache is disabled for now for performance reasons, see https://github.com/owncloud/ocis-charts/issues/214
+            - name: FRONTEND_OCS_STAT_CACHE_STORE
+              value: noop
+
+            - name: OCIS_EDITION
+              value: "Community"
+
+            - name: FRONTEND_MACHINE_AUTH_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: machine-auth-api-key
+
+            - name: OCIS_TRANSFER_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: transfer-secret
+            
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics-debug
+            timeoutSeconds: 10
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+
+          resources: {}
+
+          ports:
+            - name: http
+              containerPort: 9140
+            - name: metrics-debug
+              containerPort: 9141
+
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+      
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}

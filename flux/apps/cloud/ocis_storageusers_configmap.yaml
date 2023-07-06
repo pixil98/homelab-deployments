@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ocis-storage-users
+  namespace: cloud
+  labels:
+    app.kubernetes.io/name: storageusers
+    app.kubernetes.io/instance: ocis
+data:
+  storage-uuid: "df7da318-c4bf-476d-8bdc-80d86da99370"

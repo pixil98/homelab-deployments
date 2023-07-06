@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocis-appregistry
+  namespace: cloud
+  labels:
+    app.kubernetes.io/name: appregistry
+    app.kubernetes.io/instance: ocis
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: appregistry
+      app.kubernetes.io/instance: ocis
+  replicas: 1 #TODO: https://github.com/owncloud/ocis-charts/issues/48
+  
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: appregistry
+        app.kubernetes.io/instance: ocis
+      annotations:
+        checksum/config: 98af910d050167bdf717c8c976346b9df9c0c9541494426d32427dafa7871211
+    spec:
+      automountServiceAccountToken: true
+      
+      securityContext:
+          fsGroup: 1000
+          fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: appregistry
+          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.2"
+          imagePullPolicy: IfNotPresent
+          command: ["ocis"]
+          args: ["app-registry", "server"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+          env:
+            - name: MICRO_REGISTRY
+              value: "kubernetes"
+            - name: MICRO_REGISTRY_ADDRESS
+              value: ""
+
+            - name: APP_REGISTRY_LOG_COLOR
+              value: "false"
+            - name: APP_REGISTRY_LOG_LEVEL
+              value: "info"
+            - name: APP_REGISTRY_LOG_PRETTY
+              value: "false"
+
+            - name: APP_REGISTRY_TRACING_ENABLED
+              value: "false"
+            - name: APP_REGISTRY_TRACING_TYPE
+              value: "jaeger"
+            - name: APP_REGISTRY_TRACING_ENDPOINT
+              value: ""
+            - name: APP_REGISTRY_TRACING_COLLECTOR
+              value: ""
+
+            - name: APP_REGISTRY_DEBUG_PPROF
+              value: "false"
+
+            - name: APP_REGISTRY_GRPC_ADDR
+              value: 0.0.0.0:9242
+            - name: APP_REGISTRY_DEBUG_ADDR
+              value: 0.0.0.0:9243
+
+            - name: APP_REGISTRY_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: jwt-secret
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics-debug
+            timeoutSeconds: 10
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+
+          resources: 
+            {}
+
+          ports:
+            - name: http
+              containerPort: 9242
+            - name: metrics-debug
+              containerPort: 9243
+
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+            - name: configs
+              mountPath: /etc/ocis
+      
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+        - name: configs
+          configMap:
+            name: ocis-appregistry-config

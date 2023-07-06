@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ocis-audit
+  namespace: cloud
+  labels:
+    ocis-metrics: enabled
+    app.kubernetes.io/name: audit
+    app.kubernetes.io/instance: ocis
+spec:
+  selector:
+    app.kubernetes.io/name: audit
+    app.kubernetes.io/instance: ocis
+  type: ClusterIP
+  ports:
+    - name: metrics-debug
+      port: 9229
+      protocol: TCP

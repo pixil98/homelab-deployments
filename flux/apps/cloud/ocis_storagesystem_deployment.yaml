@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocis-storagesystem
+  namespace: cloud
+  labels:
+    app.kubernetes.io/name: storagesystem
+    app.kubernetes.io/instance: ocis
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: storagesystem
+      app.kubernetes.io/instance: ocis
+  replicas: 1
+  
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: storagesystem
+        app.kubernetes.io/instance: ocis
+    spec:
+      automountServiceAccountToken: true
+      securityContext:
+          fsGroup: 1000
+          fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: storagesystem
+          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.2"
+          imagePullPolicy: IfNotPresent
+          command: ["ocis"]
+          args: ["storage-system", "server"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+          env:
+            - name: MICRO_REGISTRY
+              value: "kubernetes"
+            - name: MICRO_REGISTRY_ADDRESS
+              value: ""
+            # logging
+            - name: STORAGE_SYSTEM_LOG_COLOR
+              value: "false"
+            - name: STORAGE_SYSTEM_LOG_LEVEL
+              value: "info"
+            - name: STORAGE_SYSTEM_LOG_PRETTY
+              value: "false"
+            - name: STORAGE_SYSTEM_TRACING_ENABLED
+              value: "false"
+            - name: STORAGE_SYSTEM_TRACING_TYPE
+              value: "jaeger"
+            - name: STORAGE_SYSTEM_TRACING_ENDPOINT
+              value: ""
+            - name: STORAGE_SYSTEM_TRACING_COLLECTOR
+              value: ""
+            - name: STORAGE_SYSTEM_DEBUG_PPROF
+              value: "false"
+            # bind configuration
+            - name: STORAGE_SYSTEM_GRPC_ADDR
+              value: 0.0.0.0:9215
+            - name: STORAGE_SYSTEM_DEBUG_ADDR
+              value: 0.0.0.0:9217
+            # external availability data gateway
+            - name: STORAGE_SYSTEM_HTTP_ADDR
+              value: 0.0.0.0:9216
+            - name: STORAGE_SYSTEM_DATA_SERVER_URL
+              value: http://storagesystem:9216/data
+            - name: STORAGE_SYSTEM_DRIVER
+              value: ocis
+            - name: STORAGE_SYSTEM_OCIS_METADATA_BACKEND
+              value: messagepack
+            # cache
+            - name: STORAGE_SYSTEM_CACHE_STORE
+              value: "redis"
+            - name: STORAGE_SYSTEM_CACHE_STORE_NODES
+              value: "ocis-redis-master:6379"
+            - name: STORAGE_SYSTEM_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: storage-system-jwt-secret
+            - name: OCIS_SYSTEM_USER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: api-key
+            - name: OCIS_SYSTEM_USER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: user-id
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics-debug
+            timeoutSeconds: 10
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+          resources: {}
+          ports:
+            - name: grpc
+              containerPort: 9215
+            - name: http
+              containerPort: 9216
+            - name: metrics-debug
+              containerPort: 9217
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+            - name: storagesystem-data
+              mountPath: /var/lib/ocis
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+        - name: storagesystem-data
+          emptyDir: {}

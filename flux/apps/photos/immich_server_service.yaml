@@ -8,12 +8,12 @@ metadata:
     app.kubernetes.io/instance: immich
     app.kubernetes.io/name: server
 spec:
+  selector:
+    app.kubernetes.io/instance: immich
+    app.kubernetes.io/name: server
   type: ClusterIP
   ports:
     - port: 3001
       targetPort: http
       protocol: TCP
       name: http
-  selector:
-    app.kubernetes.io/instance: immich
-    app.kubernetes.io/name: server

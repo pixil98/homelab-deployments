@@ -64,6 +64,8 @@ spec:
               value: 0.0.0.0:9205
             - name: PROXY_ENABLE_BASIC_AUTH
               value: "false"
+            - name: PROXY_AUTOPROVISION_ACCOUNTS
+              value: "true"
             - name: PROXY_OIDC_ISSUER
               value: "https://auth.dev.lab.reisman.org/application/o/owncloud/"
             - name: PROXY_OIDC_REWRITE_WELLKNOWN

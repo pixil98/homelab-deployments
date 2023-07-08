@@ -120,7 +120,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
-                  key: reva-ldap-bind-password
+                  key: ldap-bind-password
             - name: USERS_IDP_URL
               value: "https://auth.dev.lab.reisman.org/application/o/owncloud/"
             - name: USERS_JWT_SECRET

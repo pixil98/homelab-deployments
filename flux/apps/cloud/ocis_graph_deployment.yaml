@@ -64,14 +64,14 @@ spec:
             - name: GRAPH_SPACES_WEBDAV_BASE
               value: "https://cloud.dev.lab.reisman.org"
             - name: GRAPH_LDAP_URI
-              value: "ldaps://ldaps.owncloud.test"
+              value: "ldaps://auth.dev.lab.reisman.org"
             - name: GRAPH_LDAP_BIND_DN
-              value: "uid=ocis,ou=system-users,dc=owncloud,dc=test"
+              value: "cn=ocis,ou=users,dc=ldap,dc=goauthentik,dc=io"
             - name: GRAPH_LDAP_BIND_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
-                  key: reva-ldap-bind-password
+                  key: ldap-bind-password
             - name: GRAPH_LDAP_SERVER_WRITE_ENABLED
               value: "false"
             - name: GRAPH_LDAP_CACERT
@@ -85,11 +85,11 @@ spec:
             - name: GRAPH_LDAP_REFINT_ENABLED
               value: "false"
             - name: GRAPH_LDAP_USER_BASE_DN
-              value: "ou=users,dc=owncloud,dc=com"
+              value: "cn=ocis,ou=users,dc=ldap,dc=goauthentik,dc=io"
             - name: GRAPH_LDAP_GROUP_BASE_DN
-              value: "ou=groups,dc=owncloud,dc=com"
+              value: "cn=ocis,ou=users,dc=ldap,dc=goauthentik,dc=io"
             - name: GRAPH_LDAP_GROUP_CREATE_BASE_DN
-              value: "ou=groups,dc=owncloud,dc=com"
+              value: "cn=ocis,ou=users,dc=ldap,dc=goauthentik,dc=io"
             - name: GRAPH_LDAP_USER_SCOPE
               value: "sub"
             - name: GRAPH_LDAP_GROUP_SEARCH_SCOPE
@@ -125,7 +125,7 @@ spec:
             - name: GRAPH_DISABLE_USER_MECHANISM
               value: "none"
             - name: GRAPH_DISABLED_USERS_GROUP_DN
-              value: "cn=DisabledUsersGroup,ou=groups,o=libregraph-idm"
+              value: "cn=ocis,ou=users,dc=ldap,dc=goauthentik,dc=io"
             # cache
             - name: GRAPH_CACHE_STORE
               value: "redis"

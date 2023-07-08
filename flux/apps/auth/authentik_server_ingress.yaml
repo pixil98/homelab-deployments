@@ -4,7 +4,8 @@ metadata:
   name: authentik
   namespace: auth
   labels:
-    app.kubernetes.io/name: authentik
+    app.kubernetes.io/name: server
+    app.kubernetes.io/instance: authentik
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
@@ -12,7 +13,7 @@ spec:
   tls:
     - hosts:
       - "auth.dev.lab.reisman.org"
-      secretName: authentik-tls
+      secretName: authentik-server-tls
   rules:
     #TODO: update hostname
     - host: "auth.dev.lab.reisman.org"
@@ -22,6 +23,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: authentik
+                name: authentik-server
                 port:
                   name: http

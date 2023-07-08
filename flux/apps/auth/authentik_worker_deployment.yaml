@@ -4,20 +4,21 @@ metadata:
   name: authentik-worker
   namespace: auth
   labels:
-    app.kubernetes.io/name: authentik
-    app.kubernetes.io/component: worker
+    app.kubernetes.io/name: worker
+    app.kubernetes.io/instance: authentik
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: authentik
-      app.kubernetes.io/component: worker
+      app.kubernetes.io/name: worker
+      app.kubernetes.io/instance: authentik
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: authentik
-        app.kubernetes.io/component: worker
+        app.kubernetes.io/name: worker
+        app.kubernetes.io/instance: authentik
     spec:
+      serviceAccountName: authentik-remote-cluster
       containers:
         - name: authentik
           image: registry.lab.reisman.org/proxy.ghcr.io/goauthentik/server:2023.4.1

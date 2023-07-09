@@ -72,9 +72,9 @@ spec:
               value: "true"
             - name: PROXY_USER_OIDC_CLAIM
               #TODO: Are these right?
-              value: "preferred_username"
+              value: "sub"
             - name: PROXY_USER_CS3_CLAIM
-              value: "username"
+              value: "userid"
             - name: PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD
               value: "jwt"
             - name: PROXY_OIDC_SKIP_CLIENT_ID_CHECK
@@ -83,6 +83,10 @@ spec:
               value: "false"
             - name: PROXY_OIDC_INSECURE
               value: "false"
+            - name: PROXY_ROLE_ASSIGNMENT_DRIVER
+              value: "odic"
+            - name: PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM
+              value: "ocisRole"
             # cache
             - name: PROXY_OIDC_USERINFO_CACHE_STORE
               value: "redis"

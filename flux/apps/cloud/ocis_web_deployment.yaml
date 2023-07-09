@@ -65,7 +65,7 @@ spec:
             - name: WEB_OIDC_CLIENT_ID
               value: "rpxotWdhDpx02JYqv6i5SagU1Xs1KKWS2eB6K5mw"
             - name: WEB_OIDC_SCOPE
-              value: "openid profile email"
+              value: "openid profile email ocis"
             - name: WEB_UI_THEME_SERVER
               value: https://cloud.dev.lab.reisman.org
             - name: WEB_UI_CONFIG_SERVER

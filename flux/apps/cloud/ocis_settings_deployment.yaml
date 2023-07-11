@@ -61,6 +61,11 @@ spec:
             - name: OCIS_CACHE_STORE_NODES
               value: "ocis-redis-master:6379"
 
+            - name: STORAGE_GRPC_ADDR
+              value: "ocis-storagesystem:9215"
+            - name: STORAGE_GATEWAY_GRPC_ADDR
+              value: "ocis-storagesystem:9215"
+
             - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:

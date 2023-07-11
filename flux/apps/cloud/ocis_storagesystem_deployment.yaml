@@ -91,7 +91,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
-                  key: user-id
+                  key: system-user-id
           livenessProbe:
             httpGet:
               path: /healthz

@@ -20,8 +20,6 @@ spec:
       labels:
         app.kubernetes.io/name: appregistry
         app.kubernetes.io/instance: ocis
-      annotations:
-        checksum/config: 98af910d050167bdf717c8c976346b9df9c0c9541494426d32427dafa7871211
     spec:
       automountServiceAccountToken: true
       

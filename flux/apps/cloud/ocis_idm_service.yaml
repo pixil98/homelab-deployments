@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ocis-idm
+  namespace: cloud
+  labels:
+    ocis-metrics: enabled
+    app.kubernetes.io/name: idm
+    app.kubernetes.io/instance: ocis
+spec:
+  selector:
+    app.kubernetes.io/name: idm
+    app.kubernetes.io/instance: ocis
+  type: ClusterIP
+  ports:
+    - name: ldaps
+      port: 9235
+      targetPort: ldaps
+      protocol: TCP
+    - name: metrics-debug
+      port: 9239
+      targetPort: metrics-debug
+      protocol: TCP

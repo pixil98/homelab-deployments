@@ -103,7 +103,7 @@ spec:
             - name: GROUPS_LDAP_GROUP_SCHEMA_MEMBER
               value: "member"
             - name: GROUPS_LDAP_URI
-              value: "ldaps://ldaps.owncloud.test"
+              value: "ldaps://ocis-idm:9235"
             - name: GROUPS_LDAP_CACERT
               value: "" # no cert needed
             - name: GROUPS_LDAP_BIND_DN

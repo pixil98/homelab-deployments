@@ -19,8 +19,6 @@ spec:
       labels:
         app.kubernetes.io/name: proxy
         app.kubernetes.io/instance: ocis
-      annotations:
-        checksum/config: 2b36728227e6743ab820b8a5488b29beb06730bbc91de1c1a1d5928d1702b91c
     spec:
       automountServiceAccountToken: true
       securityContext:

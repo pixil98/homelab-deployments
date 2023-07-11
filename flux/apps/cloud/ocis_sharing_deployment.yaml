@@ -81,7 +81,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
-                  key: user-id
+                  key: system-user-id
             # public sharing
             - name: SHARING_PUBLIC_DRIVER
               value: jsoncs3
@@ -94,7 +94,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
-                  key: user-id
+                  key: system-user-id
           livenessProbe:
             httpGet:
               path: /healthz

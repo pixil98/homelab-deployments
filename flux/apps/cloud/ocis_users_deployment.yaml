@@ -111,7 +111,7 @@ spec:
             - name: USERS_LDAP_DISABLED_USERS_GROUP_DN
               value: "cn=DisabledUsersGroup,ou=groups,o=libregraph-idm"
             - name: USERS_LDAP_URI
-              value: "ldaps://ldaps.owncloud.test"
+              value: "ldaps://ocis-idm:9235"
             - name: USERS_LDAP_CACERT
               value: "" # no cert needed
             - name: USERS_LDAP_BIND_DN

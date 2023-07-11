@@ -44,27 +44,15 @@ spec:
             - name: MICRO_REGISTRY_ADDRESS
               value: ""
 
-            - name: ANTIVIRUS_LOG_COLOR
-              value: "false"
-            - name: ANTIVIRUS_LOG_LEVEL
+            - name: OCIS_LOG_LEVEL
               value: "info"
-            - name: ANTIVIRUS_LOG_PRETTY
+            - name: OCIS_LOG_PRETTY
               value: "false"
+            - name: OCIS_LOG_COLOR
+              value: "false"
+
             - name: ANTIVIRUS_DEBUG_ADDR
               value: 0.0.0.0:9277
-            - name: ANTIVIRUS_DEBUG_PPROF
-              value: "false"
-
-            # Tracing not yet implemented: https://github.com/owncloud/ocis/issues/6171
-            # - name: ANTIVIRUS_TRACING_ENABLED
-            #   value: "false"
-            # - name: ANTIVIRUS_TRACING_TYPE
-            #   value: "jaeger"
-            # - name: ANTIVIRUS_TRACING_ENDPOINT
-            #   value: ""
-            # - name: ANTIVIRUS_TRACING_COLLECTOR
-            #   value: ""
-
             - name: ANTIVIRUS_INFECTED_FILE_HANDLING
               value: "delete"
             - name: ANTIVIRUS_SCANNER_TYPE
@@ -76,8 +64,9 @@ spec:
             - name: ANTIVIRUS_ICAP_SERVICE
               value: "avscan"
             - name: ANTIVIRUS_MAX_SCAN_SIZE
-              value: "TODO"
-            - name: ANTIVIRUS_EVENTS_ENDPOINT
+              value: "0"  # unlimited
+
+            - name: OCIS_EVENTS_ENDPOINT
               value: ocis-nats:9233
           livenessProbe:
             httpGet:
@@ -87,24 +76,18 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 20
             failureThreshold: 3
-
-          resources: 
-            {}
-
+          resources: {}
           ports:
             - name: metrics-debug
               containerPort: 9277
-
           volumeMounts:
             - name: ocis-config-tmp
               mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path
             - name: messaging-system-ca
               mountPath: /etc/ocis/messaging-system-ca
               readOnly: true
-      
       volumes:
         - name: ocis-config-tmp
           emptyDir: {}
         - name: messaging-system-ca
-          
           emptyDir: {}

@@ -43,38 +43,23 @@ spec:
             - name: MICRO_REGISTRY_ADDRESS
               value: ""
 
-            - name: EVENTHISTORY_LOG_COLOR
-              value: "false"
-            - name: EVENTHISTORY_LOG_LEVEL
+            - name: OCIS_LOG_LEVEL
               value: "info"
-            - name: EVENTHISTORY_LOG_PRETTY
+            - name: OCIS_LOG_PRETTY
               value: "false"
-
-            # Tracing not yet implemented: https://github.com/owncloud/ocis/issues/6173
-            # - name: EVENTHISTORY_TRACING_ENABLED
-            #   value: "false"
-            # - name: EVENTHISTORY_TRACING_TYPE
-            #   value: "jaeger"
-            # - name: EVENTHISTORY_TRACING_ENDPOINT
-            #   value: ""
-            # - name: EVENTHISTORY_TRACING_COLLECTOR
-            #   value: ""
-
-            - name: EVENTHISTORY_DEBUG_PPROF
+            - name: OCIS_LOG_COLOR
               value: "false"
 
             - name: EVENTHISTORY_GRPC_ADDR
               value: 0.0.0.0:8080
-
             - name: EVENTHISTORY_DEBUG_ADDR
               value: 0.0.0.0:9270
 
-            - name: EVENTHISTORY_STORE
+            - name: OCIS_PERSISTENT_STORE
               value: "redis"
-            - name: EVENTHISTORY_STORE_NODES
+            - name: OCIS_PERSISTENT_STORE_NODES
               value: "ocis-redis-master:6379"
-
-            - name: EVENTHISTORY_EVENTS_ENDPOINT
+            - name: OCIS_EVENTS_ENDPOINT
               value: ocis-nats:9233
           livenessProbe:
             httpGet:
@@ -84,15 +69,12 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 20
             failureThreshold: 3
-
           resources: {}
-
           ports:
             - name: grpc
               containerPort: 8080
             - name: metrics-debug
               containerPort: 9270
-
           volumeMounts:
             - name: ocis-config-tmp
               mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path

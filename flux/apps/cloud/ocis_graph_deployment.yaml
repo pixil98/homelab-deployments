@@ -41,42 +41,35 @@ spec:
               value: "kubernetes"
             - name: MICRO_REGISTRY_ADDRESS
               value: ""
-            - name: GRAPH_LOG_COLOR
-              value: "false"
-            - name: GRAPH_LOG_LEVEL
+
+            - name: OCIS_LOG_LEVEL
               value: "info"
-            - name: GRAPH_LOG_PRETTY
+            - name: OCIS_LOG_PRETTY
               value: "false"
-            - name: GRAPH_TRACING_ENABLED
+            - name: OCIS_LOG_COLOR
               value: "false"
-            - name: GRAPH_TRACING_TYPE
-              value: "jaeger"
-            - name: GRAPH_TRACING_ENDPOINT
-              value: ""
-            - name: GRAPH_TRACING_COLLECTOR
-              value: ""
-            - name: GRAPH_DEBUG_PPROF
-              value: "false"
+
             - name: GRAPH_HTTP_ADDR
               value: 0.0.0.0:9120
             - name: GRAPH_DEBUG_ADDR
               value: 0.0.0.0:9124
-            - name: GRAPH_SPACES_WEBDAV_BASE
+
+            - name: OCIS_URL
               value: "https://cloud.dev.lab.reisman.org"
-            - name: GRAPH_LDAP_URI
+            - name: OCIS_LDAP_URI
               value: "ldaps://ocis-idm:9235"
-            - name: GRAPH_LDAP_BIND_DN
+            - name: OCIS_LDAP_BIND_DN
               value: "uid=libregraph,ou=sysusers,o=libregraph-idm"
             - name: GRAPH_LDAP_BIND_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
                   key: idm-reva-password
-            - name: GRAPH_LDAP_SERVER_WRITE_ENABLED
-              value: "false"
-            - name: GRAPH_LDAP_CACERT
+            - name: OCIS_LDAP_SERVER_WRITE_ENABLED
+              value: "true"
+            - name: OCIS_LDAP_CACERT
               value: "" # no cert needed
-            - name: GRAPH_LDAP_INSECURE
+            - name: OCIS_LDAP_INSECURE
               value: "true"
             - name: GRAPH_LDAP_SERVER_UUID
               value: "false"
@@ -84,66 +77,39 @@ spec:
               value: "false"
             - name: GRAPH_LDAP_REFINT_ENABLED
               value: "false"
-            - name: GRAPH_LDAP_USER_BASE_DN
-              value: "ou=users,dc=owncloud,dc=com"
-            - name: GRAPH_LDAP_GROUP_BASE_DN
-              value: "ou=groups,dc=owncloud,dc=com"
+            - name: OCIS_LDAP_USER_BASE_DN
+              value: "ou=users,o=libregraph-idm"
+            - name: OCIS_LDAP_GROUP_BASE_DN
+              value: "ou=groups,o=libregraph-idm"
             - name: GRAPH_LDAP_GROUP_CREATE_BASE_DN
-              value: "ou=groups,dc=owncloud,dc=com"
-            - name: GRAPH_LDAP_USER_SCOPE
+              value: "ou=groups,o=libregraph-idm"
+            - name: OCIS_LDAP_USER_SCOPE
               value: "sub"
-            - name: GRAPH_LDAP_GROUP_SEARCH_SCOPE
+            - name: OCIS_LDAP_GROUP_SCOPE
               value: "sub"
-            - name: GRAPH_LDAP_USER_FILTER
-              value: "TODO"
-            - name: GRAPH_LDAP_GROUP_FILTER
-              value: "TODO"
-            - name: GRAPH_LDAP_USER_OBJECTCLASS
-              value: "inetOrgPerson"
-            - name: GRAPH_LDAP_GROUP_OBJECTCLASS
-              value: "groupOfNames"
-            - name: GRAPH_LDAP_USER_UID_ATTRIBUTE
-              value: "ownclouduuid"
-            - name: GRAPH_LDAP_GROUP_ID_ATTRIBUTE
-              value: "ownclouduuid"
-            - name: GRAPH_LDAP_USER_EMAIL_ATTRIBUTE
-              value: "mail"
-            - name: GRAPH_LDAP_USER_DISPLAYNAME_ATTRIBUTE
-              value: "displayname"
-            - name: GRAPH_LDAP_USER_NAME_ATTRIBUTE
-              value: "uid"
-            - name: GRAPH_LDAP_USER_TYPE_ATTRIBUTE
-              value: "ownCloudUserType"
-            - name: GRAPH_LDAP_GROUP_NAME_ATTRIBUTE
-              value: "cn"
-            - name: GRAPH_LDAP_USER_SCHEMA_ID_IS_OCTETSTRING
-              value: "false"
-            - name: GRAPH_LDAP_GROUP_SCHEMA_ID_IS_OCTETSTRING
-              value: "false"
-            - name: GRAPH_USER_ENABLED_ATTRIBUTE
-              value: "ownCloudUserEnabled"
-            - name: GRAPH_DISABLE_USER_MECHANISM
-              value: "none"
-            - name: GRAPH_DISABLED_USERS_GROUP_DN
+
+            - name: OCIS_LDAP_DISABLE_USER_MECHANISM
+              value: "none" # handled by idp
+            - name: OCIS_LDAP_DISABLED_USERS_GROUP_DN
               value: "cn=DisabledUsersGroup,ou=groups,o=libregraph-idm"
             # cache
-            - name: GRAPH_CACHE_STORE
+            - name: OCIS_CACHE_STORE
               value: "redis"
-            - name: GRAPH_CACHE_STORE_NODES
+            - name: OCIS_CACHE_STORE_NODES
               value: "ocis-redis-master:6379"
-            - name: GRAPH_EVENTS_ENDPOINT
+            - name: OCIS_EVENTS_ENDPOINT
               value: ocis-nats:9233
             - name: GRAPH_APPLICATION_ID
               valueFrom:
                 configMapKeyRef:
                   name: "ocis-graph"
                   key: application-id
-            - name: GRAPH_JWT_SECRET
+            - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
                   key: jwt-secret
-            - name: USERLOG_MACHINE_AUTH_API_KEY
+            - name: OCIS_MACHINE_AUTH_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"

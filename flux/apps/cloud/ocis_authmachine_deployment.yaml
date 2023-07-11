@@ -43,23 +43,11 @@ spec:
             - name: MICRO_REGISTRY_ADDRESS
               value: ""
 
-            - name: AUTH_MACHINE_LOG_COLOR
-              value: "false"
-            - name: AUTH_MACHINE_LOG_LEVEL
+            - name: OCIS_LOG_LEVEL
               value: "info"
-            - name: AUTH_MACHINE_LOG_PRETTY
+            - name: OCIS_LOG_PRETTY
               value: "false"
-
-            - name: AUTH_MACHINE_TRACING_ENABLED
-              value: "false"
-            - name: AUTH_MACHINE_TRACING_TYPE
-              value: "jaeger"
-            - name: AUTH_MACHINE_TRACING_ENDPOINT
-              value: ""
-            - name: AUTH_MACHINE_TRACING_COLLECTOR
-              value: ""
-
-            - name: AUTH_MACHINE_DEBUG_PPROF
+            - name: OCIS_LOG_COLOR
               value: "false"
 
             - name: AUTH_MACHINE_GRPC_ADDR
@@ -67,13 +55,12 @@ spec:
             - name: AUTH_MACHINE_DEBUG_ADDR
               value: 0.0.0.0:9167
 
-            - name: AUTH_MACHINE_JWT_SECRET
+            - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
                   key: jwt-secret
-
-            - name: AUTH_MACHINE_API_KEY
+            - name: OCIS_MACHINE_AUTH_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
@@ -86,20 +73,15 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 20
             failureThreshold: 3
-
-          resources: 
-            {}
-
+          resources: {}
           ports:
             - name: grpc
               containerPort: 9166
             - name: metrics-debug
               containerPort: 9167
-
           volumeMounts:
             - name: tmp-volume
               mountPath: /tmp
-      
       volumes:
         - name: tmp-volume
           emptyDir: {}

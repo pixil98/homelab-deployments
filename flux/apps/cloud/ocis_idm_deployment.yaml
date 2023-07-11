@@ -33,6 +33,8 @@ spec:
           env:
             - name: IDM_CREATE_DEMO_USERS
               value: "false"
+            - name: OCIS_INSECURE
+              value: "false"
           volumeMounts:
             - name: ocis-config-tmp
               mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path

@@ -24,6 +24,18 @@ spec:
       securityContext:
           fsGroup: 1000
           fsGroupChangePolicy: OnRootMismatch
+      initContainers:
+        - name: init
+          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.2"
+          imagePullPolicy: IfNotPresent
+          command: ["ocis"]
+          args: ["init"]
+          env:
+            - name: IDM_CREATE_DEMO_USERS
+              value: "false"
+          volumeMounts:
+            - name: ocis-config-tmp
+              mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path
       containers:
         - name: idm
           image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.2"
@@ -87,8 +99,12 @@ spec:
             - name: metrics-debug
               containerPort: 9239
           volumeMounts:
-            - name: idm-data
+            - name: ocis-config-tmp
+              mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path
+            - name: ocis-idm-data
               mountPath: /var/lib/ocis
       volumes:
-        - name: idm-data
+        - name: ocis-config-tmp
+          emptyDir: {}
+        - name: ocis-idm-data
           emptyDir: {}

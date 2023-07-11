@@ -56,8 +56,11 @@ spec:
             - name: SETTINGS_DEBUG_ADDR
               value: 0.0.0.0:9194
 
-            - name: OCIS_ADMIN_USER_ID
-              value: ""
+            - name: OCIS_CACHE_STORE
+              value: "redis"
+            - name: OCIS_CACHE_STORE_NODES
+              value: "ocis-redis-master:6379"
+
             - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:

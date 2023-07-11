@@ -15,9 +15,10 @@ spec:
         namespace: flux-system
   values:
     architecture: standalone
-    auth:
-      existingSecret: ocis-secrets
-      existingSecretPasswordKey: redis-password 
+    # TODO: get auth to work
+    #auth:
+    #  existingSecret: ocis-secrets
+    #  existingSecretPasswordKey: redis-password 
     image:
       registry: registry.lab.reisman.org/proxy.docker.io
     master:

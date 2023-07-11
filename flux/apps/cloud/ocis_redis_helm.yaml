@@ -16,9 +16,10 @@ spec:
   values:
     architecture: standalone
     # TODO: get auth to work
-    #auth:
-    #  existingSecret: ocis-secrets
-    #  existingSecretPasswordKey: redis-password 
+    auth:
+      enabled: false
+      existingSecret: ocis-secrets
+      existingSecretPasswordKey: redis-password 
     image:
       registry: registry.lab.reisman.org/proxy.docker.io
     master:

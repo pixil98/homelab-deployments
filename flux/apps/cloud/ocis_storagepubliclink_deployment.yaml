@@ -40,27 +40,19 @@ spec:
               value: "kubernetes"
             - name: MICRO_REGISTRY_ADDRESS
               value: ""
-            - name: STORAGE_PUBLICLINK_LOG_COLOR
-              value: "false"
-            - name: STORAGE_PUBLICLINK_LOG_LEVEL
+
+            - name: OCIS_LOG_LEVEL
               value: "info"
-            - name: STORAGE_PUBLICLINK_LOG_PRETTY
+            - name: OCIS_LOG_PRETTY
               value: "false"
-            - name: STORAGE_PUBLICLINK_TRACING_ENABLED
+            - name: OCIS_LOG_COLOR
               value: "false"
-            - name: STORAGE_PUBLICLINK_TRACING_TYPE
-              value: "jaeger"
-            - name: STORAGE_PUBLICLINK_TRACING_ENDPOINT
-              value: ""
-            - name: STORAGE_PUBLICLINK_TRACING_COLLECTOR
-              value: ""
-            - name: STORAGE_PUBLICLINK_DEBUG_PPROF
-              value: "false"
+
             - name: STORAGE_PUBLICLINK_GRPC_ADDR
               value: 0.0.0.0:9178
             - name: STORAGE_PUBLICLINK_DEBUG_ADDR
               value: 0.0.0.0:9179
-            - name: STORAGE_PUBLICLINK_JWT_SECRET
+            - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"

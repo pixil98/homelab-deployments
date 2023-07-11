@@ -40,38 +40,24 @@ spec:
               value: "kubernetes"
             - name: MICRO_REGISTRY_ADDRESS
               value: ""
-            - name: OCS_LOG_COLOR
-              value: "false"
-            - name: OCS_LOG_LEVEL
+
+            - name: OCIS_LOG_LEVEL
               value: "info"
-            - name: OCS_LOG_PRETTY
+            - name: OCIS_LOG_PRETTY
               value: "false"
-            - name: OCS_TRACING_ENABLED
+            - name: OCIS_LOG_COLOR
               value: "false"
-            - name: OCS_TRACING_TYPE
-              value: "jaeger"
-            - name: OCS_TRACING_ENDPOINT
-              value: ""
-            - name: OCS_TRACING_COLLECTOR
-              value: ""
-            - name: OCS_DEBUG_PPROF
-              value: "false"
+
             - name: OCS_HTTP_ADDR
               value: 0.0.0.0:9110
             - name: OCS_DEBUG_ADDR
               value: 0.0.0.0:9114
-            - name: OCS_IDM_ADDRESS
-              value: "https://auth.dev.lab.reisman.org/application/o/owncloud/"
-            - name: OCS_JWT_SECRET
+
+            - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
                   key: jwt-secret
-            - name: OCS_MACHINE_AUTH_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: "ocis-secrets"
-                  key: machine-auth-api-key
           livenessProbe:
             httpGet:
               path: /healthz

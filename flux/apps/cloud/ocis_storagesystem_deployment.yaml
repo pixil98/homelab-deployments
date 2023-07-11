@@ -41,28 +41,19 @@ spec:
               value: "kubernetes"
             - name: MICRO_REGISTRY_ADDRESS
               value: ""
-            # logging
-            - name: STORAGE_SYSTEM_LOG_COLOR
-              value: "false"
-            - name: STORAGE_SYSTEM_LOG_LEVEL
+
+            - name: OCIS_LOG_LEVEL
               value: "info"
-            - name: STORAGE_SYSTEM_LOG_PRETTY
+            - name: OCIS_LOG_PRETTY
               value: "false"
-            - name: STORAGE_SYSTEM_TRACING_ENABLED
+            - name: OCIS_LOG_COLOR
               value: "false"
-            - name: STORAGE_SYSTEM_TRACING_TYPE
-              value: "jaeger"
-            - name: STORAGE_SYSTEM_TRACING_ENDPOINT
-              value: ""
-            - name: STORAGE_SYSTEM_TRACING_COLLECTOR
-              value: ""
-            - name: STORAGE_SYSTEM_DEBUG_PPROF
-              value: "false"
-            # bind configuration
+              
             - name: STORAGE_SYSTEM_GRPC_ADDR
               value: 0.0.0.0:9215
             - name: STORAGE_SYSTEM_DEBUG_ADDR
               value: 0.0.0.0:9217
+
             # external availability data gateway
             - name: STORAGE_SYSTEM_HTTP_ADDR
               value: 0.0.0.0:9216
@@ -70,14 +61,14 @@ spec:
               value: http://storagesystem:9216/data
             - name: STORAGE_SYSTEM_DRIVER
               value: ocis
-            - name: STORAGE_SYSTEM_OCIS_METADATA_BACKEND
+            - name: OCIS_DECOMPOSEDFS_METADATA_BACKEND
               value: messagepack
-            # cache
-            - name: STORAGE_SYSTEM_CACHE_STORE
+
+            - name: OCIS_CACHE_STORE
               value: "redis"
-            - name: STORAGE_SYSTEM_CACHE_STORE_NODES
+            - name: OCIS_CACHE_STORE_NODES
               value: "ocis-redis-master:6379"
-            - name: STORAGE_SYSTEM_JWT_SECRET
+            - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"

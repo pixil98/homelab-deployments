@@ -40,90 +40,50 @@ spec:
               value: "kubernetes"
             - name: MICRO_REGISTRY_ADDRESS
               value: ""
-            - name: USERS_LOG_COLOR
-              value: "false"
-            - name: USERS_LOG_LEVEL
+
+            - name: OCIS_LOG_LEVEL
               value: "info"
-            - name: USERS_LOG_PRETTY
+            - name: OCIS_LOG_PRETTY
               value: "false"
-            - name: USERS_TRACING_ENABLED
+            - name: OCIS_LOG_COLOR
               value: "false"
-            - name: USERS_TRACING_TYPE
-              value: "jaeger"
-            - name: USERS_TRACING_ENDPOINT
-              value: ""
-            - name: USERS_TRACING_COLLECTOR
-              value: ""
-            - name: USERS_DEBUG_PPROF
-              value: "false"
+
             - name: USERS_GRPC_ADDR
               value: 0.0.0.0:9144
             - name: USERS_DEBUG_ADDR
               value: 0.0.0.0:9145
-            - name: USERS_LDAP_INSECURE
+
+            - name: OCIS_LDAP_INSECURE
               value: "true"
-            - name: USERS_LDAP_USER_BASE_DN
+            - name: OCIS_LDAP_USER_BASE_DN
               value: "ou=users,o=libregraph-idm"
-            - name: USERS_LDAP_GROUP_BASE_DN
+            - name: OCIS_LDAP_GROUP_BASE_DN
               value: "ou=groups,o=libregraph-idm"
-            - name: USERS_LDAP_USER_SCOPE
+            - name: OCIS_LDAP_USER_SCOPE
               value: "sub"
-            - name: USERS_LDAP_GROUP_SCOPE
+            - name: OCIS_LDAP_GROUP_SCOPE
               value: "sub"
-            - name: USERS_LDAP_USER_SUBSTRING_FILTER_TYPE
+            - name: LDAP_USER_SUBSTRING_FILTER_TYPE
               value: "any"
-            - name: USERS_LDAP_USER_FILTER
-              value: "TODO"
-            - name: USERS_LDAP_GROUP_FILTER
-              value: "TODO"
-            - name: USERS_LDAP_USER_OBJECTCLASS
-              value: "inetOrgPerson"
-            - name: USERS_LDAP_GROUP_OBJECTCLASS
-              value: "groupOfNames"
-            - name: USERS_LDAP_USER_SCHEMA_ID
-              value: "ownclouduuid"
-            - name: USERS_LDAP_GROUP_SCHEMA_ID
-              value: "ownclouduuid"
-            - name: USERS_LDAP_USER_SCHEMA_ID_IS_OCTETSTRING
-              value: "false"
-            - name: USERS_LDAP_GROUP_SCHEMA_ID_IS_OCTETSTRING
-              value: "false"
-            - name: USERS_LDAP_USER_SCHEMA_MAIL
-              value: "mail"
-            - name: USERS_LDAP_GROUP_SCHEMA_MAIL
-              value: "mail"
-            - name: USERS_LDAP_USER_SCHEMA_DISPLAYNAME
-              value: "displayname"
-            - name: USERS_LDAP_GROUP_SCHEMA_DISPLAYNAME
-              value: "cn"
-            - name: USERS_LDAP_USER_SCHEMA_USERNAME
-              value: "uid"
-            - name: USERS_LDAP_USER_TYPE_ATTRIBUTE
-              value: "ownCloudUserType"
-            - name: USERS_LDAP_GROUP_SCHEMA_GROUPNAME
-              value: "cn"
-            - name: USERS_LDAP_GROUP_SCHEMA_MEMBER
-              value: "member"
-            - name: USERS_LDAP_USER_ENABLED_ATTRIBUTE
-              value: "ownCloudUserEnabled"
-            - name: USERS_LDAP_DISABLE_USER_MECHANISM
-              value: "none"
-            - name: USERS_LDAP_DISABLED_USERS_GROUP_DN
+
+            - name: OCIS_LDAP_DISABLE_USER_MECHANISM 
+              value: "none" # handled by idp
+            - name: OCIS_LDAP_DISABLED_USERS_GROUP_DN
               value: "cn=DisabledUsersGroup,ou=groups,o=libregraph-idm"
-            - name: USERS_LDAP_URI
+            - name: OCIS_LDAP_URI
               value: "ldaps://ocis-idm:9235"
-            - name: USERS_LDAP_CACERT
+            - name: OCIS_LDAP_CACERT
               value: "" # no cert needed
-            - name: USERS_LDAP_BIND_DN
+            - name: OCIS_LDAP_BIND_DN
               value: "uid=reva,ou=sysusers,o=libregraph-idm"
-            - name: USERS_LDAP_BIND_PASSWORD
+            - name: LDAP_BIND_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
                   key: idm-reva-password
-            - name: USERS_IDP_URL
+            - name: OCIS_OIDC_ISSUER
               value: "https://auth.dev.lab.reisman.org/application/o/owncloud/"
-            - name: USERS_JWT_SECRET
+            - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"

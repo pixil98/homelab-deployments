@@ -41,38 +41,30 @@ spec:
               value: "kubernetes"
             - name: MICRO_REGISTRY_ADDRESS
               value: ""
-            - name: OCDAV_LOG_COLOR
-              value: "false"
-            - name: OCDAV_LOG_LEVEL
+
+            - name: OCIS_LOG_LEVEL
               value: "info"
-            - name: OCDAV_LOG_PRETTY
+            - name: OCIS_LOG_PRETTY
               value: "false"
-            - name: OCDAV_TRACING_ENABLED
+            - name: OCIS_LOG_COLOR
               value: "false"
-            - name: OCDAV_TRACING_TYPE
-              value: "jaeger"
-            - name: OCDAV_TRACING_ENDPOINT
-              value: ""
-            - name: OCDAV_TRACING_COLLECTOR
-              value: ""
-            - name: OCDAV_DEBUG_PPROF
-              value: "false"
+
             - name: OCDAV_HTTP_ADDR
               value: 0.0.0.0:8080
             - name: OCDAV_DEBUG_ADDR
               value: 0.0.0.0:9163
-            - name: OCDAV_PUBLIC_URL
+            - name: OCIS_URL
               value: "https://cloud.dev.lab.reisman.org"
             - name: OCIS_EDITION
               value: "Community"
-            - name: OCDAV_INSECURE
+            - name: OCIS_INSECURE
               value: "false"
-            - name: OCDAV_JWT_SECRET
+            - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
                   key: jwt-secret
-            - name: OCDAV_MACHINE_AUTH_API_KEY
+            - name: OCIS_MACHINE_AUTH_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"

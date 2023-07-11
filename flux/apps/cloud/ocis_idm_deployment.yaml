@@ -50,20 +50,23 @@ spec:
             runAsGroup: 1000
             readOnlyRootFilesystem: true
           env:
-            # logging
+            - name: MICRO_REGISTRY
+              value: "kubernetes"
+            - name: MICRO_REGISTRY_ADDRESS
+              value: ""
+
             - name: OCIS_LOG_LEVEL
               value: "info"
             - name: OCIS_LOG_PRETTY
               value: "false"
             - name: OCIS_LOG_COLOR
               value: "false"
-            # debug
-            - name: IDM_DEBUG_ADDR
-              value: 0.0.0.0:9239
-            # ldap
+
             - name: IDM_LDAPS_ADDR
               value: 0.0.0.0:9235
-            # idm
+            - name: IDM_DEBUG_ADDR
+              value: 0.0.0.0:9239
+
             - name: IDM_CREATE_DEMO_USERS
               value: "false"
             - name: IDM_ADMIN_PASSWORD

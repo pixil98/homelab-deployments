@@ -61,11 +61,11 @@ spec:
             - name: USERS_DEBUG_ADDR
               value: 0.0.0.0:9145
             - name: USERS_LDAP_INSECURE
-              value: "false"
+              value: "true"
             - name: USERS_LDAP_USER_BASE_DN
-              value: "ou=users,dc=owncloud,dc=com"
+              value: "ou=users,o=libregraph-idm"
             - name: USERS_LDAP_GROUP_BASE_DN
-              value: "ou=groups,dc=owncloud,dc=com"
+              value: "ou=groups,o=libregraph-idm"
             - name: USERS_LDAP_USER_SCOPE
               value: "sub"
             - name: USERS_LDAP_GROUP_SCOPE
@@ -115,12 +115,12 @@ spec:
             - name: USERS_LDAP_CACERT
               value: "" # no cert needed
             - name: USERS_LDAP_BIND_DN
-              value: "uid=ocis,ou=system-users,dc=owncloud,dc=test"
+              value: "uid=reva,ou=sysusers,o=libregraph-idm"
             - name: USERS_LDAP_BIND_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
-                  key: ldap-bind-password
+                  key: idm-reva-password
             - name: USERS_IDP_URL
               value: "https://auth.dev.lab.reisman.org/application/o/owncloud/"
             - name: USERS_JWT_SECRET

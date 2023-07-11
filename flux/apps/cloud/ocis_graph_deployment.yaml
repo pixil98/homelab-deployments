@@ -66,18 +66,18 @@ spec:
             - name: GRAPH_LDAP_URI
               value: "ldaps://ocis-idm:9235"
             - name: GRAPH_LDAP_BIND_DN
-              value: "uid=ocis,ou=system-users,dc=owncloud,dc=test"
+              value: "uid=libregraph,ou=sysusers,o=libregraph-idm"
             - name: GRAPH_LDAP_BIND_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "ocis-secrets"
-                  key: ldap-bind-password
+                  key: idm-reva-password
             - name: GRAPH_LDAP_SERVER_WRITE_ENABLED
               value: "false"
             - name: GRAPH_LDAP_CACERT
               value: "" # no cert needed
             - name: GRAPH_LDAP_INSECURE
-              value: "false"
+              value: "true"
             - name: GRAPH_LDAP_SERVER_UUID
               value: "false"
             - name: GRAPH_LDAP_SERVER_USE_PASSWORD_MODIFY_EXOP

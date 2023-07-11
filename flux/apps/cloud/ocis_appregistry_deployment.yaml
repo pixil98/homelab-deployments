@@ -44,11 +44,11 @@ spec:
               value: ""
 
             - name: OCIS_LOG_LEVEL
-              value: "info"
+              value: "debug"
             - name: OCIS_LOG_PRETTY
-              value: "false"
+              value: "true"
             - name: OCIS_LOG_COLOR
-              value: "false"
+              value: "true"
 
             - name: APP_REGISTRY_GRPC_ADDR
               value: 0.0.0.0:9242

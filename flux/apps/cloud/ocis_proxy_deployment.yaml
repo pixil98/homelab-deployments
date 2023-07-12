@@ -61,9 +61,9 @@ spec:
             - name: PROXY_OIDC_REWRITE_WELLKNOWN
               value: "true"
             - name: PROXY_USER_OIDC_CLAIM
-              value: "sub"
+              value: "preferred_username"
             - name: PROXY_USER_CS3_CLAIM
-              value: "userid"
+              value: "username"
             - name: PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD
               value: "jwt"
             - name: PROXY_TLS

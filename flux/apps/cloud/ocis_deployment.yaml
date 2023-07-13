@@ -157,6 +157,9 @@ spec:
                   name: "ocis-secrets"
                   key: idm-reva-password
 
+            - name: WEB_OIDC_SCOPE
+              value: "openid profile email ocis"
+
             - name: OCIS_OIDC_CLIENT_ID
               value: "rpxotWdhDpx02JYqv6i5SagU1Xs1KKWS2eB6K5mw"
             - name: OCIS_OIDC_ISSUER

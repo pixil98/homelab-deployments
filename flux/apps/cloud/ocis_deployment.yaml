@@ -64,7 +64,10 @@ spec:
               value: "https://cloud.dev.lab.reisman.org"
             - name: OCIS_INSECURE
               value: "false"
-
+            - name: OCIS_PERSISTENT_STORE
+              value: "redis"
+            - name: OCIS_PERSISTENT_STORE_NODES
+              value: "ocis-redis-master:6379"
             - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:

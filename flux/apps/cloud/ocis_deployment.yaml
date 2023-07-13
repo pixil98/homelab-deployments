@@ -1,0 +1,185 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocis
+  namespace: cloud
+  labels:
+    app.kubernetes.io/name: ocis
+    app.kubernetes.io/instance: ocis
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ocis
+      app.kubernetes.io/instance: ocis
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ocis
+        app.kubernetes.io/instance: ocis
+    spec:
+      automountServiceAccountToken: true
+      securityContext:
+          fsGroup: 1000
+          fsGroupChangePolicy: OnRootMismatch
+      initContainers:
+        - name: init
+          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.3"
+          imagePullPolicy: IfNotPresent
+          command: ["ocis"]
+          args: ["init"]
+          env:
+            - name: IDM_CREATE_DEMO_USERS
+              value: "false"
+            - name: OCIS_INSECURE
+              value: "false"
+          volumeMounts:
+            - name: ocis-config-tmp
+              mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path
+      containers:
+        - name: ocis
+          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.3"
+          imagePullPolicy: IfNotPresent
+          command: ["ocis"]
+          args: ["server"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+          env:
+            - name: OCIS_LOG_LEVEL
+              value: "debug"
+            - name: OCIS_LOG_PRETTY
+              value: "true"
+            - name: OCIS_LOG_COLOR
+              value: "true"
+
+            - name: OCIS_EXCLUDE_RUN_SERVICES
+              value: "idp"
+
+            - name: OCIS_URL
+              value: "https://cloud.dev.lab.reisman.org"
+            - name: OCIS_INSECURE
+              value: "false"
+
+            - name: OCIS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: jwt-secret
+            - name: OCIS_TRANSFER_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: transfer-secret
+            - name: OCIS_MACHINE_AUTH_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: machine-auth-api-key
+            - name: OCIS_SYSTEM_USER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: api-key
+            - name: OCIS_SYSTEM_USER_ID
+              value: "df7da318-c4bf-476d-8bdc-80d86da99370"
+
+            - name: GATEWAY_STORAGE_USERS_MOUNT_ID
+              value: "df7da318-c4bf-476d-8bdc-80d86da99370"
+            - name: STORAGE_USERS_MOUNT_ID
+              value: "df7da318-c4bf-476d-8bdc-80d86da99370"
+
+            - name: GRAPH_APPLICATION_ID
+              value: "3a3eb3dd-7751-4c4b-a79b-3e154f5e7a6e"
+            - name: GRAPH_LDAP_BIND_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: idm-reva-password
+
+            - name: GROUPS_LDAP_BIND_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: idm-reva-password
+
+            - name: IDM_CREATE_DEMO_USERS
+              value: "false"
+            - name: IDM_ADMIN_PASSWORD=ADMIN_PASSWORD_REDACTED
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: idm-admin-password
+            - name: IDM_SVC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: idm-svc-password
+            - name: IDM_REVASVC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: idm-reva-password
+
+            - name: PROXY_AUTOPROVISION_ACCOUNTS
+              value: "true"
+            - name: PROXY_TLS
+              value: "false"
+            - name: PROXY_ROLE_ASSIGNMENT_DRIVER
+              value: "oidc"
+            - name: PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM
+              value: "ocisRole"
+            - name: PROXY_OIDC_REWRITE_WELLKNOWN
+              value: "true"
+            - name: PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD
+              value: "jwt"
+            - name: PROXY_USER_OIDC_CLAIM
+              value: "preferred_username"
+            - name: PROXY_USER_CS3_CLAIM
+              value: "username"
+
+            - name: THUMBNAILS_TRANSFER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: thumbnails-transfer-secret
+
+            - name: USERS_LDAP_BIND_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: idm-reva-password
+
+            - name: OCIS_OIDC_CLIENT_ID
+              value: "rpxotWdhDpx02JYqv6i5SagU1Xs1KKWS2eB6K5mw"
+            - name: OCIS_OIDC_ISSUER
+              value: "https://auth.dev.lab.reisman.org/application/o/owncloud/"
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics-debug
+            timeoutSeconds: 10
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+          resources: {}
+          ports:
+            - name: http
+              containerPort: 9200
+            - name: metrics-debug
+              containerPort: 9205
+          volumeMounts:
+            - name: ocis-config-tmp
+              mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path
+            - name: ocis-data
+              mountPath: /var/lib/ocis
+      volumes:
+        - name: ocis-config-tmp
+          emptyDir: {}
+        - name: ocis-data
+          emptyDir: {}

@@ -181,8 +181,12 @@ spec:
               mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path
             - name: ocis-data
               mountPath: /var/lib/ocis
+            - name: tmp-volume
+              mountPath: /tmp
       volumes:
         - name: ocis-config-tmp
           emptyDir: {}
         - name: ocis-data
+          emptyDir: {}
+        - name: tmp-volume
           emptyDir: {}

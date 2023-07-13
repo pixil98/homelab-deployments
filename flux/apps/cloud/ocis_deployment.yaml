@@ -191,5 +191,5 @@ spec:
           emptyDir: {}
         - name: ocis-data
           emptyDir: {}
-        - name: ocis-config-tmp
+        - name: tmp-volume
           emptyDir: {}

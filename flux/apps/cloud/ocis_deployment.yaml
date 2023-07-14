@@ -128,6 +128,8 @@ spec:
                   name: "ocis-secrets"
                   key: idm-reva-password
 
+            - name: PROXY_DEBUG_ADDR
+              value: "0.0.0.0:9205"
             - name: PROXY_AUTOPROVISION_ACCOUNTS
               value: "true"
             - name: PROXY_TLS

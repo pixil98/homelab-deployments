@@ -161,6 +161,8 @@ spec:
 
             - name: WEB_OIDC_SCOPE
               value: "openid profile email ocis"
+            - name: WEB_OPTION_DISABLE_FEEDBACK_LINK
+              value: "true"
 
             - name: OCIS_OIDC_CLIENT_ID
               value: "rpxotWdhDpx02JYqv6i5SagU1Xs1KKWS2eB6K5mw"

@@ -8,6 +8,7 @@ metadata:
     app.kubernetes.io/instance: ocis
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/proxy-body-size: "4g"
 spec:
   ingressClassName: nginx
   tls:

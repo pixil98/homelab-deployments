@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ocis
+  name: ocis-server
   namespace: cloud
   labels:
     ocis-metrics: enabled
-    app.kubernetes.io/name: ocis
+    app.kubernetes.io/name: server
     app.kubernetes.io/instance: ocis
 spec:
   selector:
-    app.kubernetes.io/name: ocis
+    app.kubernetes.io/name: server
     app.kubernetes.io/instance: ocis
   type: ClusterIP
   ports:

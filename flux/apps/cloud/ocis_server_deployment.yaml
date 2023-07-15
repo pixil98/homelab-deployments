@@ -142,9 +142,9 @@ spec:
               value: "true"
             - name: PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD
               value: "none"
-              #value: "jwt"
+              #value: "jwt" # non-web clients can't authenticate if this is set
             - name: PROXY_USER_OIDC_CLAIM
-              value: "preferred_username"
+              value: "preferred_username"  # https://github.com/owncloud/ocis/issues/1417
             - name: PROXY_USER_CS3_CLAIM
               value: "username"
 

@@ -30,13 +30,13 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: authentik-secrets
-                  key: boostrap-password
+                  key: bootstrap-password
                   optional: false
             - name: AUTHENTIK_BOOTSTRAP_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: authentik-secrets
-                  key: boostrap-token
+                  key: bootstrap-token
                   optional: false
             - name: AUTHENTIK_BOOTSTRAP_EMAIL
               value: "aaron@reisman.org"

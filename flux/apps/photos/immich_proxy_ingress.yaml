@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: immich-proxy
+  namespace: photos
+  labels:
+    app.kubernetes.io/instance: immich
+    app.kubernetes.io/name: proxy
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - "photos.reisman.org"
+      secretName: immich-tls
+  rules:
+    - host: "photos.reisman.org"
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: immich-proxy
+                port:
+                  name: http

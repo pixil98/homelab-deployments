@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich-typesense
+  namespace: photos
+  labels:
+    app.kubernetes.io/instance: immich
+    app.kubernetes.io/name: typesense
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: typesense
+      app.kubernetes.io/instance: immich
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: typesense
+        app.kubernetes.io/instance: immich
+    spec:
+      containers:
+        - name: immich-typesense
+          image: registry.lab.reisman.org/proxy.docker.io/typesense/typesense:0.24.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TYPESENSE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: immich-secrets 
+                  key: typesense-api-key
+                  optional: false
+            - name: TYPESENSE_DATA_DIR
+              value: /tsdata
+          ports:
+            - name: http
+              containerPort: 8108
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /tsdata
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: immich-typesense-data
+

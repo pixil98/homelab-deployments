@@ -19,6 +19,9 @@ spec:
       #TODO: back this up
       storageClass: nfs-client-nobackup
     architecture: standalone
+    primary:
+      livenessProbe:
+        initialDelaySeconds: 120
     auth:
       database: immich
       username: immich

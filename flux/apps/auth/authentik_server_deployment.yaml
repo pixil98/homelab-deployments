@@ -40,7 +40,7 @@ spec:
                   optional: false
             - name: AUTHENTIK_BOOTSTRAP_EMAIL
               value: "aaron@reisman.org"
-            - name: AUTHENTIK_DEFAULT_USER_CHANGE_NAME
+            - name: AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME
               value: "false"
             - name: AUTHENTIK_EMAIL__FROM
               value: "authentik@reisman.org"

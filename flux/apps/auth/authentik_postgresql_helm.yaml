@@ -18,6 +18,9 @@ spec:
       imageRegistry: registry.lab.reisman.org/proxy.docker.io
       storageClass: nfs-client
     architecture: standalone
+    primary:
+      livenessProbe:
+        initialDelaySeconds: 120
     auth:
       database: authentik
       username: authentik

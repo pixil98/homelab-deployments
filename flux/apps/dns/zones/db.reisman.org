@@ -2,7 +2,7 @@ $ORIGIN reisman.org.
 $TTL    6h
 
 @       SOA     ns1.reisman.org. hostmaster.reisman.org. (
-                2023071902      ; serial
+                2023073001      ; serial
                 3h              ; refresh
                 15m             ; retry
                 4w              ; expire
@@ -52,4 +52,4 @@ webscan         A       192.168.1.31
                         "6du0MepVYRhMPqzPKZgvoO2m+ytyXbPX5VXEqYEUhJOz0hzQWVnr2DmM+98hWjGB"
                         "ewIDAQAB" )  ; ----- DKIM key 20220424 for reisman.org
 
-_dmarc          TXT     "v=DMARC1; p=reject; rua=mailto:dmarc-rua@reisman.org; ruf=mailto:dmarc-ruf@reisman.org; sp=reject; fo=1;"
+_dmarc          TXT     "v=DMARC1; p=none; rua=mailto:dmarc-rua@reisman.org; ruf=mailto:dmarc-ruf@reisman.org; sp=reject; fo=1;"

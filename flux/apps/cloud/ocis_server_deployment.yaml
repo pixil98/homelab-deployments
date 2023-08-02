@@ -24,20 +24,6 @@ spec:
       securityContext:
           fsGroup: 1000
           fsGroupChangePolicy: OnRootMismatch
-      initContainers:
-        - name: init
-          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.3"
-          imagePullPolicy: IfNotPresent
-          command: ["ocis"]
-          args: ["init"]
-          env:
-            - name: IDM_CREATE_DEMO_USERS
-              value: "false"
-            - name: OCIS_INSECURE
-              value: "false"
-          volumeMounts:
-            - name: ocis-config-tmp
-              mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path
       containers:
         - name: ocis
           image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-next.3"
@@ -137,7 +123,7 @@ spec:
             - name: PROXY_ROLE_ASSIGNMENT_DRIVER
               value: "oidc"
             - name: PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM
-              value: "ocisRole"
+              value: "groups"
             - name: PROXY_OIDC_REWRITE_WELLKNOWN
               value: "true"
             - name: PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD
@@ -161,7 +147,7 @@ spec:
                   key: idm-reva-password
 
             - name: WEB_OIDC_SCOPE
-              value: "openid profile email ocis"
+              value: "openid profile email"
             - name: WEB_OPTION_DISABLE_FEEDBACK_LINK
               value: "true"
 
@@ -169,6 +155,23 @@ spec:
               value: "rpxotWdhDpx02JYqv6i5SagU1Xs1KKWS2eB6K5mw"
             - name: OCIS_OIDC_ISSUER
               value: "https://auth.dev.lab.reisman.org/application/o/owncloud/"
+
+            # - name: NOTIFICATIONS_SMTP_HOST
+            #   value: "mail.reisman.org"
+            # - name: NOTIFICATIONS_SMTP_PORT
+            #   value: "587"
+            # - name: NOTIFICATIONS_SMTP_USERNAME
+            #   value: "cloud@reisman.org"
+            # - name: NOTIFICATIONS_SMTP_PASSWORD
+            #   value: "REDACTED"
+            # - name: NOTIFICATIONS_SMTP_INSECURE
+            #   value: "false"
+            # - name: NOTIFICATIONS_SMTP_AUTHENTICATION
+            #   value: "login"
+            # - name: NOTIFICATIONS_SMTP_ENCRYPTION
+            #   value: "tls??"
+            # - name: NOTIFICATIONS_SMTP_SENDER
+            #   value: "ownCloud <cloud@reisman.org>"
 
           livenessProbe:
             httpGet:
@@ -185,15 +188,16 @@ spec:
             - name: metrics-debug
               containerPort: 9205
           volumeMounts:
-            - name: ocis-config-tmp
-              mountPath: /etc/ocis # we mount that volume only to apply fsGroup to that path
+            - name: ocis-config
+              mountPath: /etc/ocis
             - name: ocis-data
               mountPath: /var/lib/ocis
             - name: tmp-volume
               mountPath: /tmp
       volumes:
-        - name: ocis-config-tmp
-          emptyDir: {}
+        - name: ocis-config
+          configMap:
+            name: ocis-server-config
         - name: ocis-data
           emptyDir: {}
         - name: tmp-volume

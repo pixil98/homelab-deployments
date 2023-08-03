@@ -9,15 +9,12 @@ metadata:
 data:
   ocis.yaml: |
     proxy:
-      oidc:
-        insecure: false
-      insecure_backends: false
-        role_assignment:
-      oidc_role_mapper:
-        role_mapping:
-        - claim_value: cloud-admins
-          role_name: admin
-        - claim_value: cloud-users
-          role_name: user
-        - claim_value: cloud-guests
-          role_name: guest
+      role_assignment:
+        oidc_role_mapper:
+          role_mapping:
+          - role_name: admin
+            claim_value: cloud-admins
+          - role_name: user
+            claim_value: cloud-users
+          - role_name: guest
+            claim_value: cloud-guests

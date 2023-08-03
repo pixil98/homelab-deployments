@@ -44,7 +44,7 @@ spec:
               value: "true"
 
             - name: OCIS_EXCLUDE_RUN_SERVICES
-              value: "idp"
+              value: "idp,auth-basic"
 
             - name: OCIS_URL
               value: "https://cloud.dev.lab.reisman.org"

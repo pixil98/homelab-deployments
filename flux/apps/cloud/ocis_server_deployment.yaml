@@ -113,6 +113,11 @@ spec:
                 secretKeyRef:
                   name: "ocis-secrets"
                   key: idm-reva-password
+            - name: IDM_IDPSVC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "ocis-secrets"
+                  key: idm-idp-password
 
             - name: PROXY_DEBUG_ADDR
               value: "0.0.0.0:9205"

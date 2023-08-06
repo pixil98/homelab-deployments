@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ocis-server
+  namespace: cloud
+  labels:
+    app.kubernetes.io/name: server
+    app.kubernetes.io/instance: ocis
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - "cloud.reisman.org"
+      secretName: ocis-server-tls
+  rules:
+    - host: "cloud.reisman.org"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ocis-server
+                port:
+                  name: http

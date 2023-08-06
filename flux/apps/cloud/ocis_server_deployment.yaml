@@ -207,6 +207,6 @@ spec:
         - name: ocis-data
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/cloud/drive
+            path: /mnt/main/cloud/ocis
         - name: tmp-volume
           emptyDir: {}

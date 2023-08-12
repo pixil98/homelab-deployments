@@ -3,7 +3,7 @@ module "k8s_cluster" {
 
   nodes              = ["hobbes", "gabi"]
   namespace          = "development"
-  vm_storage_class   = "local-zfs"
+  vm_disk_class      = "local-zfs"
   vm_user            = "aaron"
   vm_user_privatekey = file(var.user_privatekey)
 

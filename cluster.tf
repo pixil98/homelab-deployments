@@ -1,8 +1,9 @@
 module "k8s_cluster" {
   source = "github.com/pixil98/homelab-tfmod-kubernetes.git?ref=main"
 
-  nodes              = ["luke", "flip"]
+  nodes              = ["hobbes", "gabi"]
   namespace          = "development"
+  vm_storage_class   = "local-zfs"
   vm_user            = "aaron"
   vm_user_privatekey = file(var.user_privatekey)
 

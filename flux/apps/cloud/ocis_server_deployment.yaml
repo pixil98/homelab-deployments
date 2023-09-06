@@ -26,8 +26,7 @@ spec:
           fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: ocis
-          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:3.1.0-rc.1"
-          imagePullPolicy: IfNotPresent
+          image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:4.0.1"
           command: ["ocis"]
           args: ["server"]
           securityContext:
@@ -161,6 +160,7 @@ spec:
             - name: OCIS_OIDC_ISSUER
               value: "https://auth.dev.lab.reisman.org/application/o/owncloud/"
 
+            # TODO: EMAIL
             # - name: NOTIFICATIONS_SMTP_HOST
             #   value: "mail.reisman.org"
             # - name: NOTIFICATIONS_SMTP_PORT

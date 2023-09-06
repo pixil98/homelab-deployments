@@ -11,5 +11,5 @@ spec:
         kind: HelmRepository
         name: metallb
         namespace: flux-system
-      version: "0.13.7"
+      version: "0.13.11"
   interval: 1h0m0s

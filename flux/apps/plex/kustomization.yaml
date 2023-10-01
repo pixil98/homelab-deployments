@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
-  - plex.yaml
+  - plex_deployment.yaml
   - plex_claims.yaml
   - plex_service.yaml
   - libation_job.yaml

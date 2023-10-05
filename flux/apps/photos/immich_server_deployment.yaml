@@ -102,4 +102,4 @@ spec:
             claimName: immich-thumbs
         - name: library-encoded-video
           persistentVolumeClaim:
-            claimName: immich-immich-encoded-video
+            claimName: immich-encoded-video

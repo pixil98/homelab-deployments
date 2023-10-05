@@ -36,6 +36,10 @@ spec:
               mountPath: /cache
             - name: library
               mountPath: /usr/src/app/upload
+            - name: library-thumbs
+              mountPath: /usr/src/app/upload/thumbs
+            - name: library-thumbs
+              mountPath: /usr/src/app/upload/encoded-video
           livenessProbe:
             failureThreshold: 3
             httpGet:
@@ -59,3 +63,9 @@ spec:
           nfs:
             server: 192.168.1.10
             path: /mnt/main/cloud/photos
+        - name: library-thumbs
+          persistentVolumeClaim:
+            claimName: immich-thumbs
+        - name: library-encoded-video
+          persistentVolumeClaim:
+            claimName: immich-immich-encoded-video

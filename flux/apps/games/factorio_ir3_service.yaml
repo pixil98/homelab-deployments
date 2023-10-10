@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: factorio-ir3
+  namespace: games
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.2.16
+  selector:
+    app: factorio-ir3
+  ports:
+    - port: 34197
+      targetPort: 34197
+      protocol: UDP

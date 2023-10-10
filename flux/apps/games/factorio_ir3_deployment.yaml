@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: factorio-ir3
+  namespace: games
+  labels:
+    app: factorio-ir3
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: factorio-ir3
+  template:
+    metadata:
+      labels:
+        app: factorio-ir3
+    spec:
+      containers:
+        - name: factorio-ir3
+          image: registry.lab.reisman.org/proxy.docker.io/factoriotools/factorio:latest
+          ports:
+            - name: factorio
+              containerPort: 34197
+              protocol: UDP
+          env:
+            - name: GENERATE_NEW_SAVE
+              value: "true"
+            - name: LOAD_LATEST_SAVE
+              value: "true"
+            - name: PORT
+              value: "34197"
+            - name: UPDATE_MODS_ON_START
+              value: "false"
+          volumeMounts:
+            - mountPath: /factorio
+              name: config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: factorio-ir3

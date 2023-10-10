@@ -31,6 +31,8 @@ spec:
               value: "true"
             - name: PORT
               value: "34197"
+            - name: SAVE_NAME
+              value: "WayneManorEstate"
             - name: UPDATE_MODS_ON_START
               value: "false"
           volumeMounts:

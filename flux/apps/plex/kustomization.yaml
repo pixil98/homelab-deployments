@@ -9,6 +9,10 @@ resources:
   - libation_job.yaml
   - libation_accounts.yaml
   - libation_claims.yaml
+  - tubesync_deployment.yaml
+  - tubesync_claims.yaml
+  - tubesync_service.yaml
+  - tubesync_ingress.yaml
 
 configMapGenerator:
   - name: libation-settings

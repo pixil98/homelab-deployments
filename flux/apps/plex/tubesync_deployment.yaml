@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: tubesync
-          image: registry.lab.reisman.org/proxy.ghcr.io/meeb/tubesync:v0.13.1
-          imagePullPolicy: IfNotPresent
+          image: registry.lab.reisman.org/proxy.ghcr.io/meeb/tubesync:latest
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 4848

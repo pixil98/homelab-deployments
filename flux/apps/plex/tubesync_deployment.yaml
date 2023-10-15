@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tubesync
+  namespace: plex
+  labels:
+    app: tubesync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tubesync
+  template:
+    metadata:
+      labels:
+        app: tubesync
+    spec:
+      containers:
+        - name: tubesync
+          image: registry.lab.reisman.org/proxy.ghcr.io/meeb/tubesync:v0.13.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 4848
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "America/Chicago"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: downloads
+              mountPath: /downloads
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: tubesync-config
+        - name: downloads
+          nfs:
+            server: 192.168.1.10
+            path: /mnt/main/plex/youtube
+            readOnly: false

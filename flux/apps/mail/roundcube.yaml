@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: roundcube
-        image: technicalguru/mailserver-roundcube:1.6.0.0
+        image: technicalguru/mailserver-roundcube:1.6.4.0
         imagePullPolicy: IfNotPresent
         env:
         - name: RC_DB_HOST

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: postfixadmin
-        image: technicalguru/mailserver-postfixadmin:3.3.11.2
+        image: technicalguru/mailserver-postfixadmin:3.3.13.0
         imagePullPolicy: IfNotPresent
         env:
         - name: PFA_DB_HOST

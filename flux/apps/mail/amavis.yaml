@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: amavis
-        image: technicalguru/mailserver-amavis:2.11.1.6
+        image: technicalguru/mailserver-amavis:2.11.1.4
         imagePullPolicy: IfNotPresent
         env:
         - name: AV_MYDOMAIN

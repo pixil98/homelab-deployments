@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: immich-web
-          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-web:v1.82.1
+          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-web:v1.84.0
           imagePullPolicy: IfNotPresent
           command:
             - "/bin/sh"

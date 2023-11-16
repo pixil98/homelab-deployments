@@ -71,7 +71,15 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: library
-              mountPath: /usr/src/app/upload
+              mountPath: /usr/src/app/upload/library
+            - name: upload
+              mountPath: /usr/src/app/upload/upload
+            - name: encoded-video
+              mountPath: /usr/src/app/upload/encoded-video
+            - name: profile
+              mountPath: /usr/src/app/upload/profile
+            - name: thumbs
+              mountPath: /usr/src/app/upload/thumbs
           livenessProbe:
             failureThreshold: 3
             httpGet:
@@ -92,4 +100,17 @@ spec:
         - name: library
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/cloud/photos
+            path: /mnt/main/cloud/photos/library
+        - name: upload
+          nfs:
+            server: 192.168.1.10
+            path: /mnt/main/cloud/photos/upload
+        - name: encoded-video
+          persistentVolumeClaim:
+            claimName: immich-encoded-video
+        - name: profile
+          persistentVolumeClaim:
+            claimName: immich-profile
+        - name: thumbs
+          persistentVolumeClaim:
+            claimName: immich-thumbs

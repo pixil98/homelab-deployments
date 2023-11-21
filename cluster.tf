@@ -12,6 +12,7 @@ module "k8s_cluster" {
     "192.168.1.21", 
     "192.168.1.22"
   ]
+
   kubernetes_worker_ips = [
     "192.168.1.30", 
     "192.168.1.31",
@@ -19,6 +20,11 @@ module "k8s_cluster" {
     "192.168.1.33",
     "192.168.1.34"
   ]
+
+  kubernetes_worker_cpu_cores   = 4
+  kubernetes_worker_cpu_sockets = 2
+  kubernetes_worker_memory      = 32768
+  kubernetes_worker_disk_size   = "50G"
 
   flux_enabled       = true
   flux_github_branch = "production"

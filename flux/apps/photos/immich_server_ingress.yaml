@@ -23,6 +23,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: immich-proxy
+                name: immich-server
                 port:
                   name: http

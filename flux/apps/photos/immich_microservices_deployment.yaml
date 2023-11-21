@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: immich-microservices
-          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-server:v1.86.0
+          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-server:v1.88.1
           imagePullPolicy: IfNotPresent
           command:
             - "/bin/sh"
@@ -45,8 +45,6 @@ spec:
               value: http://immich-machine-learning:3003
             - name: IMMICH_SERVER_URL
               value: http://immich-server:3001
-            - name: IMMICH_WEB_URL
-              value: http://immich-web:3000
             - name: REDIS_HOSTNAME
               value: immich-redis-master
             - name: REDIS_PASSWORD

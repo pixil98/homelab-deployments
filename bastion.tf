@@ -9,7 +9,7 @@ module "bastion" {
   vm_cpu_cores       = 1
   vm_cpu_sockets     = 1
   vm_memory          = 2048
-  vm_disk_size       = "20G"
+  vm_disk_size       = 20
   vm_disk_class      = "local-zfs"
   vm_network_address = "192.168.1.3"
   vm_user            = "aaron"

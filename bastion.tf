@@ -2,7 +2,7 @@ module "bastion" {
   source = "git@github.com:pixil98/homelab-tfmod-vm.git?ref=main"
 
   node      = "hobbes"
-  namespace = proxmox_pool.infrastructure.poolid
+  namespace = proxmox_virtual_environment_pool.infrastructure.pool_id
 
   vm_name            = "bastion"
   vm_description     = "Bastion host"

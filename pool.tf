@@ -1,3 +1,3 @@
-resource "proxmox_pool" "infrastructure" {
-  poolid = "infrastructure"
+resource "proxmox_virtual_environment_pool" "infrastructure" {
+  pool_id  = "infrastructure"
 }

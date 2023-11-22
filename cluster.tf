@@ -24,7 +24,7 @@ module "k8s_cluster" {
   kubernetes_worker_cpu_cores   = 4
   kubernetes_worker_cpu_sockets = 2
   kubernetes_worker_memory      = 32768
-  kubernetes_worker_disk_size   = "50G"
+  kubernetes_worker_disk_size   = 50
 
   flux_enabled       = true
   flux_github_branch = "production"

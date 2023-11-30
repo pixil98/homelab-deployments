@@ -28,3 +28,4 @@ spec:
       secretKeys:
         adminPasswordKey: postgresql-admin-password
         userPasswordKey: postgresql-user-password
+      usePasswordFiles: true

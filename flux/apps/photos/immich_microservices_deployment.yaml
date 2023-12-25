@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: immich-microservices
-          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-server:v1.79.1
+          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-server:v1.88.2
           imagePullPolicy: IfNotPresent
           command:
             - "/bin/sh"
@@ -46,8 +46,6 @@ spec:
               value: http://immich-machine-learning:3003
             - name: IMMICH_SERVER_URL
               value: http://immich-server:3001
-            - name: IMMICH_WEB_URL
-              value: http://immich-web:3000
             - name: REDIS_HOSTNAME
               value: immich-redis-master
             - name: REDIS_PASSWORD
@@ -72,10 +70,30 @@ spec:
             - name: geodata-cache
               mountPath: /geodata-cache
             - name: library
-              mountPath: /usr/src/app/upload
+              mountPath: /usr/src/app/upload/library
+            - name: upload
+              mountPath: /usr/src/app/upload/upload
+            - name: encoded-video
+              mountPath: /usr/src/app/upload/encoded-video
+            - name: profile
+              mountPath: /usr/src/app/upload/profile
+            - name: thumbs
+              mountPath: /usr/src/app/upload/thumbs
       volumes:
         - name: geodata-cache
           emptyDir: {}
         - name: library
           persistentVolumeClaim:
             claimName: immich-library
+        - name: upload
+          persistentVolumeClaim:
+            claimName: immich-upload
+        - name: encoded-video
+          persistentVolumeClaim:
+            claimName: immich-encoded-video
+        - name: profile
+          persistentVolumeClaim:
+            claimName: immich-profile
+        - name: thumbs
+          persistentVolumeClaim:
+            claimName: immich-thumbs

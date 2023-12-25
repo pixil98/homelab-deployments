@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: immich-machine-learning
-          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-machine-learning:v1.79.1
+          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-machine-learning:v1.88.2
           imagePullPolicy: IfNotPresent
           env:
             - name: TRANSFORMERS_CACHE
@@ -35,7 +35,15 @@ spec:
             - name: cache
               mountPath: /cache
             - name: library
-              mountPath: /usr/src/app/upload
+              mountPath: /usr/src/app/upload/library
+            - name: upload
+              mountPath: /usr/src/app/upload/upload
+            - name: encoded-video
+              mountPath: /usr/src/app/upload/encoded-video
+            - name: profile
+              mountPath: /usr/src/app/upload/profile
+            - name: thumbs
+              mountPath: /usr/src/app/upload/thumbs
           livenessProbe:
             failureThreshold: 3
             httpGet:
@@ -58,3 +66,15 @@ spec:
         - name: library
           persistentVolumeClaim:
             claimName: immich-library
+        - name: upload
+          persistentVolumeClaim:
+            claimName: immich-upload
+        - name: encoded-video
+          persistentVolumeClaim:
+            claimName: immich-encoded-video
+        - name: profile
+          persistentVolumeClaim:
+            claimName: immich-profile
+        - name: thumbs
+          persistentVolumeClaim:
+            claimName: immich-thumbs

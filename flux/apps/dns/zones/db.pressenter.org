@@ -2,7 +2,7 @@ $ORIGIN pressenter.org.
 $TTL    6h
 
 @       SOA     ns1.reisman.org. hostmaster.pressenter.org. (
-                2022042401      ; serial
+                2023122501      ; serial
                 3h              ; refresh
                 15m             ; retry
                 4w              ; expire
@@ -17,8 +17,8 @@ $TTL    6h
 www     CNAME   www.pressenter.com.
 
 ; Mail
-@       MX      10 mail.pressenter.com.
-        TXT     "v=spf1 -all"
+; @       MX      10 mail.pressenter.com.
+@       TXT     "v=spf1 -all"
 
 _dmarc  TXT     "v=DMARC1; p=reject; rua=mailto:dmarc-rua@pressenter.org; ruf=mailto:dmarc-ruf@pressenter.org; sp=reject; fo=1;"
 

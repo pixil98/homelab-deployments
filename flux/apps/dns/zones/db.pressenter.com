@@ -2,7 +2,7 @@ $ORIGIN pressenter.com.
 $TTL    6h
 
 @       SOA     ns1.reisman.org. hostmaster.pressenter.com. (
-                2022042402      ; serial
+                2023122501      ; serial
                 3h              ; refresh
                 15m             ; retry
                 4w              ; expire
@@ -16,11 +16,12 @@ $TTL    6h
 
 www     A       216.165.140.134
 
-mail    A       216.165.140.134
+; mail    A       216.165.140.134
 
 ; Mail
-@       MX      10 mail.pressenter.com.
-        TXT     "v=spf1 a:mail.pressenter.com -all"
+; @       MX      10 mail.pressenter.com.
+;         TXT     "v=spf1 a:mail.pressenter.com -all"
+@       TXT     "v=spf1 -all"
 
 20220424._domainkey     TXT     ( "v=DKIM1; h=sha256; k=rsa; p="
                         "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt119qMkb1zWet7N1LU6u"
@@ -31,4 +32,5 @@ mail    A       216.165.140.134
                         "CsMVHVJd+gxOv3OtR2BlJ+DsT2P3JTvGt5H7eqlNaG6CgTtR8nO7KlAaih1FYOku"
                         "LwIDAQAB" )  ; ----- DKIM key 20220424 for pressenter.com
 
-_dmarc  TXT     "v=DMARC1; p=reject; rua=mailto:dmarc-rua@pressenter.com; ruf=mailto:dmarc-ruf@pressenter.com; sp=reject; fo=1;"
+; _dmarc  TXT     "v=DMARC1; p=reject; rua=mailto:dmarc-rua@pressenter.com; ruf=mailto:dmarc-ruf@pressenter.com; sp=reject; fo=1;"
+_dmarc  TXT     "v=DMARC1; p=reject; sp=reject; fo=1;"

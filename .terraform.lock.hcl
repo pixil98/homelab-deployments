@@ -128,16 +128,16 @@ provider "registry.terraform.io/integrations/github" {
 }
 
 provider "registry.terraform.io/rancher/rke" {
-  version     = "1.4.3"
-  constraints = "1.4.3"
+  version     = "1.4.2"
+  constraints = "1.4.2"
   hashes = [
-    "h1:poItiYNis5K15psc1bL6KVgQGhfXsctwz6142b8Vixw=",
-    "zh:009e40c47b6bec48b93d0f1b88009415c781c69126dbbd4f25b08e4c855df31d",
-    "zh:2a5f18d9076cb606e4a2c4eca8469491cc0fb20d68125870d506c33f3e48bc68",
-    "zh:677f99ad008fa41ce78d6abb4a9f848cea95e2a3766a9302e6727937e245b4b7",
-    "zh:9268606d129b92a75f76d9cd34f9dfefbc82fc515829bece9c9005e266c2c311",
-    "zh:daf397ebe23b514f7ec76be6e686440b6f58ef8cd10aa425e6dfcca7d3c41749",
-    "zh:e4eb1e695a55fd9bb28e7a5a7c89889cce51ee0d75aa8f4cb06426fb012d24c8",
-    "zh:fb09965f815f8e04c2622376ba5a2dbb17071dd6b8f73644e57e60496126951d",
+    "h1:T+X6jyHJe9vNxUOr48QVQP741Ekr6LRw3Y2UxBLvBo0=",
+    "zh:24c95f0af490628335a30b38001b845825a601543c3b2e5d1ea2843c9d7305dc",
+    "zh:2d7404a8612f63c527cd60ca4426fd77c185609fa766549540e85c6493b43f3c",
+    "zh:70185a301d09df25a44d0a22b9ea1aaa2277bee9340ebaf303cf6dcd56c61ac5",
+    "zh:8cf854254b68cded8af414cdfb28a41586f0284a6a6747293413c7b361d735b9",
+    "zh:e19254208d520086e1c8eea41d9e8bba8121bb752c4a8694a4ac4fb788c88d97",
+    "zh:f496d2831498dc695f564951c11a5443b5cee2352c93c2fab5524f20e740f801",
+    "zh:fd3ad19aa16d0db82d79712240f5966fa3d29eb7eb94b8935a9cc2a853660c7c",
   ]
 }

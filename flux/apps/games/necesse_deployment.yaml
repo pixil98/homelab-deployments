@@ -23,7 +23,7 @@ spec:
             claimName: necesse
       containers:
         - name: necesse
-          image: pixil/necesse:0.23.1.13035760
+          image: registry.lab.reisman.org/proxy.docker.io/pixil/necesse:0.23.1.13035760
           ports:
             - name: necesse
               containerPort: 14159

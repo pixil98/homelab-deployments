@@ -1,6 +1,10 @@
 module "k8s_cluster" {
   source = "github.com/pixil98/homelab-tfmod-kubernetes.git?ref=main"
 
+  proxmox_user     = var.proxmox_user
+  proxmox_password = var.proxmox_password
+  proxmox_endpoint = "https://hobbes.lab.reisman.org:8006"
+
   nodes              = ["luke", "hobbes"]
   namespace          = "dev"
   vm_disk_class      = "local-zfs"

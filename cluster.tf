@@ -11,10 +11,10 @@ module "k8s_cluster" {
   vm_user            = "aaron"
   vm_user_privatekey = file(var.user_privatekey)
 
-  kubernetes_controller_ips = [
-    "192.168.1.20", 
+  kubernetes_controller_ips = [ 
     "192.168.1.21", 
-    "192.168.1.22"
+    "192.168.1.22",
+    "192.168.1.23"
   ]
 
   kubernetes_worker_ips = [

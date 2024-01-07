@@ -19,12 +19,13 @@ spec:
       #TODO: back this up
       storageClass: nfs-client-nobackup
     architecture: standalone
-    postgresql:
+    primary:
       livenessProbe:
         initialDelaySeconds: 120
-        initdbScripts:
-          init.sql: |
-            CREATE EXTENSION IF NOT EXISTS earthdistance;
+        initdb:
+          scripts:
+            init.sql: |
+              CREATE EXTENSION IF NOT EXISTS earthdistance;
     auth:
       database: immich
       username: immich
@@ -32,3 +33,5 @@ spec:
       secretKeys:
         adminPasswordKey: postgresql-admin-password
         userPasswordKey: postgresql-user-password
+      usePasswordFiles: true
+

@@ -20,12 +20,12 @@ spec:
       storageClass: nfs-client-nobackup
     architecture: standalone
     primary:
+      initdb:
+        scripts:
+          init.sql: |
+            CREATE EXTENSION IF NOT EXISTS earthdistance;
       livenessProbe:
         initialDelaySeconds: 120
-        initdb:
-          scripts:
-            init.sql: |
-              CREATE EXTENSION IF NOT EXISTS earthdistance;
     auth:
       database: immich
       username: immich

@@ -22,7 +22,7 @@ spec:
     primary:
       initdb:
         scripts:
-          init.sh: |
+          00_init_extensions.sh: |
             psql "postgresql://postgres:$(cat /opt/bitnami/postgresql/secrets/postgresql-admin-password)@127.0.0.1/${POSTGRES_DATABASE}" -c "CREATE EXTENSION IF NOT EXISTS cube;"
             psql "postgresql://postgres:$(cat /opt/bitnami/postgresql/secrets/postgresql-admin-password)@127.0.0.1/${POSTGRES_DATABASE}" -c "CREATE EXTENSION IF NOT EXISTS earthdistance;"
             echo "init.sh complete"
@@ -36,4 +36,6 @@ spec:
         adminPasswordKey: postgresql-admin-password
         userPasswordKey: postgresql-user-password
       usePasswordFiles: true
+    image:
+      debug: true
 

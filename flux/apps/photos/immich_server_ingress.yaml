@@ -1,11 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: immich-proxy
+  name: immich-server
   namespace: photos
   labels:
     app.kubernetes.io/instance: immich
-    app.kubernetes.io/name: proxy
+    app.kubernetes.io/name: server
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
     nginx.ingress.kubernetes.io/proxy-body-size: "0"

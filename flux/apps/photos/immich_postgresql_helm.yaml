@@ -22,8 +22,10 @@ spec:
     primary:
       initdb:
         scripts:
-          init.sql: |
-            CREATE EXTENSION IF NOT EXISTS earthdistance;
+          init.sh: |
+            #!/bin/bash
+            psql "postgresql://postgres:$(cat /opt/bitnami/postgresql/secrets/postgresql-admin-password)@127.0.0.1/${POSTGRES_DATABASE}" -c "CREATE EXTENSION IF NOT EXISTS cube;"
+            psql "postgresql://postgres:$(cat /opt/bitnami/postgresql/secrets/postgresql-admin-password)@127.0.0.1/${POSTGRES_DATABASE}" -c "CREATE EXTENSION IF NOT EXISTS earthdistance;"
       livenessProbe:
         initialDelaySeconds: 120
     auth:

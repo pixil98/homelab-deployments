@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+configMapGenerator:
+  - name: immich-postgresql-extensions
+    namespace: photos
+    files:
+      - immich_postgresql_pgvectors/vectors--0.1.13.sql
+      - immich_postgresql_pgvectors/vectors.control
+      - immich_postgresql_pgvectors/vectors.so

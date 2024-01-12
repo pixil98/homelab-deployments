@@ -16,11 +16,12 @@ data:
     wget https://github.com/tensorchord/pgvecto.rs/releases/download/v${PGVECTORS_VERSION}/${PGVECTORS_DEB}
     apt install ./${PGVECTORS_DEB}
 
-    cp -rv /usr/lib/postgresql/${POSTGRESQL_MAJOR}/lib/* /opt/bitnami/postgresql/lib
-    cp -rv /usr/share/postgresql/${POSTGRESQL_MAJOR}/extension/* /opt/bitnami/postgresql/share/extension
-
     cp -rv /opt/bitnami/postgresql/lib/* /postgresql-lib
     cp -rv /opt/bitnami/postgresql/share/extension/* /postgresql-extension
+
+    cp -rv /usr/lib/postgresql/${POSTGRESQL_MAJOR}/lib/* /postgresql-lib
+    cp -rv /usr/share/postgresql/${POSTGRESQL_MAJOR}/extension/* /postgresql-extension
+
 ---
 apiVersion: v1
 kind: ConfigMap

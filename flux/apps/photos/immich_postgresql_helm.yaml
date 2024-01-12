@@ -36,7 +36,7 @@ spec:
       initContainers:
         - name: init-extensions
           image: bitnami/postgresql:15
-          command: [ "/bin/sh", "-c", "/init-extensions.sh"]
+          command: [ "/bin/sh", "-c", "/scripts/init-extensions.sh"]
           env:
             - name: PGVECTORS_VERSION
               value: "0.1.13"
@@ -46,8 +46,7 @@ spec:
             - name: postgresql-extension
               mountPath: /postgresql-extension
             - name: postgresql-init-scripts
-              mountPath: /
-              subPath: init-extensions.sh
+              mountPath: /scripts
       initdb:
         scriptsConfigMap: immich-postgresql-initdb
       livenessProbe:

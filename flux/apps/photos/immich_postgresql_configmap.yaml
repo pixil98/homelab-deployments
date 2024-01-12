@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: immich-postgresql-init-extensions
+  name: immich-postgresql-init-container-scripts
   namespace: photos
   labels:
     app.kubernetes.io/instance: immich

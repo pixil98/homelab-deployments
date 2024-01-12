@@ -25,6 +25,9 @@ spec:
           emptyDir: {}
         - name: postgresql-extension
           emptyDir: {}
+        - name: postgresql-init-scripts
+          configMap:
+            name: immich-postgresql-init-container-scripts
       extraVolumeMounts:
         - name: postgresql-lib
           mountPath: /opt/bitnami/postgresql/lib
@@ -42,6 +45,9 @@ spec:
               mountPath: /postgresql-lib
             - name: postgresql-extension
               mountPath: /postgresql-extension
+            - name: postgresql-init-scripts
+              mountPath: /
+              subPath: init-extensions.sh
       initdb:
         scriptsConfigMap: immich-postgresql-initdb
       livenessProbe:

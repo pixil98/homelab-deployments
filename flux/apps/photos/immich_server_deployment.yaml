@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: immich-server
-          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-server:v1.90.2
+          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-server:v1.92.1
           imagePullPolicy: IfNotPresent
           command:
             - "/bin/sh"
@@ -53,16 +53,6 @@ spec:
                   name: immich-secrets 
                   key: redis-password
                   optional: false
-            - name: TYPESENSE_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: immich-secrets 
-                  key: typesense-api-key
-                  optional: false
-            - name: TYPESENSE_ENABLED
-              value: "true"
-            - name: TYPESENSE_HOST
-              value: immich-typesense
           ports:
             - name: http
               containerPort: 3001

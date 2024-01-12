@@ -19,6 +19,7 @@ spec:
       #TODO: back this up
       storageClass: nfs-client-nobackup
     architecture: standalone
+    postgresqlSharedPreloadLibraries: "pgaudit,vectors.so"
     primary:
       extraVolumes:
         - name: postgresql-lib

@@ -25,7 +25,7 @@ spec:
           emptyDir: {}
         - name: postgresql-extension
           emptyDir: {}
-        - name: postgresql-init-scripts
+        - name: init-container-scripts
           configMap:
             name: immich-postgresql-init-container-scripts
       extraVolumeMounts:
@@ -45,7 +45,7 @@ spec:
               mountPath: /postgresql-lib
             - name: postgresql-extension
               mountPath: /postgresql-extension
-            - name: postgresql-init-scripts
+            - name: init-container-scripts
               mountPath: /scripts
           securityContext:
             runAsUser: 0

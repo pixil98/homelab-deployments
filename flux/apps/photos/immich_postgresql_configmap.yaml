@@ -21,7 +21,6 @@ data:
 
     cp -rv /usr/lib/postgresql/${POSTGRESQL_MAJOR}/lib/* /postgresql-lib
     cp -rv /usr/share/postgresql/${POSTGRESQL_MAJOR}/extension/* /postgresql-extension
-
 ---
 apiVersion: v1
 kind: ConfigMap

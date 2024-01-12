@@ -36,7 +36,7 @@ spec:
       initContainers:
         - name: init-extensions
           image: bitnami/postgresql:15
-          command: [ "/bin/sh", "-c", "/scripts/init-extensions.sh"]
+          command: [ "/bin/sh", "-c", "sh /scripts/init-extensions.sh"]
           env:
             - name: PGVECTORS_VERSION
               value: "0.1.13"

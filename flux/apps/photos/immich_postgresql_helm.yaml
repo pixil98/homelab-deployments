@@ -20,13 +20,30 @@ spec:
       storageClass: nfs-client-nobackup
     architecture: standalone
     primary:
+      extraVolumes:
+        - name: postgresql-lib
+          emptyDir: {}
+        - name: postgresql-extension
+          emptyDir: {}
+      extraVolumeMounts:
+        - name: postgresql-lib
+          mountPath: /opt/bitnami/postgresql/lib
+        - name: postgresql-extension
+          mountPath: /opt/bitnami/postgresql/share/extension
+      initContainers:
+        - name: init-extensions
+          image: bitnami/postgresql:15
+          command: [ "/bin/sh", "-c", "/init-extensions.sh"]
+          env:
+            - name: PGVECTORS_VERSION
+              value: "0.1.13"
+          volumeMounts:
+            - name: postgresql-lib
+              mountPath: /postgresql-lib
+            - name: postgresql-extension
+              mountPath: /postgresql-extension
       initdb:
-        scripts:
-          00_init_extensions.sh: |
-            #!/bin/sh
-            psql "postgresql://postgres:$(cat /opt/bitnami/postgresql/secrets/postgresql-admin-password)@127.0.0.1/${POSTGRES_DATABASE}" -c "CREATE EXTENSION IF NOT EXISTS cube;"
-            psql "postgresql://postgres:$(cat /opt/bitnami/postgresql/secrets/postgresql-admin-password)@127.0.0.1/${POSTGRES_DATABASE}" -c "CREATE EXTENSION IF NOT EXISTS earthdistance;"
-            echo "00_init_extensions.sh complete"
+        scriptsConfigMap: immich-postgresql-initdb
       livenessProbe:
         initialDelaySeconds: 120
     auth:

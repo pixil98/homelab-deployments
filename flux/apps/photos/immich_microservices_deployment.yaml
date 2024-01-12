@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: immich-microservices
-          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-server:v1.90.2
+          image: registry.lab.reisman.org/proxy.ghcr.io/immich-app/immich-server:v1.92.1
           imagePullPolicy: IfNotPresent
           command:
             - "/bin/sh"
@@ -56,16 +56,6 @@ spec:
                   optional: false
             - name: REVERSE_GEOCODING_DUMP_DIRECTORY
               value: /geodata-cache
-            - name: TYPESENSE_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: immich-secrets 
-                  key: typesense-api-key
-                  optional: false
-            - name: TYPESENSE_ENABLED
-              value: "true"
-            - name: TYPESENSE_HOST
-              value: immich-typesense
           volumeMounts:
             - name: geodata-cache
               mountPath: /geodata-cache

@@ -1,0 +1,12 @@
+{
+    "apps": {
+        "games": {
+            "ip_address": "192.168.8.8"
+        }
+    },
+    "infra": {
+	"test": {
+            "namespace": "pokemon"
+        }
+    }
+}

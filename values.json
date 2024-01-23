@@ -1,12 +1,18 @@
 {
-    "apps": {
-        "games": {
-            "ip_address": "192.168.8.8"
+    "info": {
+        "owner": {
+            "email": "aaron@reisman.org"
         }
     },
-    "infra": {
-	"test": {
-            "namespace": "pokemon"
+    "applications": {
+
+    },
+    "infrastructure": {
+        "ingress": {
+            "ipAddress": "192.168.2.112"
+        },
+        "metallb": {
+            "ipAddressPool": "192.168.2.100-192.168.2.119"
         }
     }
 }

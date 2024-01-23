@@ -35,5 +35,5 @@ spec:
           tsigKeyName: letsencrypt-dev
           tsigAlgorithm: HMACSHA512
           tsigSecretSecretRef:
-            name: letsencrypt-dev-tsig
+            name: letsencrypt-prd-tsig
             key: key

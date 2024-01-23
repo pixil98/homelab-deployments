@@ -1,5 +1,8 @@
 {
     "info": {
+        "cluster": {
+            "name": "development"
+        },
         "owner": {
             "email": "aaron@reisman.org"
         }
@@ -8,6 +11,12 @@
 
     },
     "infrastructure": {
+        "csi": {
+            "nfs-subdir": {
+                "backupStorageClass": "nfs-client-nobackup",
+                "reclaimPolicy": "Delete"
+            }
+        },
         "ingress": {
             "ipAddress": "192.168.2.112"
         },

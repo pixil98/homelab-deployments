@@ -6,8 +6,7 @@ metadata:
 spec:
   interval: 1m0s
   dependsOn:
-    - name: infra
-    - name: cert-manager-issuers
+    - name: infrastructure-controllers
   sourceRef:
     kind: GitRepository
     name: flux-system

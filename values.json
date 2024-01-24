@@ -12,7 +12,7 @@
     },
     "infrastructure": {
         "csi": {
-            "nfs-subdir": {
+            "nfsSubdir": {
                 "backupStorageClass": "nfs-client-nobackup",
                 "reclaimPolicy": "Delete"
             }

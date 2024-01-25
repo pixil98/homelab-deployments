@@ -23,6 +23,7 @@ module "k8s_cluster" {
   flux_github_branch = "development"
   flux_github_token  = var.github_token
   flux_values_json   = file("${path.module}/values.json")
+  flux_secrets_json  = file("${path.module}/secrets.json")
   flux_core_repository = "https://github.com/pixil98/homelab-flux-core.git"
   flux_core_branch   = "initial-setup"
   flux_core_path     = "./bootstrap"

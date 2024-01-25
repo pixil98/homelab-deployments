@@ -33,8 +33,8 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# Ignore anything in the secrets folder
-secrets/*
+# Ignore anything that starts with secrets
+secrets*
 
 # Ignore kubeconfig
 kubeconfig

@@ -1,16 +1,14 @@
 {
     "info": {
         "cluster": {
-            "name": "development"
-        },
-        "owner": {
+            "name": "development",
             "email": "aaron@reisman.org"
         }
     },
-    "applications": {
+    "apps": {
 
     },
-    "infrastructure": {
+    "infra": {
         "csi": {
             "nfsSubdir": {
                 "backupStorageClass": "nfs-client-nobackup",

@@ -2,6 +2,7 @@
     "info": {
         "cluster": {
             "name": "development",
+            "domain": "dev.lab.reisman.org",
             "email": "aaron@reisman.org"
         }
     },
@@ -20,6 +21,9 @@
         },
         "metallb": {
             "ipAddressPool": "192.168.2.100-192.168.2.119"
+        },
+        "certManager": {
+            "issuer": "letsencrypt-production-dns"
         }
     }
 }

@@ -22,9 +22,6 @@ spec:
     architecture: standalone
     postgresqlSharedPreloadLibraries: "pgaudit,vectors.so"
     primary:
-      containerSecurityContext:
-        runAsUser: 0
-        runAsNonRoot: false
       extraVolumes:
         - name: postgresql-lib
           emptyDir: {}

@@ -8,18 +8,22 @@ spec:
   chart:
     spec:
       chart: bitnamicharts/postgresql
-      version: '>=12.4.2 <13.0.0'
+      version: '14.x'
       sourceRef:
         kind: HelmRepository
         name: registry-lab
         namespace: flux-system
   values:
+    diagnosticMode:
+      enabled: true
     global:
       imageRegistry: registry.lab.reisman.org/proxy.docker.io
       storageClass: nfs-client
     architecture: standalone
     postgresqlSharedPreloadLibraries: "pgaudit,vectors.so"
     primary:
+      containerSecurityContext:
+        runAsUser: 0
       extraVolumes:
         - name: postgresql-lib
           emptyDir: {}

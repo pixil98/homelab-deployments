@@ -52,7 +52,7 @@ spec:
           securityContext:
             runAsUser: 0
       initdb:
-        scriptsConfigMap: immich-postgresql-initdb
+        #scriptsConfigMap: immich-postgresql-initdb
       livenessProbe:
         initialDelaySeconds: 120
     auth:

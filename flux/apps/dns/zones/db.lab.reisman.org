@@ -12,5 +12,8 @@ $TTL    6h
         NS      ns1.reisman.org.
         NS      ns2.reisman.org.
 
+@       A       216.165.140.134
+test    A       216.165.140.134
+
 _dmarc.hobbes       TXT     "v=DMARC1; p=none; sp=reject;"
 _dmarc.luke         TXT     "v=DMARC1; p=none; sp=reject;"

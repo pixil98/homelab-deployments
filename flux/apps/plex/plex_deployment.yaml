@@ -20,7 +20,7 @@ spec:
           image: debian:stable-slim
           imagePullPolicy: Always
           command: [ "/bin/sh", "-c" ]
-          args: [ "apt update; apt install rsync; rsync -av --delete /config-source/ /config" ]
+          args: [ "apt update; apt install -y rsync; rsync -av --delete /config-source/ /config" ]
           volumeMounts:
             - mountPath: /config-source
               name: plex-config-source
@@ -47,7 +47,7 @@ spec:
           image: debian:stable-slim
           imagePullPolicy: Always
           command: [ "/bin/sh", "-c" ]
-          args: [ "apt update; apt install rsync; while true; do rsync -rlptv --delete /config-active/ /config-backup; sleep 60; done" ]
+          args: [ "apt update; apt install -y rsync; while true; do rsync -rlptv --delete /config-active/ /config-backup; sleep 60; done" ]
           volumeMounts:
             - mountPath: /config-backup
               name: plex-config-source

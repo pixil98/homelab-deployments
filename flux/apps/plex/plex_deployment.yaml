@@ -28,7 +28,7 @@ spec:
               name: plex-config 
       containers:
         - name: plex
-          image: plexinc/pms-docker:1.40.2.8395-c67dce28e
+          image: plexinc/pms-docker:1.40.1.8227-c0dd5a73e
           imagePullPolicy: IfNotPresent
           ports:
             - name: plex

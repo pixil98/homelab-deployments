@@ -2,7 +2,7 @@ $ORIGIN pressenter.com.
 $TTL    6h
 
 @       SOA     ns1.reisman.org. hostmaster.pressenter.com. (
-                2023122501      ; serial
+                2024050501      ; serial
                 3h              ; refresh
                 15m             ; retry
                 4w              ; expire
@@ -12,11 +12,11 @@ $TTL    6h
         NS      ns1.reisman.org.
         NS      ns2.reisman.org.
 
-@       A       216.165.140.134
+;@       A       216.165.140.134
 
-www     A       216.165.140.134
+www     CNAME   madison.reisman.org
 
-; mail    A       216.165.140.134
+; mail    CNAME   madison.reisman.org
 
 ; Mail
 ; @       MX      10 mail.pressenter.com.

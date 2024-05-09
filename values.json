@@ -19,10 +19,11 @@
         },
         "mail": {
             "ipAddress": "192.168.2.115",
-            "relayHost": "smtp.mailgun.org",
-            "virtualDomains": "xcoolgroup.org"
+            "postfix": {
+                "relayHost": "smtp.mailgun.org",
+                "virtualDomains": "xcoolgroup.org"
+            }
         }
-
     },
     "infra": {
         "csi": {

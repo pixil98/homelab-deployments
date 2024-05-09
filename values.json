@@ -18,6 +18,7 @@
             }
         },
         "mail": {
+            "ipAddress": "192.168.2.115",
             "relayHost": "",
             "virtualDomains": "xcoolgroup.org"
         }

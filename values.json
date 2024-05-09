@@ -16,6 +16,10 @@
             "authoritative": {
                 "ipAddress": "192.168.2.113"
             }
+        },
+        "mail": {
+            "relayHost": "",
+            "virtualDomains": "xcoolgroup.org"
         }
 
     },

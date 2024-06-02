@@ -35,6 +35,7 @@ terraform.rc
 
 # Ignore anything in the secrets folder
 secrets/*
+secrets.json
 
 # Ignore kubeconfig
 kubeconfig

@@ -20,7 +20,7 @@
         "mail": {
             "ipAddress": "192.168.2.115",
             "postfix": {
-                "relayHost": "smtp.mailgun.org",
+                "relayHost": "mail.smtp2go.com",
                 "virtualDomains": "xcoolgroup.org"
             }
         }

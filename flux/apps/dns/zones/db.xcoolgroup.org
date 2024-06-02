@@ -2,7 +2,7 @@ $ORIGIN xcoolgroup.org.
 $TTL    6h
 
 @       SOA     ns1.reisman.org. hostmaster.xcoolgroup.org. (
-                2024050501      ; serial
+                2024060201      ; serial
                 3h              ; refresh
                 15m             ; retry
                 4w              ; expire
@@ -14,9 +14,9 @@ $TTL    6h
 
 @       A       216.165.140.134
 
-www     CNAME   madison.reisman.org
+www     CNAME   madison.reisman.org.
 
-mail    CNAME   madison.reisman.org
+mail    CNAME   madison.reisman.org.
 
 ; Redirct for xcoolchat
 chat    CNAME   xcoolgroup.no-ip.org.

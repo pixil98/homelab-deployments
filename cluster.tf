@@ -1,5 +1,5 @@
 module "k8s_cluster" {
-  source = "github.com/pixil98/homelab-tfmod-kubernetes.git?ref=central-flux"
+  source = "github.com/pixil98/homelab-tfmod-kubernetes.git?ref=main"
 
   proxmox_user     = var.proxmox_user
   proxmox_password = var.proxmox_password
@@ -24,7 +24,6 @@ module "k8s_cluster" {
   flux_github_token  = var.github_token
   flux_values_json   = file("${path.module}/values.json")
   flux_secrets_json  = file("${path.module}/secrets.json")
-  flux_core_repository = "https://github.com/pixil98/homelab-flux-core.git"
   flux_core_branch   = "initial-setup"
   flux_core_path     = "./bootstrap"
 }

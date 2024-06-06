@@ -33,7 +33,6 @@ module "k8s_cluster" {
   flux_enabled       = true
   flux_github_branch = "production"
   flux_github_token  = var.github_token
-
-  sealed_secrets_key = file(var.sealed_secrets_key)
-  sealed_secrets_crt = file(var.sealed_secrets_crt)
+  flux_values_json   = file("${path.module}/values.json")
+  flux_secrets_json  = file("${path.module}/secrets.json")
 }

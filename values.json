@@ -1,0 +1,45 @@
+{
+    "info": {
+        "cluster": {
+            "name": "production",
+            "domain": "reisman.org",
+            "email": "aaron@reisman.org"
+        }
+    },
+    "apps": {
+        "cloud": {
+            "ocis": {
+                "logLevel": "info"
+            }
+        },
+        "dns": {
+            "authoritative": {
+                "ipAddress": "192.168.2.13"
+            }
+        },
+        "mail": {
+            "ipAddress": "192.168.2.15",
+            "postfix": {
+                "relayHost": "mail.smtp2go.com",
+                "virtualDomains": "hobolife.org scobie.org xcoolgroup.org"
+            }
+        }
+    },
+    "infra": {
+        "csi": {
+            "nfsSubdir": {
+                "backupStorageClass": "nfs-client-backup",
+                "reclaimPolicy": "Retain"
+            }
+        },
+        "ingress": {
+            "ipAddress": "192.168.2.12"
+        },
+        "metallb": {
+            "ipAddressPool": "192.168.2.11-192.168.2.99"
+        },
+        "certManager": {
+            "issuer": "letsencrypt-production"
+        }
+    }
+}

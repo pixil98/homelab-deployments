@@ -7,7 +7,6 @@ resources:
   - plex_claims.yaml
   - plex_service.yaml
   - libation_job.yaml
-  - libation_accounts.yaml
   - libation_claims.yaml
 
 configMapGenerator:

@@ -7,6 +7,13 @@
         }
     },
     "apps": {
+        "auth": {
+            "authentik": {
+                "postgresql": {
+                    "resourcesPreset": "micro"
+                }
+            }
+        },
         "cloud": {
             "ocis": {
                 "logLevel": "info"
@@ -22,6 +29,25 @@
             "postfix": {
                 "relayHost": "mail.smtp2go.com",
                 "virtualDomains": "hobolife.org scobie.org xcoolgroup.org"
+            },
+            "roundcube": {
+                "postgresql": {
+                    "resourcesPreset": "micro"
+                }
+            }
+        },
+        "paperless": {
+            "paperless": {
+                "postgresql": {
+                    "resourcesPreset": "micro"
+                }
+            }
+        },
+        "photos": {
+            "immich": {
+                "postgresql": {
+                    "resourcesPreset": "small"
+                }
             }
         }
     },

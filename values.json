@@ -46,7 +46,7 @@
         "photos": {
             "immich": {
                 "postgresql": {
-                    "resourcesPreset": "small"
+                    "resourcesPreset": "medium"
                 }
             }
         }

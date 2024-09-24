@@ -45,6 +45,12 @@
         },
         "photos": {
             "immich": {
+                "jobs": {
+		    "videoConversion": {
+                        "concurrency": 2
+                    }
+		},
+		"logLevel": "log",
                 "postgresql": {
                     "resourcesPreset": "medium"
                 }

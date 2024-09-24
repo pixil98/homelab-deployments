@@ -12,7 +12,7 @@ module "k8s_cluster" {
   vm_user_privatekey = file(var.user_privatekey)
 
   kubernetes_controller_ips = [ 
-    "192.168.1.21", 
+    "192.168.1.21",
     "192.168.1.22",
     "192.168.1.23"
   ]
@@ -35,4 +35,5 @@ module "k8s_cluster" {
   flux_github_token  = var.github_token
   flux_values_json   = file("${path.module}/values.json")
   flux_secrets_json  = file("${path.module}/secrets.json")
+  flux_core_branch   = "main"
 }

@@ -10,5 +10,13 @@
         "image: registry\\.lab\\.reisman\\.org\\/proxy\\.(?<depName>.+?):(?<currentValue>.+)"
       ]
     }
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "plexinc/pms-docker"
+      ],
+      "ignoreUnstable": false
+    }
   ]
 }

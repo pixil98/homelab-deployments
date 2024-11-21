@@ -31,7 +31,7 @@ spec:
               name: plex-config
       containers:
         - name: plex
-          image: registry.lab.reisman.org/proxy.docker.io/plexinc/pms-docker:1.40.4.8679-424562606
+          image: registry.lab.reisman.org/proxy.docker.io/plexinc/pms-docker:1.41.2.9200-c6bbc1b53
           imagePullPolicy: IfNotPresent
           ports:
             - name: plex

@@ -23,14 +23,8 @@
         }
       }
     ],
-    "Using": [
-      "Dinah.Core",
-      "Serilog.Exceptions"
-    ],
-    "Enrich": [
-      "WithCaller",
-      "WithExceptionDetails"
-    ]
+    "Using": ["Dinah.Core", "Serilog.Exceptions"],
+    "Enrich": ["WithCaller", "WithExceptionDetails"]
   },
   "CreateCueSheet": true,
   "RetainAaxFile": false,

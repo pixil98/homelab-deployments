@@ -19,16 +19,19 @@ spec:
         - name: config-load
           image: debian:stable-slim
           imagePullPolicy: Always
-          command: [ "/bin/sh", "-c" ]
-          args: [ "apt update; apt install -y rsync; rsync -av --delete /config-source/ /config" ]
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              "apt update; apt install -y rsync; rsync -av --delete /config-source/ /config",
+            ]
           volumeMounts:
             - mountPath: /config-source
               name: plex-config-source
             - mountPath: /config
-              name: plex-config 
+              name: plex-config
       containers:
         - name: plex
-          image: plexinc/pms-docker:1.40.4.8679-424562606
+          image: registry.lab.reisman.org/proxy.docker.io/plexinc/pms-docker:1.40.4.8679-424562606
           imagePullPolicy: IfNotPresent
           ports:
             - name: plex
@@ -46,8 +49,11 @@ spec:
         - name: config-sync
           image: debian:stable-slim
           imagePullPolicy: Always
-          command: [ "/bin/sh", "-c" ]
-          args: [ "apt update; apt install -y rsync; while true; do rsync -rlptv --delete /config-active/ /config-backup; sleep 60; done" ]
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              "apt update; apt install -y rsync; while true; do rsync -rlptv --delete /config-active/ /config-backup; sleep 60; done",
+            ]
           volumeMounts:
             - mountPath: /config-backup
               name: plex-config-source

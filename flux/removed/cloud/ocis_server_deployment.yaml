@@ -22,8 +22,8 @@ spec:
     spec:
       automountServiceAccountToken: true
       securityContext:
-          fsGroup: 1000
-          fsGroupChangePolicy: OnRootMismatch
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: ocis
           image: "registry.lab.reisman.org/proxy.docker.io/owncloud/ocis:4.0.3"
@@ -135,7 +135,7 @@ spec:
               value: "none"
               #value: "jwt" # non-web clients can't authenticate if this is set
             - name: PROXY_USER_OIDC_CLAIM
-              value: "preferred_username"  # https://github.com/owncloud/ocis/issues/1417
+              value: "preferred_username" # https://github.com/owncloud/ocis/issues/1417
             - name: PROXY_USER_CS3_CLAIM
               value: "username"
 

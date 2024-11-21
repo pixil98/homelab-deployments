@@ -13,7 +13,7 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-      - "cloud.reisman.org"
+        - "cloud.reisman.org"
       secretName: ocis-server-tls
   rules:
     - host: "cloud.reisman.org"

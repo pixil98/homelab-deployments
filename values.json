@@ -10,7 +10,7 @@
         "auth": {
             "authentik": {
                 "postgresql": {
-                    "resourcesPreset": "micro"
+                    "resourcesPreset": "medium"
                 }
             }
         },
@@ -32,14 +32,14 @@
             },
             "roundcube": {
                 "postgresql": {
-                    "resourcesPreset": "micro"
+                    "resourcesPreset": "small"
                 }
             }
         },
         "paperless": {
             "paperless": {
                 "postgresql": {
-                    "resourcesPreset": "micro"
+                    "resourcesPreset": "small"
                 }
             }
         },

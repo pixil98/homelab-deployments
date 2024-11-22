@@ -13,9 +13,7 @@
   ],
   "packageRules": [
     {
-      "matchPackagePatterns": [
-        "plexinc/pms-docker"
-      ],
+      "matchPackagePatterns": ["plexinc/pms-docker"],
       "ignoreUnstable": false
     }
   ]

@@ -10,61 +10,10 @@
     "auth": {
       "authentik": {
         "postgresql": {
-          "resourcesPreset": "micro"
+          "resourcesPreset": "medium"
         }
       }
     },
-<<<<<<< HEAD
-    "apps": {
-        "auth": {
-            "authentik": {
-                "postgresql": {
-                    "resourcesPreset": "medium"
-                }
-            }
-        },
-        "cloud": {
-            "ocis": {
-                "logLevel": "info"
-            }
-        },
-        "dns": {
-            "authoritative": {
-                "ipAddress": "192.168.2.13"
-            }
-        },
-        "mail": {
-            "ipAddress": "192.168.2.15",
-            "postfix": {
-                "relayHost": "mail.smtp2go.com",
-                "virtualDomains": "hobolife.org scobie.org xcoolgroup.org"
-            },
-            "roundcube": {
-                "postgresql": {
-                    "resourcesPreset": "small"
-                }
-            }
-        },
-        "paperless": {
-            "paperless": {
-                "postgresql": {
-                    "resourcesPreset": "small"
-                }
-            }
-        },
-        "photos": {
-            "immich": {
-                "jobs": {
-		    "videoConversion": {
-                        "concurrency": 2
-                    }
-		},
-		"logLevel": "log",
-                "postgresql": {
-                    "resourcesPreset": "medium"
-                }
-            }
-=======
     "cloud": {
       "ocis": {
         "logLevel": "info"
@@ -83,15 +32,14 @@
       },
       "roundcube": {
         "postgresql": {
-          "resourcesPreset": "micro"
->>>>>>> d843a0d38460617275e0cb9dd94b8e2dfb0f4a96
+          "resourcesPreset": "small"
         }
       }
     },
     "paperless": {
       "paperless": {
         "postgresql": {
-          "resourcesPreset": "micro"
+          "resourcesPreset": "small"
         }
       }
     },

@@ -12,29 +12,39 @@ spec:
     spec:
       template:
         spec:
-          securityContext:
-            runAsUser: 1001
-            runAsGroup: 1001
           restartPolicy: Never
+          initContainers:
+            - name: init-config
+              image: alpine:latest
+              command: ["/bin/sh", "-c"]
+              args: ["cp /configtmp/* /config"]
+              imagePullPolicy: Always
+              volumeMounts:
+                - name: settings
+                  mountPath: /configtmp/Settings.json
+                  subPath: "Settings.json"
+                - name: accounts
+                  mountPath: /configtmp/AccountsSettings.json
+                  subPath: "AccountsSettings.json"
+                - name: config
+                  mountPath: /config
           containers:
             - name: libation
-              image: registry.lab.reisman.org/proxy.docker.io/rmcrackan/libation:11.5.5
+              image: rmcrackan/libation:11.1.0
               imagePullPolicy: IfNotPresent
               volumeMounts:
                 - name: data
                   mountPath: /data
-                - name: settings
-                  mountPath: /config/Settings.json
-                  subPath: "Settings.json"
-                - name: accounts
-                  mountPath: /config/AccountsSettings.json
-                  subPath: "AccountsSettings.json"
+                - name: config
+                  mountPath: /config
                 - name: db
                   mountPath: /db
               env:
                 - name: SLEEP_TIME
                   value: "-1"
           volumes:
+            - name: config
+              emptyDir: {}
             - name: settings
               configMap:
                 name: libation-settings

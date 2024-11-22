@@ -1,11 +1,20 @@
 {
-    "info": {
-        "cluster": {
-            "name": "production",
-            "domain": "reisman.org",
-            "email": "aaron@reisman.org"
+  "info": {
+    "cluster": {
+      "name": "production",
+      "domain": "reisman.org",
+      "email": "aaron@reisman.org"
+    }
+  },
+  "apps": {
+    "auth": {
+      "authentik": {
+        "postgresql": {
+          "resourcesPreset": "micro"
         }
+      }
     },
+<<<<<<< HEAD
     "apps": {
         "auth": {
             "authentik": {
@@ -55,23 +64,66 @@
                     "resourcesPreset": "medium"
                 }
             }
-        }
+=======
+    "cloud": {
+      "ocis": {
+        "logLevel": "info"
+      }
     },
-    "infra": {
-        "csi": {
-            "nfsSubdir": {
-                "backupStorageClass": "nfs-client-backup",
-                "reclaimPolicy": "Retain"
-            }
-        },
-        "ingress": {
-            "ipAddress": "192.168.2.12"
-        },
-        "metallb": {
-            "ipAddressPool": "192.168.2.11-192.168.2.99"
-        },
-        "certManager": {
-            "issuer": "letsencrypt-production"
+    "dns": {
+      "authoritative": {
+        "ipAddress": "192.168.2.13"
+      }
+    },
+    "mail": {
+      "ipAddress": "192.168.2.15",
+      "postfix": {
+        "relayHost": "mail.smtp2go.com",
+        "virtualDomains": "hobolife.org scobie.org xcoolgroup.org"
+      },
+      "roundcube": {
+        "postgresql": {
+          "resourcesPreset": "micro"
+>>>>>>> d843a0d38460617275e0cb9dd94b8e2dfb0f4a96
         }
+      }
+    },
+    "paperless": {
+      "paperless": {
+        "postgresql": {
+          "resourcesPreset": "micro"
+        }
+      }
+    },
+    "photos": {
+      "immich": {
+        "jobs": {
+          "videoConversion": {
+            "concurrency": 2
+          }
+        },
+        "logLevel": "log",
+        "postgresql": {
+          "resourcesPreset": "medium"
+        }
+      }
     }
+  },
+  "infra": {
+    "csi": {
+      "nfsSubdir": {
+        "backupStorageClass": "nfs-client-backup",
+        "reclaimPolicy": "Retain"
+      }
+    },
+    "ingress": {
+      "ipAddress": "192.168.2.12"
+    },
+    "metallb": {
+      "ipAddressPool": "192.168.2.11-192.168.2.99"
+    },
+    "certManager": {
+      "issuer": "letsencrypt-production"
+    }
+  }
 }

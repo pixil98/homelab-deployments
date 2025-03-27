@@ -15,7 +15,7 @@ spec:
           restartPolicy: Never
           initContainers:
             - name: init-config
-              image: alpine:latest
+              image: registry.lab.reisman.org/proxy.docker.io/alpine:latest
               command: ["/bin/sh", "-c"]
               args: ["cp /configtmp/* /config"]
               imagePullPolicy: Always
@@ -30,7 +30,7 @@ spec:
                   mountPath: /config
           containers:
             - name: libation
-              image: rmcrackan/libation:11.1.0
+              image: registry.lab.reisman.org/proxy.docker.io/rmcrackan/libation:11.1.0
               imagePullPolicy: IfNotPresent
               volumeMounts:
                 - name: data

@@ -5,7 +5,7 @@ module "k8s_cluster" {
   proxmox_password = var.proxmox_password
   proxmox_endpoint = "https://hobbes.lab.reisman.org:8006"
 
-  nodes              = ["luke", "hobbes"]
+  nodes              = ["hobbes"]
   namespace          = "prd"
   vm_disk_class      = "local-zfs"
   vm_user            = "aaron"

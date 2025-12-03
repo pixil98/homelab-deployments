@@ -6,10 +6,7 @@ module "k8s_cluster" {
   proxmox_endpoint = "https://hobbes.lab.reisman.org:8006"
 
   nodes              = ["hobbes"]
-  namespace          = "prd"
-  vm_disk_class      = "local-zfs"
-  vm_user            = "aaron"
-  vm_user_privatekey = file(var.user_privatekey)
+  namespace          = "production"
 
   kubernetes_controller_ips = [ 
     "192.168.1.21",
@@ -31,7 +28,6 @@ module "k8s_cluster" {
   kubernetes_worker_disk_size   = 50
 
   flux_enabled       = true
-  flux_github_branch = "production"
   flux_github_token  = var.github_token
   flux_values_json   = file("${path.module}/values.json")
   flux_secrets_json  = file("${path.module}/secrets.json")

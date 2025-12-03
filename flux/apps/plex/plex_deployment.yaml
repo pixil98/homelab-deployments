@@ -17,7 +17,7 @@ spec:
     spec:
       initContainers:
         - name: config-load
-          image: registry.lab.reisman.org/proxy.docker.io/debian:stable-slim
+          image: docker.io/debian:stable-slim
           imagePullPolicy: Always
           command: ["/bin/sh", "-c"]
           args:
@@ -31,7 +31,7 @@ spec:
               name: plex-config
       containers:
         - name: plex
-          image: registry.lab.reisman.org/proxy.docker.io/plexinc/pms-docker:1.41.4.9463-630c9f557
+          image: docker.io/plexinc/pms-docker:1.42.2.10156-f737b826c
           imagePullPolicy: IfNotPresent
           ports:
             - name: plex
@@ -47,7 +47,7 @@ spec:
             - mountPath: /data
               name: plex-data
         - name: config-sync
-          image: registry.lab.reisman.org/proxy.docker.io/debian:stable-slim
+          image: docker.io/debian:stable-slim
           imagePullPolicy: Always
           command: ["/bin/sh", "-c"]
           args:

@@ -7,21 +7,14 @@
     }
   },
   "apps": {
-    "auth": {
-      "authentik": {
-        "postgresql": {
-          "resourcesPreset": "medium"
-        }
-      }
-    },
-    "cloud": {
-      "ocis": {
-        "logLevel": "info"
-      }
-    },
     "dns": {
       "authoritative": {
         "ipAddress": "192.168.2.13"
+      }
+    },
+    "games": {
+      "shared": {
+        "ipAddress": "192.168.2.16"
       }
     },
     "mail": {
@@ -29,36 +22,18 @@
       "postfix": {
         "relayHost": "mail.smtp2go.com",
         "virtualDomains": "hobolife.org scobie.org xcoolgroup.org"
-      },
-      "roundcube": {
-        "postgresql": {
-          "resourcesPreset": "small"
-        }
-      }
-    },
-    "paperless": {
-      "paperless": {
-        "postgresql": {
-          "resourcesPreset": "small"
-        }
       }
     },
     "photos": {
       "immich": {
         "jobs": {},
-        "logLevel": "log",
-      	"postgresql": {
-	  "resourcesPreset": "medium"
-	}
+        "logLevel": "log"
       }
     }
   },
   "infra": {
-    "csi": {
-      "nfsSubdir": {
-        "backupStorageClass": "nfs-client-backup",
-        "reclaimPolicy": "Retain"
-      }
+    "certManager": {
+      "issuer": "letsencrypt-production"
     },
     "ingress": {
       "ipAddress": "192.168.2.12"
@@ -66,8 +41,12 @@
     "metallb": {
       "ipAddressPool": "192.168.2.11-192.168.2.99"
     },
-    "certManager": {
-      "issuer": "letsencrypt-production"
+    "storage": {
+      "truenasCsi": {
+        "iscsiPortal": "192.168.1.10:3260",
+        "nfsServer": "192.168.1.10",
+        "url": "wss://192.168.1.10/api/current"
+      }
     }
   }
 }

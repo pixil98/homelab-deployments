@@ -116,12 +116,12 @@ case "$STEP" in
   echo "Scaling down authentik..."
   kubectl scale deployment authentik-server authentik-worker authentik-outpost-ldap -n auth --replicas=0
 
-  # CNPG clusters
-  echo "Scaling down CNPG clusters..."
-  kubectl patch cluster roundcube-postgresql -n mail --type merge -p '{"spec":{"instances":0}}'
-  kubectl patch cluster paperless-postgresql -n paperless --type merge -p '{"spec":{"instances":0}}'
-  kubectl patch cluster immich-postgresql -n photos --type merge -p '{"spec":{"instances":0}}'
-  kubectl patch cluster authentik-postgresql -n auth --type merge -p '{"spec":{"instances":0}}'
+  # CNPG clusters (hibernate to stop pods while keeping PVCs)
+  echo "Hibernating CNPG clusters..."
+  kubectl annotate cluster roundcube-postgresql -n mail cnpg.io/hibernation=on --overwrite
+  kubectl annotate cluster paperless-postgresql -n paperless cnpg.io/hibernation=on --overwrite
+  kubectl annotate cluster immich-postgresql -n photos cnpg.io/hibernation=on --overwrite
+  kubectl annotate cluster authentik-postgresql -n auth cnpg.io/hibernation=on --overwrite
 
   echo "Waiting for all pods to stop..."
   wait_for_no_pods mail "app.kubernetes.io/name=dovecot"
@@ -181,11 +181,12 @@ case "$STEP" in
   echo "=== Step 3: Scaling back up ==="
 
   # CNPG clusters first (apps depend on them).
+  # Remove hibernation annotation to wake them up.
   # initdb policy detects existing PGDATA and skips initialization.
-  kubectl patch cluster roundcube-postgresql -n mail --type merge -p '{"spec":{"instances":1}}'
-  kubectl patch cluster paperless-postgresql -n paperless --type merge -p '{"spec":{"instances":1}}'
-  kubectl patch cluster immich-postgresql -n photos --type merge -p '{"spec":{"instances":1}}'
-  kubectl patch cluster authentik-postgresql -n auth --type merge -p '{"spec":{"instances":1}}'
+  kubectl annotate cluster roundcube-postgresql -n mail cnpg.io/hibernation- --overwrite
+  kubectl annotate cluster paperless-postgresql -n paperless cnpg.io/hibernation- --overwrite
+  kubectl annotate cluster immich-postgresql -n photos cnpg.io/hibernation- --overwrite
+  kubectl annotate cluster authentik-postgresql -n auth cnpg.io/hibernation- --overwrite
 
   echo "Waiting for CNPG clusters to be ready..."
   kubectl wait --for=condition=Ready cluster/roundcube-postgresql -n mail --timeout=120s

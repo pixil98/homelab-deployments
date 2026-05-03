@@ -12,8 +12,8 @@
 #   8. kubectl delete -f migration/rsync-to-iscsi.yaml
 #
 # Old nfs-subdir paths:
-#   backup:   /mnt/main/kubernetes/CLUSTER_NAME/<namespace>-<pvc>/
-#   nobackup: /mnt/main/kubernetes-nobackup/CLUSTER_NAME/<namespace>-<pvc>/
+#   backup:   /mnt/main/kubernetes-old/CLUSTER_NAME/<namespace>-<pvc>/
+#   nobackup: /mnt/main/kubernetes-nobackup-old/CLUSTER_NAME/<namespace>-<pvc>/
 
 # --- mail namespace ---
 
@@ -48,7 +48,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes/CLUSTER_NAME/mail-dovecot-mailboxes
+            path: /mnt/main/kubernetes-old/CLUSTER_NAME/mail-dovecot-mailboxes
         - name: dst
           persistentVolumeClaim:
             claimName: dovecot-mailboxes
@@ -84,7 +84,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes/CLUSTER_NAME/mail-postfix-spool
+            path: /mnt/main/kubernetes-old/CLUSTER_NAME/mail-postfix-spool
         - name: dst
           persistentVolumeClaim:
             claimName: postfix-spool
@@ -120,7 +120,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes-nobackup/CLUSTER_NAME/mail-clamav-db
+            path: /mnt/main/kubernetes-nobackup-old/CLUSTER_NAME/mail-clamav-db
         - name: dst
           persistentVolumeClaim:
             claimName: clamav-db
@@ -156,7 +156,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes-nobackup/CLUSTER_NAME/mail-rspamd-var
+            path: /mnt/main/kubernetes-nobackup-old/CLUSTER_NAME/mail-rspamd-var
         - name: dst
           persistentVolumeClaim:
             claimName: rspamd-var
@@ -195,7 +195,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes/CLUSTER_NAME/mapper-mapper-server-db
+            path: /mnt/main/kubernetes-old/CLUSTER_NAME/mapper-mapper-server-db
         - name: dst
           persistentVolumeClaim:
             claimName: mapper-server-db
@@ -234,7 +234,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes/CLUSTER_NAME/games-mud-server-characters
+            path: /mnt/main/kubernetes-old/CLUSTER_NAME/games-mud-server-characters
         - name: dst
           persistentVolumeClaim:
             claimName: mud-server-characters
@@ -273,7 +273,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes/CLUSTER_NAME/paperless-paperless-server-data
+            path: /mnt/main/kubernetes-old/CLUSTER_NAME/paperless-paperless-server-data
         - name: dst
           persistentVolumeClaim:
             claimName: paperless-server-data
@@ -312,7 +312,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes/CLUSTER_NAME/media-audiobookshelf-config-pvc
+            path: /mnt/main/kubernetes-old/CLUSTER_NAME/media-audiobookshelf-config-pvc
         - name: dst
           persistentVolumeClaim:
             claimName: audiobookshelf-config-pvc
@@ -348,7 +348,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes-nobackup/CLUSTER_NAME/media-audiobookshelf-metadata-pvc
+            path: /mnt/main/kubernetes-nobackup-old/CLUSTER_NAME/media-audiobookshelf-metadata-pvc
         - name: dst
           persistentVolumeClaim:
             claimName: audiobookshelf-metadata-pvc
@@ -399,7 +399,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/ssd/kubernetes/CLUSTER_NAME/mail-roundcube-postgresql-1
+            path: /mnt/ssd/kubernetes-old/CLUSTER_NAME/mail-roundcube-postgresql-1
         - name: dst
           persistentVolumeClaim:
             claimName: roundcube-postgresql-1
@@ -435,7 +435,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/ssd/kubernetes/CLUSTER_NAME/paperless-paperless-postgresql-1
+            path: /mnt/ssd/kubernetes-old/CLUSTER_NAME/paperless-paperless-postgresql-1
         - name: dst
           persistentVolumeClaim:
             claimName: paperless-postgresql-1
@@ -471,7 +471,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/ssd/kubernetes/CLUSTER_NAME/photos-immich-postgresql-1
+            path: /mnt/ssd/kubernetes-old/CLUSTER_NAME/photos-immich-postgresql-1
         - name: dst
           persistentVolumeClaim:
             claimName: immich-postgresql-1
@@ -507,7 +507,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/ssd/kubernetes/CLUSTER_NAME/auth-authentik-postgresql-1
+            path: /mnt/ssd/kubernetes-old/CLUSTER_NAME/auth-authentik-postgresql-1
         - name: dst
           persistentVolumeClaim:
             claimName: authentik-postgresql-1

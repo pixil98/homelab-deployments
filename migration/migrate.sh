@@ -13,11 +13,11 @@ set -euo pipefail
 #   export KUBECONFIG=~/homelab-deployments/production/kubeconfig
 #   ./migration/migrate.sh <cluster-name>
 #
-# To find your cluster name: ls /mnt/main/kubernetes/ on TrueNAS
+# To find your cluster name: ls /mnt/main/kubernetes-old/ on TrueNAS
 
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <cluster-name>"
-  echo "  cluster-name: the nfs-subdir directory name (check: ls /mnt/main/kubernetes/)"
+  echo "  cluster-name: the nfs-subdir directory name (check: ls /mnt/main/kubernetes-old/)"
   exit 1
 fi
 

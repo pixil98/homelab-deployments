@@ -4,8 +4,8 @@
 # Large volumes may take significant time.
 #
 # Old nfs-subdir paths:
-#   backup:   /mnt/main/kubernetes/CLUSTER_NAME/<namespace>-<pvc>/
-#   nobackup: /mnt/main/kubernetes-nobackup/CLUSTER_NAME/<namespace>-<pvc>/
+#   backup:   /mnt/main/kubernetes-old/CLUSTER_NAME/<namespace>-<pvc>/
+#   nobackup: /mnt/main/kubernetes-nobackup-old/CLUSTER_NAME/<namespace>-<pvc>/
 
 # --- photos namespace ---
 
@@ -40,7 +40,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes/CLUSTER_NAME/photos-immich-library
+            path: /mnt/main/kubernetes-old/CLUSTER_NAME/photos-immich-library
         - name: dst
           persistentVolumeClaim:
             claimName: immich-library
@@ -76,7 +76,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes/CLUSTER_NAME/photos-immich-upload
+            path: /mnt/main/kubernetes-old/CLUSTER_NAME/photos-immich-upload
         - name: dst
           persistentVolumeClaim:
             claimName: immich-upload
@@ -112,7 +112,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes-nobackup/CLUSTER_NAME/photos-immich-encoded-video
+            path: /mnt/main/kubernetes-nobackup-old/CLUSTER_NAME/photos-immich-encoded-video
         - name: dst
           persistentVolumeClaim:
             claimName: immich-encoded-video
@@ -148,7 +148,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes-nobackup/CLUSTER_NAME/photos-immich-profile
+            path: /mnt/main/kubernetes-nobackup-old/CLUSTER_NAME/photos-immich-profile
         - name: dst
           persistentVolumeClaim:
             claimName: immich-profile
@@ -184,7 +184,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes-nobackup/CLUSTER_NAME/photos-immich-thumbs
+            path: /mnt/main/kubernetes-nobackup-old/CLUSTER_NAME/photos-immich-thumbs
         - name: dst
           persistentVolumeClaim:
             claimName: immich-thumbs
@@ -223,7 +223,7 @@ spec:
         - name: src
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/kubernetes/CLUSTER_NAME/paperless-paperless-server-media
+            path: /mnt/main/kubernetes-old/CLUSTER_NAME/paperless-paperless-server-media
         - name: dst
           persistentVolumeClaim:
             claimName: paperless-server-media

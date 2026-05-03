@@ -353,6 +353,45 @@ spec:
           persistentVolumeClaim:
             claimName: audiobookshelf-metadata-pvc
 
+# --- plex namespace ---
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate-plex-config
+  namespace: plex
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsUser: 0
+      containers:
+        - name: rsync
+          image: docker.io/library/alpine:3.23.4
+          command:
+            - sh
+            - -c
+            - |
+              apk add --no-cache rsync
+              rsync -avP --delete --info=progress2 /src/ /dst/
+          volumeMounts:
+            - name: src
+              mountPath: /src
+              readOnly: true
+            - name: dst
+              mountPath: /dst
+      volumes:
+        - name: src
+          nfs:
+            server: 192.168.1.10
+            path: /mnt/main/kubernetes-old/CLUSTER_NAME/plex-config-pvc
+        - name: dst
+          persistentVolumeClaim:
+            claimName: config-pvc
+
 # --- CNPG PostgreSQL clusters ---
 # These were on nfs-client-ssd (base: /mnt/ssd/kubernetes/).
 # CNPG names PVCs as <cluster>-<instance>, e.g. roundcube-postgresql-1.

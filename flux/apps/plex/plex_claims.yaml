@@ -4,7 +4,7 @@ metadata:
   name: config-pvc
   namespace: plex
 spec:
-  storageClassName: nfs-client-backup
+  storageClassName: truenas-iscsi
   accessModes:
     - ReadWriteOnce
   resources:

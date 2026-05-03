@@ -112,6 +112,10 @@ case "$STEP" in
   echo "Scaling down photos..."
   kubectl scale deployment immich-server immich-machine-learning -n photos --replicas=0
 
+  # plex
+  echo "Scaling down plex..."
+  kubectl scale deployment plex -n plex --replicas=0
+
   # auth
   echo "Scaling down authentik..."
   kubectl scale deployment authentik-server authentik-worker authentik-outpost-ldap -n auth --replicas=0
@@ -133,6 +137,7 @@ case "$STEP" in
   wait_for_no_pods games "app.kubernetes.io/instance=mud"
   wait_for_no_pods paperless "app.kubernetes.io/name=paperless"
   wait_for_no_pods media "app.kubernetes.io/name=audiobookshelf-server"
+  wait_for_no_pods plex "app=plex"
   wait_for_no_pods photos "app.kubernetes.io/instance=immich"
   wait_for_no_pods auth "app.kubernetes.io/instance=authentik"
   wait_for_no_pods mail "cnpg.io/cluster=roundcube-postgresql"
@@ -162,6 +167,7 @@ case "$STEP" in
   wait_for_job paperless migrate-paperless-postgresql
   wait_for_job media migrate-audiobookshelf-config
   wait_for_job media migrate-audiobookshelf-metadata
+  wait_for_job plex migrate-plex-config
   wait_for_job photos migrate-immich-postgresql
   wait_for_job auth migrate-authentik-postgresql
 
@@ -201,6 +207,7 @@ case "$STEP" in
   kubectl scale deployment paperless-server paperless-gotenberg paperless-tika -n paperless --replicas=1
   kubectl scale deployment audiobookshelf-server -n media --replicas=1
   kubectl scale deployment immich-server immich-machine-learning -n photos --replicas=1
+  kubectl scale deployment plex -n plex --replicas=1
   kubectl scale deployment authentik-server authentik-worker authentik-outpost-ldap -n auth --replicas=1
 
   echo "All deployments scaled back up."

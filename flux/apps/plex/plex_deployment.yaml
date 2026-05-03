@@ -15,20 +15,6 @@ spec:
       labels:
         app: plex
     spec:
-      initContainers:
-        - name: config-load
-          image: docker.io/debian:stable-slim
-          imagePullPolicy: Always
-          command: ["/bin/sh", "-c"]
-          args:
-            [
-              "apt update; apt install -y rsync; rsync -av --delete /config-source/ /config",
-            ]
-          volumeMounts:
-            - mountPath: /config-source
-              name: plex-config-source
-            - mountPath: /config
-              name: plex-config
       containers:
         - name: plex
           image: docker.io/plexinc/pms-docker:1.42.2.10156-f737b826c
@@ -44,29 +30,42 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: plex-config
-            - mountPath: /data
-              name: plex-data
-        - name: config-sync
-          image: docker.io/debian:stable-slim
-          imagePullPolicy: Always
-          command: ["/bin/sh", "-c"]
-          args:
-            [
-              "apt update; apt install -y rsync; while true; do rsync -rlptv --delete /config-active/ /config-backup; sleep 60; done",
-            ]
-          volumeMounts:
-            - mountPath: /config-backup
-              name: plex-config-source
-            - mountPath: /config-active
-              name: plex-config
+            - mountPath: /data/audiobooks
+              name: audiobooks
+            - mountPath: /data/audible
+              name: audible
+            - mountPath: /data/tv
+              name: tv
+            - mountPath: /data/music
+              name: music
+            - mountPath: /data/movies
+              name: movies
       volumes:
-        - name: plex-config-source
+        - name: plex-config
           persistentVolumeClaim:
             claimName: config-pvc
-        - name: plex-config
-          emptyDir: {}
-        - name: plex-data
+        - name: audiobooks
           nfs:
             server: 192.168.1.10
-            path: /mnt/main/plex
+            path: /mnt/main/media/audiobooks
+            readOnly: true
+        - name: audible
+          nfs:
+            server: 192.168.1.10
+            path: /mnt/main/media/audible
+            readOnly: true
+        - name: tv
+          nfs:
+            server: 192.168.1.10
+            path: /mnt/main/media/tv
+            readOnly: true
+        - name: music
+          nfs:
+            server: 192.168.1.10
+            path: /mnt/main/media/music
+            readOnly: true
+        - name: movies
+          nfs:
+            server: 192.168.1.10
+            path: /mnt/main/media/movies
             readOnly: true

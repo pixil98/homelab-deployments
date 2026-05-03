@@ -8,6 +8,7 @@ set -euo pipefail
 #   - Branch merged and Flux has reconciled (truenas-csi driver + storage classes exist)
 #   - KUBECONFIG set to production cluster
 #   - Static NFS media already rsynced on TrueNAS (audible, audiobooks, ebooks)
+#   - PVCs already created by Flux reconciliation
 #
 # Usage:
 #   export KUBECONFIG=~/homelab-deployments/production/kubeconfig
@@ -16,11 +17,9 @@ set -euo pipefail
 # Steps (run in order):
 #   0  - Suspend Flux
 #   1  - Scale down all deployments and CNPG clusters
-#   2  - Delete old PVCs
-#   3  - Create new PVCs (bounce CNPG to provision iSCSI volumes)
-#   4  - Run rsync jobs
-#   5  - Scale everything back up
-#   6  - Resume Flux
+#   2  - Run rsync jobs
+#   3  - Scale everything back up
+#   4  - Resume Flux
 #
 # To find your cluster name: ls /mnt/main/kubernetes-old/ on TrueNAS
 
@@ -30,29 +29,20 @@ if [[ $# -ne 2 ]]; then
   echo "Steps:"
   echo "  0  Suspend Flux"
   echo "  1  Scale down all deployments"
-  echo "  2  Delete old PVCs"
-  echo "  3  Create new PVCs"
-  echo "  4  Run rsync jobs"
-  echo "  5  Scale everything back up"
-  echo "  6  Resume Flux"
+  echo "  2  Run rsync jobs"
+  echo "  3  Scale everything back up"
+  echo "  4  Resume Flux"
   exit 1
 fi
 
 STEP="$1"
 CLUSTER_NAME="$2"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-FLUX_REPO="${FLUX_REPO:-$HOME/src/homelab-flux-core}"
 ISCSI_JOBS="${SCRIPT_DIR}/rsync-to-iscsi.yaml"
 NFS_JOBS="${SCRIPT_DIR}/rsync-to-nfs.yaml"
 
 if [[ -z "${KUBECONFIG:-}" ]]; then
   echo "ERROR: KUBECONFIG not set"
-  exit 1
-fi
-
-if [[ ! -d "${FLUX_REPO}/30_applications" ]]; then
-  echo "ERROR: FLUX_REPO not found at ${FLUX_REPO}"
-  echo "  Set FLUX_REPO to point to your homelab-flux-core checkout"
   exit 1
 fi
 
@@ -67,22 +57,6 @@ wait_for_no_pods() {
   local label=$2
   echo "  Waiting for pods with $label in $ns to terminate..."
   kubectl wait --for=delete pod -l "$label" -n "$ns" --timeout=120s 2>/dev/null || true
-}
-
-wait_for_pvc_bound() {
-  local ns=$1
-  local pvc=$2
-  echo "  Waiting for PVC $pvc in $ns to be Bound..."
-  for i in $(seq 1 60); do
-    phase=$(kubectl get pvc "$pvc" -n "$ns" -o jsonpath='{.status.phase}' 2>/dev/null || echo "")
-    if [[ "$phase" == "Bound" ]]; then
-      echo "  PVC $pvc is Bound"
-      return 0
-    fi
-    sleep 2
-  done
-  echo "  ERROR: PVC $pvc did not become Bound within 120s"
-  return 1
 }
 
 wait_for_job() {
@@ -140,7 +114,7 @@ case "$STEP" in
 
   # auth
   echo "Scaling down authentik..."
-  kubectl scale deployment authentik-server authentik-worker authentik-ldap -n auth --replicas=0
+  kubectl scale deployment authentik-server authentik-worker authentik-outpost-ldap -n auth --replicas=0
 
   # CNPG clusters
   echo "Scaling down CNPG clusters..."
@@ -171,95 +145,7 @@ case "$STEP" in
   ;;
 
 2)
-  echo "=== Step 2: Deleting old PVCs ==="
-
-  # iSCSI-bound PVCs
-  kubectl delete pvc dovecot-mailboxes postfix-spool clamav-db rspamd-var -n mail --ignore-not-found
-  kubectl delete pvc mapper-server-db -n mapper --ignore-not-found
-  kubectl delete pvc mud-server-characters -n games --ignore-not-found
-  kubectl delete pvc paperless-server-data -n paperless --ignore-not-found
-  kubectl delete pvc audiobookshelf-config-pvc audiobookshelf-metadata-pvc -n media --ignore-not-found
-
-  # NFS-bound PVCs
-  kubectl delete pvc immich-library immich-upload immich-encoded-video immich-profile immich-thumbs -n photos --ignore-not-found
-  kubectl delete pvc paperless-server-media -n paperless --ignore-not-found
-
-  # CNPG PVCs
-  kubectl delete pvc roundcube-postgresql-1 -n mail --ignore-not-found
-  kubectl delete pvc paperless-postgresql-1 -n paperless --ignore-not-found
-  kubectl delete pvc immich-postgresql-1 -n photos --ignore-not-found
-  kubectl delete pvc authentik-postgresql-1 -n auth --ignore-not-found
-
-  echo "Old PVCs deleted."
-  echo "Done. Next: $0 3 $CLUSTER_NAME"
-  ;;
-
-3)
-  echo "=== Step 3: Creating new PVCs ==="
-
-  # iSCSI PVCs
-  kubectl apply -f "${FLUX_REPO}/30_applications/mail/dovecot_pvc.yaml"
-  kubectl apply -f "${FLUX_REPO}/30_applications/mail/postfix_pvc.yaml"
-  kubectl apply -f "${FLUX_REPO}/30_applications/mail/clamav_pvc.yaml"
-  kubectl apply -f "${FLUX_REPO}/30_applications/mail/rspamd_pvc.yaml"
-  kubectl apply -f "${FLUX_REPO}/30_applications/mapper/mapper_server_pvc.yaml"
-  kubectl apply -f "${FLUX_REPO}/30_applications/games/mud_server_pvc.yaml"
-  kubectl apply -f "${FLUX_REPO}/30_applications/paperless/paperless_server_pvc.yaml"
-  kubectl apply -f "${FLUX_REPO}/30_applications/media/audiobookshelf_pvc.yaml"
-
-  # NFS PVCs
-  kubectl apply -f "${FLUX_REPO}/30_applications/photos/immich_pvc.yaml"
-  kubectl apply -f "${FLUX_REPO}/30_applications/photos/immich_nfs_pvc.yaml"
-  kubectl apply -f "${FLUX_REPO}/30_applications/paperless/paperless_nfs_pvc.yaml"
-
-  # CNPG: bounce clusters to trigger PVC creation with new storage class.
-  echo "Scaling CNPG clusters to 1 to trigger PVC creation..."
-  kubectl patch cluster roundcube-postgresql -n mail --type merge -p '{"spec":{"instances":1}}'
-  kubectl patch cluster paperless-postgresql -n paperless --type merge -p '{"spec":{"instances":1}}'
-  kubectl patch cluster immich-postgresql -n photos --type merge -p '{"spec":{"instances":1}}'
-  kubectl patch cluster authentik-postgresql -n auth --type merge -p '{"spec":{"instances":1}}'
-
-  echo "Waiting for new PVCs to be Bound..."
-  # iSCSI
-  wait_for_pvc_bound mail dovecot-mailboxes
-  wait_for_pvc_bound mail postfix-spool
-  wait_for_pvc_bound mail clamav-db
-  wait_for_pvc_bound mail rspamd-var
-  wait_for_pvc_bound mapper mapper-server-db
-  wait_for_pvc_bound games mud-server-characters
-  wait_for_pvc_bound paperless paperless-server-data
-  wait_for_pvc_bound media audiobookshelf-config-pvc
-  wait_for_pvc_bound media audiobookshelf-metadata-pvc
-  # NFS
-  wait_for_pvc_bound photos immich-library
-  wait_for_pvc_bound photos immich-upload
-  wait_for_pvc_bound photos immich-encoded-video
-  wait_for_pvc_bound photos immich-profile
-  wait_for_pvc_bound photos immich-thumbs
-  wait_for_pvc_bound paperless paperless-server-media
-  # CNPG
-  wait_for_pvc_bound mail roundcube-postgresql-1
-  wait_for_pvc_bound paperless paperless-postgresql-1
-  wait_for_pvc_bound photos immich-postgresql-1
-  wait_for_pvc_bound auth authentik-postgresql-1
-
-  # Scale CNPG back down so rsync jobs can mount the iSCSI volumes (RWO)
-  echo "Scaling CNPG clusters back to 0 for rsync..."
-  kubectl patch cluster roundcube-postgresql -n mail --type merge -p '{"spec":{"instances":0}}'
-  kubectl patch cluster paperless-postgresql -n paperless --type merge -p '{"spec":{"instances":0}}'
-  kubectl patch cluster immich-postgresql -n photos --type merge -p '{"spec":{"instances":0}}'
-  kubectl patch cluster authentik-postgresql -n auth --type merge -p '{"spec":{"instances":0}}'
-  wait_for_no_pods mail "cnpg.io/cluster=roundcube-postgresql"
-  wait_for_no_pods paperless "cnpg.io/cluster=paperless-postgresql"
-  wait_for_no_pods photos "cnpg.io/cluster=immich-postgresql"
-  wait_for_no_pods auth "cnpg.io/cluster=authentik-postgresql"
-
-  echo "All PVCs created and Bound. CNPG scaled back to 0."
-  echo "Done. Next: $0 4 $CLUSTER_NAME"
-  ;;
-
-4)
-  echo "=== Step 4: Running rsync jobs ==="
+  echo "=== Step 2: Running rsync jobs ==="
   sed "s/CLUSTER_NAME/${CLUSTER_NAME}/g" "$ISCSI_JOBS" | kubectl apply -f -
   sed "s/CLUSTER_NAME/${CLUSTER_NAME}/g" "$NFS_JOBS" | kubectl apply -f -
 
@@ -288,11 +174,11 @@ case "$STEP" in
   wait_for_job paperless migrate-paperless-server-media 3600
 
   echo "All rsync jobs completed."
-  echo "Done. Next: $0 5 $CLUSTER_NAME"
+  echo "Done. Next: $0 3 $CLUSTER_NAME"
   ;;
 
-5)
-  echo "=== Step 5: Scaling back up ==="
+3)
+  echo "=== Step 3: Scaling back up ==="
 
   # CNPG clusters first (apps depend on them).
   # initdb policy detects existing PGDATA and skips initialization.
@@ -314,14 +200,14 @@ case "$STEP" in
   kubectl scale deployment paperless-server paperless-gotenberg paperless-tika -n paperless --replicas=1
   kubectl scale deployment audiobookshelf-server -n media --replicas=1
   kubectl scale deployment immich-server immich-machine-learning -n photos --replicas=1
-  kubectl scale deployment authentik-server authentik-worker authentik-ldap -n auth --replicas=1
+  kubectl scale deployment authentik-server authentik-worker authentik-outpost-ldap -n auth --replicas=1
 
   echo "All deployments scaled back up."
-  echo "Done. Next: $0 6 $CLUSTER_NAME"
+  echo "Done. Next: $0 4 $CLUSTER_NAME"
   ;;
 
-6)
-  echo "=== Step 6: Resuming Flux ==="
+4)
+  echo "=== Step 4: Resuming Flux ==="
   flux resume kustomization --all
   echo "Flux resumed."
 
@@ -340,7 +226,7 @@ case "$STEP" in
   ;;
 
 *)
-  echo "ERROR: Unknown step '$STEP'. Valid steps: 0, 1, 2, 3, 4, 5, 6"
+  echo "ERROR: Unknown step '$STEP'. Valid steps: 0, 1, 2, 3, 4"
   exit 1
   ;;
 

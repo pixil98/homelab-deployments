@@ -46,6 +46,10 @@
         "iscsiPortal": "192.168.1.10:3260",
         "nfsServer": "192.168.1.10",
         "url": "wss://192.168.1.10/api/current"
+      },
+      "volsync": {
+        "paused": false,
+        "repository": "s3:http://192.168.1.10:30157/backup"
       }
     }
   }

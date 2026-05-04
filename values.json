@@ -32,6 +32,12 @@
                 "reclaimPolicy": "Delete"
             }
         },
+        "storage": {
+            "backup": {
+                "paused": true,
+                "repository": "s3:http://192.168.1.10:30157/backup"
+            }
+        },
         "ingress": {
             "ipAddress": "192.168.2.112"
         },

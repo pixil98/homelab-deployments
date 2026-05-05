@@ -111,7 +111,7 @@
       "ReadWriteOnce"
     ],
     "capacity": {
-      "storage": "2Gi"
+      "storage": "5Gi"
     },
     "claimRef": {
       "apiVersion": "v1",
@@ -311,7 +311,7 @@
       "ReadWriteOnce"
     ],
     "capacity": {
-      "storage": "2Gi"
+      "storage": "5Gi"
     },
     "claimRef": {
       "apiVersion": "v1",
@@ -708,7 +708,7 @@
       "ReadWriteOnce"
     ],
     "capacity": {
-      "storage": "1Gi"
+      "storage": "5Gi"
     },
     "claimRef": {
       "apiVersion": "v1",
@@ -808,7 +808,7 @@
       "ReadWriteOnce"
     ],
     "capacity": {
-      "storage": "1Gi"
+      "storage": "5Gi"
     },
     "claimRef": {
       "apiVersion": "v1",

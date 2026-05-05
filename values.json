@@ -26,12 +26,6 @@
         }
     },
     "infra": {
-        "csi": {
-            "nfsSubdir": {
-                "backupStorageClass": "nfs-client-nobackup",
-                "reclaimPolicy": "Delete"
-            }
-        },
         "storage": {
             "backup": {
                 "paused": true,

@@ -35,7 +35,8 @@
         "storage": {
             "backup": {
                 "paused": true,
-                "repository": "s3:http://192.168.1.10:30157/backup"
+                "s3Endpoint": "http://192.168.1.10:30157",
+                "s3Bucket": "kubernetes-backup"
             }
         },
         "ingress": {

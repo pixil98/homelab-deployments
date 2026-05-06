@@ -220,49 +220,6 @@ metadata:
   labels:
     kustomize.toolkit.fluxcd.io/name: flux-system
     kustomize.toolkit.fluxcd.io/namespace: flux-system
-  name: pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed
-spec:
-  accessModes:
-  - ReadWriteOnce
-  capacity:
-    storage: 8Gi
-  claimRef:
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    name: vmstorage-volume-victoria-metrics-cluster-vmstorage-0
-    namespace: monitoring
-  csi:
-    driver: csi.truenas.io
-    fsType: ext4
-    volumeAttributes:
-      compression: LZ4
-      csi.storage.k8s.io/pv/name: pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed
-      csi.storage.k8s.io/pvc/name: vmstorage-volume-victoria-metrics-cluster-vmstorage-0
-      csi.storage.k8s.io/pvc/namespace: monitoring
-      datasetPath: kubernetes/production
-      iscsi.blocksize: '4096'
-      lun: '0'
-      pool: ssd
-      protocol: iscsi
-      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
-      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed
-      targetPortal: 192.168.1.10:3260
-      volblocksize: 16K
-    volumeHandle: ssd/kubernetes/production/pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: truenas-iscsi
-  volumeMode: Filesystem
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  annotations:
-    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
-    volume.kubernetes.io/provisioner-deletion-secret-name: ''
-    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
-  labels:
-    kustomize.toolkit.fluxcd.io/name: flux-system
-    kustomize.toolkit.fluxcd.io/namespace: flux-system
   name: pvc-4b2e7075-eccf-42b2-858f-8617e1686069
 spec:
   accessModes:
@@ -925,49 +882,6 @@ spec:
       targetPortal: 192.168.1.10:3260
       volblocksize: 16K
     volumeHandle: ssd/kubernetes/production/pvc-dbb7070c-8264-42be-8610-beb78611a45a
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: truenas-iscsi
-  volumeMode: Filesystem
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  annotations:
-    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
-    volume.kubernetes.io/provisioner-deletion-secret-name: ''
-    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
-  labels:
-    kustomize.toolkit.fluxcd.io/name: flux-system
-    kustomize.toolkit.fluxcd.io/namespace: flux-system
-  name: pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b
-spec:
-  accessModes:
-  - ReadWriteOnce
-  capacity:
-    storage: 8Gi
-  claimRef:
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    name: vmstorage-volume-victoria-metrics-cluster-vmstorage-1
-    namespace: monitoring
-  csi:
-    driver: csi.truenas.io
-    fsType: ext4
-    volumeAttributes:
-      compression: LZ4
-      csi.storage.k8s.io/pv/name: pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b
-      csi.storage.k8s.io/pvc/name: vmstorage-volume-victoria-metrics-cluster-vmstorage-1
-      csi.storage.k8s.io/pvc/namespace: monitoring
-      datasetPath: kubernetes/production
-      iscsi.blocksize: '4096'
-      lun: '0'
-      pool: ssd
-      protocol: iscsi
-      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
-      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b
-      targetPortal: 192.168.1.10:3260
-      volblocksize: 16K
-    volumeHandle: ssd/kubernetes/production/pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b
   persistentVolumeReclaimPolicy: Retain
   storageClassName: truenas-iscsi
   volumeMode: Filesystem

@@ -19,8 +19,6 @@ spec:
     kind: PersistentVolumeClaim
     name: immich-thumbs
     namespace: photos
-    resourceVersion: '21986'
-    uid: 2ab81fea-dd63-42cb-8ac4-6603169645d0
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -61,8 +59,6 @@ spec:
     kind: PersistentVolumeClaim
     name: vlstorage-volume-victoria-logs-cluster-vlstorage-0
     namespace: monitoring
-    resourceVersion: '6867'
-    uid: 33d3a4b9-bf19-4c55-b701-9ae1e03b1b9a
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -106,8 +102,6 @@ spec:
     kind: PersistentVolumeClaim
     name: immich-postgresql-1
     namespace: photos
-    resourceVersion: '22565'
-    uid: a1e45ad4-afe7-4cf9-b425-1c84523f0f1f
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -151,8 +145,6 @@ spec:
     kind: PersistentVolumeClaim
     name: dovecot-mailboxes
     namespace: mail
-    resourceVersion: '21860'
-    uid: fdf2b9b0-c3f2-4cae-96f6-58a90c920295
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -196,8 +188,6 @@ spec:
     kind: PersistentVolumeClaim
     name: clamav-db
     namespace: mail
-    resourceVersion: '21859'
-    uid: b89a418c-babb-4e69-8ce8-2f08da15e539
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -284,8 +274,6 @@ spec:
     kind: PersistentVolumeClaim
     name: authentik-postgresql-1
     namespace: auth
-    resourceVersion: '6084'
-    uid: 374f2755-59a5-4432-9142-79337dc6fb2d
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -329,8 +317,6 @@ spec:
     kind: PersistentVolumeClaim
     name: mapper-server-db
     namespace: mapper
-    resourceVersion: '21886'
-    uid: e795f280-e927-4323-8d0a-b2c493e1b7d0
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -374,8 +360,6 @@ spec:
     kind: PersistentVolumeClaim
     name: postfix-spool
     namespace: mail
-    resourceVersion: '21868'
-    uid: 019f42e0-3e92-4b58-8d63-9f7ff412d2ef
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -419,8 +403,6 @@ spec:
     kind: PersistentVolumeClaim
     name: paperless-server-media
     namespace: paperless
-    resourceVersion: '21961'
-    uid: 994ff18f-98ad-4b6e-894b-25ccd4ac9795
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -461,8 +443,6 @@ spec:
     kind: PersistentVolumeClaim
     name: rspamd-var
     namespace: mail
-    resourceVersion: '21874'
-    uid: 749688fd-93f3-41b5-8f56-c9ca15dba00c
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -506,8 +486,6 @@ spec:
     kind: PersistentVolumeClaim
     name: paperless-server-data
     namespace: paperless
-    resourceVersion: '21951'
-    uid: f814fb42-47d9-4f70-83c6-e126be7ef0ec
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -551,8 +529,6 @@ spec:
     kind: PersistentVolumeClaim
     name: audiobookshelf-metadata-pvc
     namespace: media
-    resourceVersion: '21921'
-    uid: 61b92ff3-b5bf-4714-9486-b4ca72399abe
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -596,8 +572,6 @@ spec:
     kind: PersistentVolumeClaim
     name: mud-server-characters
     namespace: games
-    resourceVersion: '21851'
-    uid: 940ff0b2-82de-4232-b163-a1a66df93e3e
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -641,8 +615,6 @@ spec:
     kind: PersistentVolumeClaim
     name: paperless-postgresql-1
     namespace: paperless
-    resourceVersion: '22577'
-    uid: 2ab9829d-583b-4327-92c8-baaff0a52ea2
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -686,8 +658,6 @@ spec:
     kind: PersistentVolumeClaim
     name: vlstorage-volume-victoria-logs-cluster-vlstorage-1
     namespace: monitoring
-    resourceVersion: '7433'
-    uid: e5d79416-4f13-4ac9-b301-00d73a640cf2
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -731,8 +701,6 @@ spec:
     kind: PersistentVolumeClaim
     name: roundcube-postgresql-1
     namespace: mail
-    resourceVersion: '22544'
-    uid: 11347420-20d0-431b-9bdd-b1840a704f35
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -776,8 +744,6 @@ spec:
     kind: PersistentVolumeClaim
     name: immich-library
     namespace: photos
-    resourceVersion: '21972'
-    uid: 5c881b17-e808-435f-9199-1f1cee5323ac
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -818,8 +784,6 @@ spec:
     kind: PersistentVolumeClaim
     name: audiobookshelf-config-pvc
     namespace: media
-    resourceVersion: '21914'
-    uid: a44c3db5-49c1-477e-95a8-e0fb81888dbb
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -863,8 +827,6 @@ spec:
     kind: PersistentVolumeClaim
     name: immich-profile
     namespace: photos
-    resourceVersion: '21979'
-    uid: 55838c3f-8bb1-4109-ac5d-1c4f1a5bdd96
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -905,8 +867,6 @@ spec:
     kind: PersistentVolumeClaim
     name: immich-upload
     namespace: photos
-    resourceVersion: '21989'
-    uid: 19e2082c-ee14-4b12-9047-3dcf282c4f65
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -947,8 +907,6 @@ spec:
     kind: PersistentVolumeClaim
     name: config-pvc
     namespace: plex
-    resourceVersion: '1434'
-    uid: 50e69d31-b455-49ca-aafd-8f35cdcc96d3
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -992,8 +950,6 @@ spec:
     kind: PersistentVolumeClaim
     name: vmstorage-volume-victoria-metrics-cluster-vmstorage-1
     namespace: monitoring
-    resourceVersion: '21086'
-    uid: c05e60cc-f6a8-4f89-af48-5a45c82926ab
   csi:
     driver: csi.truenas.io
     fsType: ext4
@@ -1037,8 +993,6 @@ spec:
     kind: PersistentVolumeClaim
     name: immich-encoded-video
     namespace: photos
-    resourceVersion: '21969'
-    uid: f85b4dff-f448-41c2-9d47-987020623558
   csi:
     driver: csi.truenas.io
     fsType: ext4

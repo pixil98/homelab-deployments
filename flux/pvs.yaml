@@ -1,1181 +1,1102 @@
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-076262b9-b235-4bfd-96f0-e09d13fd5259"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteMany"
-    ],
-    "capacity": {
-      "storage": "200Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "immich-thumbs",
-      "namespace": "photos"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-076262b9-b235-4bfd-96f0-e09d13fd5259",
-        "csi.storage.k8s.io/pvc/name": "immich-thumbs",
-        "csi.storage.k8s.io/pvc/namespace": "photos",
-        "datasetPath": "kubernetes/production",
-        "nfsPath": "/mnt/main/kubernetes/production/pvc-076262b9-b235-4bfd-96f0-e09d13fd5259",
-        "nfsServer": "192.168.1.10",
-        "pool": "main",
-        "protocol": "nfs",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io"
-      },
-      "volumeHandle": "main/kubernetes/production/pvc-076262b9-b235-4bfd-96f0-e09d13fd5259"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-nfs",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-076262b9-b235-4bfd-96f0-e09d13fd5259
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 200Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: immich-thumbs
+    namespace: photos
+    resourceVersion: '21986'
+    uid: 2ab81fea-dd63-42cb-8ac4-6603169645d0
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-076262b9-b235-4bfd-96f0-e09d13fd5259
+      csi.storage.k8s.io/pvc/name: immich-thumbs
+      csi.storage.k8s.io/pvc/namespace: photos
+      datasetPath: kubernetes/production
+      nfsPath: /mnt/main/kubernetes/production/pvc-076262b9-b235-4bfd-96f0-e09d13fd5259
+      nfsServer: 192.168.1.10
+      pool: main
+      protocol: nfs
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+    volumeHandle: main/kubernetes/production/pvc-076262b9-b235-4bfd-96f0-e09d13fd5259
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-nfs
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-0c1749ee-9b7a-4686-bb5c-b4f23991f880"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "10Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "vlstorage-volume-victoria-logs-cluster-vlstorage-0",
-      "namespace": "monitoring"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-0c1749ee-9b7a-4686-bb5c-b4f23991f880",
-        "csi.storage.k8s.io/pvc/name": "vlstorage-volume-victoria-logs-cluster-vlstorage-0",
-        "csi.storage.k8s.io/pvc/namespace": "monitoring",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-0c1749ee-9b7a-4686-bb5c-b4f23991f880",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-0c1749ee-9b7a-4686-bb5c-b4f23991f880"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-0c1749ee-9b7a-4686-bb5c-b4f23991f880
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: vlstorage-volume-victoria-logs-cluster-vlstorage-0
+    namespace: monitoring
+    resourceVersion: '6867'
+    uid: 33d3a4b9-bf19-4c55-b701-9ae1e03b1b9a
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-0c1749ee-9b7a-4686-bb5c-b4f23991f880
+      csi.storage.k8s.io/pvc/name: vlstorage-volume-victoria-logs-cluster-vlstorage-0
+      csi.storage.k8s.io/pvc/namespace: monitoring
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-0c1749ee-9b7a-4686-bb5c-b4f23991f880
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-0c1749ee-9b7a-4686-bb5c-b4f23991f880
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-0e142878-f599-4e0f-bcbe-c405b6a0ef4c"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "5Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "immich-postgresql-1",
-      "namespace": "photos"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-0e142878-f599-4e0f-bcbe-c405b6a0ef4c",
-        "csi.storage.k8s.io/pvc/name": "immich-postgresql-1",
-        "csi.storage.k8s.io/pvc/namespace": "photos",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-0e142878-f599-4e0f-bcbe-c405b6a0ef4c",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-0e142878-f599-4e0f-bcbe-c405b6a0ef4c"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-0e142878-f599-4e0f-bcbe-c405b6a0ef4c
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 15Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: immich-postgresql-1
+    namespace: photos
+    resourceVersion: '22565'
+    uid: a1e45ad4-afe7-4cf9-b425-1c84523f0f1f
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-0e142878-f599-4e0f-bcbe-c405b6a0ef4c
+      csi.storage.k8s.io/pvc/name: immich-postgresql-1
+      csi.storage.k8s.io/pvc/namespace: photos
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-0e142878-f599-4e0f-bcbe-c405b6a0ef4c
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-0e142878-f599-4e0f-bcbe-c405b6a0ef4c
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-0e837ae0-0c25-402c-a8a1-bdeaa94fdff3"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "50Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "dovecot-mailboxes",
-      "namespace": "mail"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-0e837ae0-0c25-402c-a8a1-bdeaa94fdff3",
-        "csi.storage.k8s.io/pvc/name": "dovecot-mailboxes",
-        "csi.storage.k8s.io/pvc/namespace": "mail",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-0e837ae0-0c25-402c-a8a1-bdeaa94fdff3",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-0e837ae0-0c25-402c-a8a1-bdeaa94fdff3"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-0e837ae0-0c25-402c-a8a1-bdeaa94fdff3
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 50Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: dovecot-mailboxes
+    namespace: mail
+    resourceVersion: '21860'
+    uid: fdf2b9b0-c3f2-4cae-96f6-58a90c920295
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-0e837ae0-0c25-402c-a8a1-bdeaa94fdff3
+      csi.storage.k8s.io/pvc/name: dovecot-mailboxes
+      csi.storage.k8s.io/pvc/namespace: mail
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-0e837ae0-0c25-402c-a8a1-bdeaa94fdff3
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-0e837ae0-0c25-402c-a8a1-bdeaa94fdff3
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-1278aa11-61f7-42ef-8139-9dde8c16942f"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "1Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "clamav-db",
-      "namespace": "mail"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-1278aa11-61f7-42ef-8139-9dde8c16942f",
-        "csi.storage.k8s.io/pvc/name": "clamav-db",
-        "csi.storage.k8s.io/pvc/namespace": "mail",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-1278aa11-61f7-42ef-8139-9dde8c16942f",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-1278aa11-61f7-42ef-8139-9dde8c16942f"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-1278aa11-61f7-42ef-8139-9dde8c16942f
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: clamav-db
+    namespace: mail
+    resourceVersion: '21859'
+    uid: b89a418c-babb-4e69-8ce8-2f08da15e539
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-1278aa11-61f7-42ef-8139-9dde8c16942f
+      csi.storage.k8s.io/pvc/name: clamav-db
+      csi.storage.k8s.io/pvc/namespace: mail
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-1278aa11-61f7-42ef-8139-9dde8c16942f
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-1278aa11-61f7-42ef-8139-9dde8c16942f
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "8Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "vmstorage-volume-victoria-metrics-cluster-vmstorage-0",
-      "namespace": "monitoring"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed",
-        "csi.storage.k8s.io/pvc/name": "vmstorage-volume-victoria-metrics-cluster-vmstorage-0",
-        "csi.storage.k8s.io/pvc/namespace": "monitoring",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 8Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: vmstorage-volume-victoria-metrics-cluster-vmstorage-0
+    namespace: monitoring
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed
+      csi.storage.k8s.io/pvc/name: vmstorage-volume-victoria-metrics-cluster-vmstorage-0
+      csi.storage.k8s.io/pvc/namespace: monitoring
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-176e0782-b5ff-4cbc-87d7-970b26d7daed
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-4b2e7075-eccf-42b2-858f-8617e1686069"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "5Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "authentik-postgresql-1",
-      "namespace": "auth"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-4b2e7075-eccf-42b2-858f-8617e1686069",
-        "csi.storage.k8s.io/pvc/name": "authentik-postgresql-1",
-        "csi.storage.k8s.io/pvc/namespace": "auth",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-4b2e7075-eccf-42b2-858f-8617e1686069",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-4b2e7075-eccf-42b2-858f-8617e1686069"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-4b2e7075-eccf-42b2-858f-8617e1686069
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 15Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: authentik-postgresql-1
+    namespace: auth
+    resourceVersion: '6084'
+    uid: 374f2755-59a5-4432-9142-79337dc6fb2d
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-4b2e7075-eccf-42b2-858f-8617e1686069
+      csi.storage.k8s.io/pvc/name: authentik-postgresql-1
+      csi.storage.k8s.io/pvc/namespace: auth
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-4b2e7075-eccf-42b2-858f-8617e1686069
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-4b2e7075-eccf-42b2-858f-8617e1686069
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-55f1c69f-bf04-4599-bf80-69ffb7ea6a2f"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "1Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "mapper-server-db",
-      "namespace": "mapper"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-55f1c69f-bf04-4599-bf80-69ffb7ea6a2f",
-        "csi.storage.k8s.io/pvc/name": "mapper-server-db",
-        "csi.storage.k8s.io/pvc/namespace": "mapper",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-55f1c69f-bf04-4599-bf80-69ffb7ea6a2f",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-55f1c69f-bf04-4599-bf80-69ffb7ea6a2f"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-55f1c69f-bf04-4599-bf80-69ffb7ea6a2f
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: mapper-server-db
+    namespace: mapper
+    resourceVersion: '21886'
+    uid: e795f280-e927-4323-8d0a-b2c493e1b7d0
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-55f1c69f-bf04-4599-bf80-69ffb7ea6a2f
+      csi.storage.k8s.io/pvc/name: mapper-server-db
+      csi.storage.k8s.io/pvc/namespace: mapper
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-55f1c69f-bf04-4599-bf80-69ffb7ea6a2f
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-55f1c69f-bf04-4599-bf80-69ffb7ea6a2f
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-640133a7-9796-4139-b547-290169362c39"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "1Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "postfix-spool",
-      "namespace": "mail"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-640133a7-9796-4139-b547-290169362c39",
-        "csi.storage.k8s.io/pvc/name": "postfix-spool",
-        "csi.storage.k8s.io/pvc/namespace": "mail",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-640133a7-9796-4139-b547-290169362c39",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-640133a7-9796-4139-b547-290169362c39"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-640133a7-9796-4139-b547-290169362c39
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: postfix-spool
+    namespace: mail
+    resourceVersion: '21868'
+    uid: 019f42e0-3e92-4b58-8d63-9f7ff412d2ef
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-640133a7-9796-4139-b547-290169362c39
+      csi.storage.k8s.io/pvc/name: postfix-spool
+      csi.storage.k8s.io/pvc/namespace: mail
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-640133a7-9796-4139-b547-290169362c39
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-640133a7-9796-4139-b547-290169362c39
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-766a5c3a-a758-4b1a-aebc-ca4409325dc2"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteMany"
-    ],
-    "capacity": {
-      "storage": "1Ti"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "paperless-server-media",
-      "namespace": "paperless"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-766a5c3a-a758-4b1a-aebc-ca4409325dc2",
-        "csi.storage.k8s.io/pvc/name": "paperless-server-media",
-        "csi.storage.k8s.io/pvc/namespace": "paperless",
-        "datasetPath": "kubernetes/production",
-        "nfsPath": "/mnt/main/kubernetes/production/pvc-766a5c3a-a758-4b1a-aebc-ca4409325dc2",
-        "nfsServer": "192.168.1.10",
-        "pool": "main",
-        "protocol": "nfs",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io"
-      },
-      "volumeHandle": "main/kubernetes/production/pvc-766a5c3a-a758-4b1a-aebc-ca4409325dc2"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-nfs",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-766a5c3a-a758-4b1a-aebc-ca4409325dc2
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1Ti
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: paperless-server-media
+    namespace: paperless
+    resourceVersion: '21961'
+    uid: 994ff18f-98ad-4b6e-894b-25ccd4ac9795
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-766a5c3a-a758-4b1a-aebc-ca4409325dc2
+      csi.storage.k8s.io/pvc/name: paperless-server-media
+      csi.storage.k8s.io/pvc/namespace: paperless
+      datasetPath: kubernetes/production
+      nfsPath: /mnt/main/kubernetes/production/pvc-766a5c3a-a758-4b1a-aebc-ca4409325dc2
+      nfsServer: 192.168.1.10
+      pool: main
+      protocol: nfs
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+    volumeHandle: main/kubernetes/production/pvc-766a5c3a-a758-4b1a-aebc-ca4409325dc2
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-nfs
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-91e9df23-f130-4c78-83e2-65bd3f1c3d4b"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "1Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "rspamd-var",
-      "namespace": "mail"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-91e9df23-f130-4c78-83e2-65bd3f1c3d4b",
-        "csi.storage.k8s.io/pvc/name": "rspamd-var",
-        "csi.storage.k8s.io/pvc/namespace": "mail",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-91e9df23-f130-4c78-83e2-65bd3f1c3d4b",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-91e9df23-f130-4c78-83e2-65bd3f1c3d4b"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: csi.truenas.io
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  name: pvc-8e2ba470-2427-4439-825b-ac792c0811a3
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 8Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: vmstorage-volume-victoria-metrics-cluster-vmstorage-0
+    namespace: monitoring
+    resourceVersion: '20794'
+    uid: 8e2ba470-2427-4439-825b-ac792c0811a3
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-8e2ba470-2427-4439-825b-ac792c0811a3
+      csi.storage.k8s.io/pvc/name: vmstorage-volume-victoria-metrics-cluster-vmstorage-0
+      csi.storage.k8s.io/pvc/namespace: monitoring
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1778001452532-4062-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-8e2ba470-2427-4439-825b-ac792c0811a3
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-8e2ba470-2427-4439-825b-ac792c0811a3
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-93b47557-0ce9-41a3-b8f5-2ca07f42bf90"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "1Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "paperless-server-data",
-      "namespace": "paperless"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-93b47557-0ce9-41a3-b8f5-2ca07f42bf90",
-        "csi.storage.k8s.io/pvc/name": "paperless-server-data",
-        "csi.storage.k8s.io/pvc/namespace": "paperless",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-93b47557-0ce9-41a3-b8f5-2ca07f42bf90",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-93b47557-0ce9-41a3-b8f5-2ca07f42bf90"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-91e9df23-f130-4c78-83e2-65bd3f1c3d4b
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: rspamd-var
+    namespace: mail
+    resourceVersion: '21874'
+    uid: 749688fd-93f3-41b5-8f56-c9ca15dba00c
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-91e9df23-f130-4c78-83e2-65bd3f1c3d4b
+      csi.storage.k8s.io/pvc/name: rspamd-var
+      csi.storage.k8s.io/pvc/namespace: mail
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-91e9df23-f130-4c78-83e2-65bd3f1c3d4b
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-91e9df23-f130-4c78-83e2-65bd3f1c3d4b
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-9f78a5f7-0dea-4054-91c3-e7879ba9ef71"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "1Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "audiobookshelf-metadata-pvc",
-      "namespace": "media"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-9f78a5f7-0dea-4054-91c3-e7879ba9ef71",
-        "csi.storage.k8s.io/pvc/name": "audiobookshelf-metadata-pvc",
-        "csi.storage.k8s.io/pvc/namespace": "media",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-9f78a5f7-0dea-4054-91c3-e7879ba9ef71",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-9f78a5f7-0dea-4054-91c3-e7879ba9ef71"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-93b47557-0ce9-41a3-b8f5-2ca07f42bf90
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: paperless-server-data
+    namespace: paperless
+    resourceVersion: '21951'
+    uid: f814fb42-47d9-4f70-83c6-e126be7ef0ec
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-93b47557-0ce9-41a3-b8f5-2ca07f42bf90
+      csi.storage.k8s.io/pvc/name: paperless-server-data
+      csi.storage.k8s.io/pvc/namespace: paperless
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-93b47557-0ce9-41a3-b8f5-2ca07f42bf90
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-93b47557-0ce9-41a3-b8f5-2ca07f42bf90
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-a3a24a33-69b1-4a9b-90d1-2070a977ecf1"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "1Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "mud-server-characters",
-      "namespace": "games"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-a3a24a33-69b1-4a9b-90d1-2070a977ecf1",
-        "csi.storage.k8s.io/pvc/name": "mud-server-characters",
-        "csi.storage.k8s.io/pvc/namespace": "games",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-a3a24a33-69b1-4a9b-90d1-2070a977ecf1",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-a3a24a33-69b1-4a9b-90d1-2070a977ecf1"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-9f78a5f7-0dea-4054-91c3-e7879ba9ef71
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: audiobookshelf-metadata-pvc
+    namespace: media
+    resourceVersion: '21921'
+    uid: 61b92ff3-b5bf-4714-9486-b4ca72399abe
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-9f78a5f7-0dea-4054-91c3-e7879ba9ef71
+      csi.storage.k8s.io/pvc/name: audiobookshelf-metadata-pvc
+      csi.storage.k8s.io/pvc/namespace: media
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-9f78a5f7-0dea-4054-91c3-e7879ba9ef71
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-9f78a5f7-0dea-4054-91c3-e7879ba9ef71
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-adcfb338-0cf9-4c84-8e3f-1ff542e002bd"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "5Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "paperless-postgresql-1",
-      "namespace": "paperless"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-adcfb338-0cf9-4c84-8e3f-1ff542e002bd",
-        "csi.storage.k8s.io/pvc/name": "paperless-postgresql-1",
-        "csi.storage.k8s.io/pvc/namespace": "paperless",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-adcfb338-0cf9-4c84-8e3f-1ff542e002bd",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-adcfb338-0cf9-4c84-8e3f-1ff542e002bd"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-a3a24a33-69b1-4a9b-90d1-2070a977ecf1
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: mud-server-characters
+    namespace: games
+    resourceVersion: '21851'
+    uid: 940ff0b2-82de-4232-b163-a1a66df93e3e
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-a3a24a33-69b1-4a9b-90d1-2070a977ecf1
+      csi.storage.k8s.io/pvc/name: mud-server-characters
+      csi.storage.k8s.io/pvc/namespace: games
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-a3a24a33-69b1-4a9b-90d1-2070a977ecf1
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-a3a24a33-69b1-4a9b-90d1-2070a977ecf1
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-b57a1ae7-32de-4fd8-9b0f-ec2af7f5991c"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "10Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "vlstorage-volume-victoria-logs-cluster-vlstorage-1",
-      "namespace": "monitoring"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-b57a1ae7-32de-4fd8-9b0f-ec2af7f5991c",
-        "csi.storage.k8s.io/pvc/name": "vlstorage-volume-victoria-logs-cluster-vlstorage-1",
-        "csi.storage.k8s.io/pvc/namespace": "monitoring",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-b57a1ae7-32de-4fd8-9b0f-ec2af7f5991c",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-b57a1ae7-32de-4fd8-9b0f-ec2af7f5991c"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-adcfb338-0cf9-4c84-8e3f-1ff542e002bd
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 15Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: paperless-postgresql-1
+    namespace: paperless
+    resourceVersion: '22577'
+    uid: 2ab9829d-583b-4327-92c8-baaff0a52ea2
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-adcfb338-0cf9-4c84-8e3f-1ff542e002bd
+      csi.storage.k8s.io/pvc/name: paperless-postgresql-1
+      csi.storage.k8s.io/pvc/namespace: paperless
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-adcfb338-0cf9-4c84-8e3f-1ff542e002bd
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-adcfb338-0cf9-4c84-8e3f-1ff542e002bd
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-b6f700c1-dccc-4037-a95b-f47c71d84b0d"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "5Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "roundcube-postgresql-1",
-      "namespace": "mail"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-b6f700c1-dccc-4037-a95b-f47c71d84b0d",
-        "csi.storage.k8s.io/pvc/name": "roundcube-postgresql-1",
-        "csi.storage.k8s.io/pvc/namespace": "mail",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-b6f700c1-dccc-4037-a95b-f47c71d84b0d",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-b6f700c1-dccc-4037-a95b-f47c71d84b0d"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-b57a1ae7-32de-4fd8-9b0f-ec2af7f5991c
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: vlstorage-volume-victoria-logs-cluster-vlstorage-1
+    namespace: monitoring
+    resourceVersion: '7433'
+    uid: e5d79416-4f13-4ac9-b301-00d73a640cf2
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-b57a1ae7-32de-4fd8-9b0f-ec2af7f5991c
+      csi.storage.k8s.io/pvc/name: vlstorage-volume-victoria-logs-cluster-vlstorage-1
+      csi.storage.k8s.io/pvc/namespace: monitoring
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-b57a1ae7-32de-4fd8-9b0f-ec2af7f5991c
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-b57a1ae7-32de-4fd8-9b0f-ec2af7f5991c
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-b978918e-9270-4400-aa7b-40a7393d1d80"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteMany"
-    ],
-    "capacity": {
-      "storage": "1Ti"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "immich-library",
-      "namespace": "photos"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-b978918e-9270-4400-aa7b-40a7393d1d80",
-        "csi.storage.k8s.io/pvc/name": "immich-library",
-        "csi.storage.k8s.io/pvc/namespace": "photos",
-        "datasetPath": "kubernetes/production",
-        "nfsPath": "/mnt/main/kubernetes/production/pvc-b978918e-9270-4400-aa7b-40a7393d1d80",
-        "nfsServer": "192.168.1.10",
-        "pool": "main",
-        "protocol": "nfs",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io"
-      },
-      "volumeHandle": "main/kubernetes/production/pvc-b978918e-9270-4400-aa7b-40a7393d1d80"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-nfs",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-b6f700c1-dccc-4037-a95b-f47c71d84b0d
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 15Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: roundcube-postgresql-1
+    namespace: mail
+    resourceVersion: '22544'
+    uid: 11347420-20d0-431b-9bdd-b1840a704f35
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-b6f700c1-dccc-4037-a95b-f47c71d84b0d
+      csi.storage.k8s.io/pvc/name: roundcube-postgresql-1
+      csi.storage.k8s.io/pvc/namespace: mail
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-b6f700c1-dccc-4037-a95b-f47c71d84b0d
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-b6f700c1-dccc-4037-a95b-f47c71d84b0d
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-c627b83d-5319-4c9b-b3fe-2ee0c94a0fd3"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "1Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "audiobookshelf-config-pvc",
-      "namespace": "media"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-c627b83d-5319-4c9b-b3fe-2ee0c94a0fd3",
-        "csi.storage.k8s.io/pvc/name": "audiobookshelf-config-pvc",
-        "csi.storage.k8s.io/pvc/namespace": "media",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-c627b83d-5319-4c9b-b3fe-2ee0c94a0fd3",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-c627b83d-5319-4c9b-b3fe-2ee0c94a0fd3"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-b978918e-9270-4400-aa7b-40a7393d1d80
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1Ti
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: immich-library
+    namespace: photos
+    resourceVersion: '21972'
+    uid: 5c881b17-e808-435f-9199-1f1cee5323ac
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-b978918e-9270-4400-aa7b-40a7393d1d80
+      csi.storage.k8s.io/pvc/name: immich-library
+      csi.storage.k8s.io/pvc/namespace: photos
+      datasetPath: kubernetes/production
+      nfsPath: /mnt/main/kubernetes/production/pvc-b978918e-9270-4400-aa7b-40a7393d1d80
+      nfsServer: 192.168.1.10
+      pool: main
+      protocol: nfs
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+    volumeHandle: main/kubernetes/production/pvc-b978918e-9270-4400-aa7b-40a7393d1d80
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-nfs
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-c8719d05-7393-48e2-ae8b-ed4d89d130dd"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteMany"
-    ],
-    "capacity": {
-      "storage": "200Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "immich-profile",
-      "namespace": "photos"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-c8719d05-7393-48e2-ae8b-ed4d89d130dd",
-        "csi.storage.k8s.io/pvc/name": "immich-profile",
-        "csi.storage.k8s.io/pvc/namespace": "photos",
-        "datasetPath": "kubernetes/production",
-        "nfsPath": "/mnt/main/kubernetes/production/pvc-c8719d05-7393-48e2-ae8b-ed4d89d130dd",
-        "nfsServer": "192.168.1.10",
-        "pool": "main",
-        "protocol": "nfs",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io"
-      },
-      "volumeHandle": "main/kubernetes/production/pvc-c8719d05-7393-48e2-ae8b-ed4d89d130dd"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-nfs",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-c627b83d-5319-4c9b-b3fe-2ee0c94a0fd3
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: audiobookshelf-config-pvc
+    namespace: media
+    resourceVersion: '21914'
+    uid: a44c3db5-49c1-477e-95a8-e0fb81888dbb
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-c627b83d-5319-4c9b-b3fe-2ee0c94a0fd3
+      csi.storage.k8s.io/pvc/name: audiobookshelf-config-pvc
+      csi.storage.k8s.io/pvc/namespace: media
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-c627b83d-5319-4c9b-b3fe-2ee0c94a0fd3
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-c627b83d-5319-4c9b-b3fe-2ee0c94a0fd3
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-d681be7f-6383-40d4-913e-a8d3705ac962"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteMany"
-    ],
-    "capacity": {
-      "storage": "5Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "immich-upload",
-      "namespace": "photos"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-d681be7f-6383-40d4-913e-a8d3705ac962",
-        "csi.storage.k8s.io/pvc/name": "immich-upload",
-        "csi.storage.k8s.io/pvc/namespace": "photos",
-        "datasetPath": "kubernetes/production",
-        "nfsPath": "/mnt/main/kubernetes/production/pvc-d681be7f-6383-40d4-913e-a8d3705ac962",
-        "nfsServer": "192.168.1.10",
-        "pool": "main",
-        "protocol": "nfs",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io"
-      },
-      "volumeHandle": "main/kubernetes/production/pvc-d681be7f-6383-40d4-913e-a8d3705ac962"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-nfs",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-c8719d05-7393-48e2-ae8b-ed4d89d130dd
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 200Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: immich-profile
+    namespace: photos
+    resourceVersion: '21979'
+    uid: 55838c3f-8bb1-4109-ac5d-1c4f1a5bdd96
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-c8719d05-7393-48e2-ae8b-ed4d89d130dd
+      csi.storage.k8s.io/pvc/name: immich-profile
+      csi.storage.k8s.io/pvc/namespace: photos
+      datasetPath: kubernetes/production
+      nfsPath: /mnt/main/kubernetes/production/pvc-c8719d05-7393-48e2-ae8b-ed4d89d130dd
+      nfsServer: 192.168.1.10
+      pool: main
+      protocol: nfs
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+    volumeHandle: main/kubernetes/production/pvc-c8719d05-7393-48e2-ae8b-ed4d89d130dd
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-nfs
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-dbb7070c-8264-42be-8610-beb78611a45a"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "25Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "config-pvc",
-      "namespace": "plex"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-dbb7070c-8264-42be-8610-beb78611a45a",
-        "csi.storage.k8s.io/pvc/name": "config-pvc",
-        "csi.storage.k8s.io/pvc/namespace": "plex",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-dbb7070c-8264-42be-8610-beb78611a45a",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-dbb7070c-8264-42be-8610-beb78611a45a"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-d681be7f-6383-40d4-913e-a8d3705ac962
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 5Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: immich-upload
+    namespace: photos
+    resourceVersion: '21989'
+    uid: 19e2082c-ee14-4b12-9047-3dcf282c4f65
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-d681be7f-6383-40d4-913e-a8d3705ac962
+      csi.storage.k8s.io/pvc/name: immich-upload
+      csi.storage.k8s.io/pvc/namespace: photos
+      datasetPath: kubernetes/production
+      nfsPath: /mnt/main/kubernetes/production/pvc-d681be7f-6383-40d4-913e-a8d3705ac962
+      nfsServer: 192.168.1.10
+      pool: main
+      protocol: nfs
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+    volumeHandle: main/kubernetes/production/pvc-d681be7f-6383-40d4-913e-a8d3705ac962
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-nfs
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteOnce"
-    ],
-    "capacity": {
-      "storage": "8Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "vmstorage-volume-victoria-metrics-cluster-vmstorage-1",
-      "namespace": "monitoring"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b",
-        "csi.storage.k8s.io/pvc/name": "vmstorage-volume-victoria-metrics-cluster-vmstorage-1",
-        "csi.storage.k8s.io/pvc/namespace": "monitoring",
-        "datasetPath": "kubernetes/production",
-        "iscsi.blocksize": "4096",
-        "lun": "0",
-        "pool": "ssd",
-        "protocol": "iscsi",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io",
-        "targetIQN": "iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b",
-        "targetPortal": "192.168.1.10:3260",
-        "volblocksize": "16K"
-      },
-      "volumeHandle": "ssd/kubernetes/production/pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-iscsi",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-dbb7070c-8264-42be-8610-beb78611a45a
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 25Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: config-pvc
+    namespace: plex
+    resourceVersion: '1434'
+    uid: 50e69d31-b455-49ca-aafd-8f35cdcc96d3
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-dbb7070c-8264-42be-8610-beb78611a45a
+      csi.storage.k8s.io/pvc/name: config-pvc
+      csi.storage.k8s.io/pvc/namespace: plex
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-dbb7070c-8264-42be-8610-beb78611a45a
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-dbb7070c-8264-42be-8610-beb78611a45a
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
 ---
-{
-  "apiVersion": "v1",
-  "kind": "PersistentVolume",
-  "metadata": {
-    "annotations": {
-      "volume.kubernetes.io/provisioner-deletion-secret-name": "",
-      "volume.kubernetes.io/provisioner-deletion-secret-namespace": "",
-      "kustomize.toolkit.fluxcd.io/ssa": "IfNotPresent"
-    },
-    "name": "pvc-f66c14ad-2728-4fe4-b82b-ad3981ecc781"
-  },
-  "spec": {
-    "accessModes": [
-      "ReadWriteMany"
-    ],
-    "capacity": {
-      "storage": "200Gi"
-    },
-    "claimRef": {
-      "apiVersion": "v1",
-      "kind": "PersistentVolumeClaim",
-      "name": "immich-encoded-video",
-      "namespace": "photos"
-    },
-    "csi": {
-      "driver": "csi.truenas.io",
-      "fsType": "ext4",
-      "volumeAttributes": {
-        "compression": "LZ4",
-        "csi.storage.k8s.io/pv/name": "pvc-f66c14ad-2728-4fe4-b82b-ad3981ecc781",
-        "csi.storage.k8s.io/pvc/name": "immich-encoded-video",
-        "csi.storage.k8s.io/pvc/namespace": "photos",
-        "datasetPath": "kubernetes/production",
-        "nfsPath": "/mnt/main/kubernetes/production/pvc-f66c14ad-2728-4fe4-b82b-ad3981ecc781",
-        "nfsServer": "192.168.1.10",
-        "pool": "main",
-        "protocol": "nfs",
-        "storage.kubernetes.io/csiProvisionerIdentity": "1777843594092-9045-csi.truenas.io"
-      },
-      "volumeHandle": "main/kubernetes/production/pvc-f66c14ad-2728-4fe4-b82b-ad3981ecc781"
-    },
-    "persistentVolumeReclaimPolicy": "Retain",
-    "storageClassName": "truenas-nfs",
-    "volumeMode": "Filesystem"
-  }
-}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 8Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: vmstorage-volume-victoria-metrics-cluster-vmstorage-1
+    namespace: monitoring
+    resourceVersion: '21086'
+    uid: c05e60cc-f6a8-4f89-af48-5a45c82926ab
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b
+      csi.storage.k8s.io/pvc/name: vmstorage-volume-victoria-metrics-cluster-vmstorage-1
+      csi.storage.k8s.io/pvc/namespace: monitoring
+      datasetPath: kubernetes/production
+      iscsi.blocksize: '4096'
+      lun: '0'
+      pool: ssd
+      protocol: iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+      targetIQN: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b
+      targetPortal: 192.168.1.10:3260
+      volblocksize: 16K
+    volumeHandle: ssd/kubernetes/production/pvc-efc1fe4c-3edb-46e1-82c7-9016f8ea8a9b
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: pvc-f66c14ad-2728-4fe4-b82b-ad3981ecc781
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 200Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: immich-encoded-video
+    namespace: photos
+    resourceVersion: '21969'
+    uid: f85b4dff-f448-41c2-9d47-987020623558
+  csi:
+    driver: csi.truenas.io
+    fsType: ext4
+    volumeAttributes:
+      compression: LZ4
+      csi.storage.k8s.io/pv/name: pvc-f66c14ad-2728-4fe4-b82b-ad3981ecc781
+      csi.storage.k8s.io/pvc/name: immich-encoded-video
+      csi.storage.k8s.io/pvc/namespace: photos
+      datasetPath: kubernetes/production
+      nfsPath: /mnt/main/kubernetes/production/pvc-f66c14ad-2728-4fe4-b82b-ad3981ecc781
+      nfsServer: 192.168.1.10
+      pool: main
+      protocol: nfs
+      storage.kubernetes.io/csiProvisionerIdentity: 1777843594092-9045-csi.truenas.io
+    volumeHandle: main/kubernetes/production/pvc-f66c14ad-2728-4fe4-b82b-ad3981ecc781
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-nfs
+  volumeMode: Filesystem
+

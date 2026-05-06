@@ -44,8 +44,7 @@
     "storage": {
       "backup": {
         "paused": false,
-        "s3Endpoint": "http://192.168.1.10:30157",
-        "s3Bucket": "kubernetes-backup"
+        "s3Endpoint": "http://192.168.1.10:30157"
       },
       "truenasCsi": {
         "iscsiPortal": "192.168.1.10:3260",

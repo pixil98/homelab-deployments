@@ -44,7 +44,7 @@
         "host": "192.168.1.10",
         "iscsiPortal": "192.168.1.10:3260",
         "iscsiPortalGroupId": 1,
-        "iscsiInitiatorGroupId": 1,
+        "iscsiInitiatorGroupId": 4,
         "nfsServer": "192.168.1.10"
       }
     }

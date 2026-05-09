@@ -46,10 +46,12 @@
         "paused": false,
         "s3Endpoint": "http://192.168.1.10:30157"
       },
-      "truenasCsi": {
+      "truenas": {
+        "host": "192.168.1.10",
         "iscsiPortal": "192.168.1.10:3260",
-        "nfsServer": "192.168.1.10",
-        "url": "wss://192.168.1.10/api/current"
+        "iscsiPortalGroupId": 1,
+        "iscsiInitiatorGroupId": 4,
+        "nfsServer": "192.168.1.10"
       }
     }
   }

@@ -494,6 +494,41 @@ metadata:
     pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
     volume.kubernetes.io/provisioner-deletion-secret-name: ''
     volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  name: pvc-a7298c2b-3223-4c91-8156-4a156343d30c
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 8Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: vmstorage-volume-victoria-metrics-cluster-vmstorage-1
+    namespace: monitoring
+  csi:
+    driver: org.democratic-csi.iscsi
+    fsType: ext4
+    volumeAttributes:
+      interface: ''
+      iqn: iqn.2005-10.org.freenas.ctl:csi-pvc-a7298c2b-3223-4c91-8156-4a156343d30c
+      lun: '0'
+      node_attach_driver: iscsi
+      portal: 192.168.1.10:3260
+      portals: ''
+      provisioner_driver: freenas-api-iscsi
+    volumeHandle: pvc-a7298c2b-3223-4c91-8156-4a156343d30c
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
   labels:
     kustomize.toolkit.fluxcd.io/name: flux-system
     kustomize.toolkit.fluxcd.io/namespace: flux-system
@@ -777,6 +812,41 @@ spec:
       portals: ''
       provisioner_driver: freenas-api-iscsi
     volumeHandle: pvc-dbb7070c-8264-42be-8610-beb78611a45a
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  name: pvc-e27c9385-8a47-4135-9e34-f2feef2adff8
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 8Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: vmstorage-volume-victoria-metrics-cluster-vmstorage-0
+    namespace: monitoring
+  csi:
+    driver: org.democratic-csi.iscsi
+    fsType: ext4
+    volumeAttributes:
+      interface: ''
+      iqn: iqn.2005-10.org.freenas.ctl:csi-pvc-e27c9385-8a47-4135-9e34-f2feef2adff8
+      lun: '0'
+      node_attach_driver: iscsi
+      portal: 192.168.1.10:3260
+      portals: ''
+      provisioner_driver: freenas-api-iscsi
+    volumeHandle: pvc-e27c9385-8a47-4135-9e34-f2feef2adff8
   persistentVolumeReclaimPolicy: Retain
   storageClassName: truenas-iscsi
   volumeMode: Filesystem

@@ -39,3 +39,4 @@ secrets.json
 
 # Ignore kubeconfig
 kubeconfig
+__pycache__/

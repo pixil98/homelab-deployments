@@ -1,7 +1,7 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyProxy
 metadata:
-  name: infrastructure-routing
+  name: routing
   namespace: envoy-gateway-system
 spec:
   mergeGateways: true
@@ -14,11 +14,11 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
-  name: infrastructure-routing
+  name: routing
 spec:
   controllerName: gateway.envoyproxy.io/gatewayclass-controller
   parametersRef:
     group: gateway.envoyproxy.io
     kind: EnvoyProxy
-    name: infrastructure-routing
+    name: routing
     namespace: envoy-gateway-system

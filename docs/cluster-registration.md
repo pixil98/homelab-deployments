@@ -12,14 +12,15 @@ For a cluster named `<cluster>`, create:
   route directory.
 - `routes/<cluster>/kustomization.yaml`: the directory's Kustomize resource
   list.
-- `routes/<cluster>/routing.yaml`: the cluster's namespace and routing
-  resources.
+- `routes/<cluster>/routing.yaml`: the cluster's routing resources.
 
 The Flux object must depend on `infrastructure-envoy-config` and
-`flux-core-routing-cert-manager-config`. It must use the shared `flux-values`
-ConfigMap and `flux-secrets` Secret for post-build substitution, matching the
-rest of the cluster. Every Gateway can then request the shared stable address
-with `${vals_infra_envoyGateway_loadBalancerIP}`.
+`flux-core-routing-cert-manager-config`. The former creates the shared
+`routing` namespace before any registration is applied. The Flux object must
+use the shared `flux-values` ConfigMap and `flux-secrets`
+Secret for post-build substitution, matching the rest of the cluster. Every
+Gateway can then request the shared stable address with
+`${vals_infra_envoyGateway_loadBalancerIP}`.
 
 Deleting a cluster registration must delete both its route directory and Flux
 manifest. Flux pruning will then remove the resources previously applied for
@@ -27,19 +28,20 @@ that cluster.
 
 ## Resource contract
 
-For each base domain, the route directory creates:
+For each base domain, the route directory creates the following resources in
+the shared `routing` namespace. Resource names must be unique to the destination
+cluster.
 
-1. A dedicated namespace.
-2. A cert-manager `Certificate` containing `<domain>` and `*.<domain>`, issued
+1. A cert-manager `Certificate` containing `<domain>` and `*.<domain>`, issued
    by `letsencrypt-production-cloudflare`.
-3. A `Gateway` using `infrastructure-routing`, with separate apex and wildcard
+2. A `Gateway` using `routing`, with separate apex and wildcard
    HTTP and HTTPS listeners. Its address is
    `${vals_infra_envoyGateway_loadBalancerIP}`.
-4. An Envoy Gateway `Backend` containing an IP or FQDN endpoint reachable from
+3. An Envoy Gateway `Backend` containing an IP or FQDN endpoint reachable from
    the infrastructure cluster. It must not resolve back to this Envoy gateway.
-5. An HTTP `HTTPRoute` that redirects both hostnames to HTTPS.
-6. An HTTPS `HTTPRoute` that forwards both hostnames to the external Backend.
-7. For a TLS backend, a `BackendTLSPolicy` containing the backend SNI and trust
+4. An HTTP `HTTPRoute` that redirects both hostnames to HTTPS.
+5. An HTTPS `HTTPRoute` that forwards both hostnames to the external Backend.
+6. For a TLS backend, a `BackendTLSPolicy` containing the backend SNI and trust
    configuration.
 
 Envoy preserves the incoming `Host` header unless a route explicitly rewrites
@@ -95,16 +97,11 @@ resources:
 An HTTPS backend registration in `routes/cluster-a/routing.yaml` looks like:
 
 ```yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: routing-cluster-a
----
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: a
-  namespace: routing-cluster-a
+  namespace: routing
 spec:
   dnsNames:
     - a.example
@@ -121,12 +118,12 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: a
-  namespace: routing-cluster-a
+  namespace: routing
 spec:
   addresses:
     - type: IPAddress
       value: ${vals_infra_envoyGateway_loadBalancerIP}
-  gatewayClassName: infrastructure-routing
+  gatewayClassName: routing
   listeners:
     - hostname: a.example
       name: http-apex
@@ -161,7 +158,7 @@ apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: Backend
 metadata:
   name: a
-  namespace: routing-cluster-a
+  namespace: routing
 spec:
   endpoints:
     - fqdn:
@@ -172,7 +169,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: a-http-redirect
-  namespace: routing-cluster-a
+  namespace: routing
 spec:
   hostnames:
     - a.example
@@ -193,7 +190,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: a-https
-  namespace: routing-cluster-a
+  namespace: routing
 spec:
   hostnames:
     - a.example
@@ -213,7 +210,7 @@ apiVersion: gateway.networking.k8s.io/v1alpha3
 kind: BackendTLSPolicy
 metadata:
   name: a
-  namespace: routing-cluster-a
+  namespace: routing
 spec:
   targetRefs:
     - group: gateway.envoyproxy.io

@@ -1,13 +1,8 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: routing-production
----
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: production
-  namespace: routing-production
+  namespace: routing
 spec:
   dnsNames:
     - reisman.org
@@ -24,12 +19,12 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: production
-  namespace: routing-production
+  namespace: routing
 spec:
   addresses:
     - type: IPAddress
       value: "${vals_infra_envoyGateway_loadBalancerIP}"
-  gatewayClassName: infrastructure-routing
+  gatewayClassName: routing
   listeners:
     - hostname: reisman.org
       name: http-apex
@@ -64,7 +59,7 @@ apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: Backend
 metadata:
   name: production
-  namespace: routing-production
+  namespace: routing
 spec:
   endpoints:
     - ip:
@@ -75,7 +70,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: production-http-redirect
-  namespace: routing-production
+  namespace: routing
 spec:
   hostnames:
     - reisman.org
@@ -96,7 +91,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: production-https
-  namespace: routing-production
+  namespace: routing
 spec:
   hostnames:
     - reisman.org
@@ -116,7 +111,7 @@ apiVersion: gateway.networking.k8s.io/v1alpha3
 kind: BackendTLSPolicy
 metadata:
   name: production
-  namespace: routing-production
+  namespace: routing
 spec:
   targetRefs:
     - group: gateway.envoyproxy.io

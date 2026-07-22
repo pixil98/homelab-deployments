@@ -23,7 +23,7 @@ reconciles only the shared routing prerequisites.
 ## Envoy Gateway
 
 This repository installs Envoy Gateway and owns the
-`infrastructure-routing` `GatewayClass`. Gateways using that class are merged
+`routing` `GatewayClass`. Gateways using that class are merged
 onto one Envoy data-plane deployment and one MetalLB `LoadBalancer` service.
 The service uses `192.168.2.10`; the infrastructure MetalLB pool is
 `192.168.2.2-192.168.2.10`.

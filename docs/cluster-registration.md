@@ -19,7 +19,8 @@ The Flux object must depend on `infrastructure-envoy-config` and
 `routing` namespace before any registration is applied. The Flux object must
 use the shared `flux-values` ConfigMap and `flux-secrets`
 Secret for post-build substitution, matching the rest of the cluster. Every
-Gateway can then request the shared stable address with
+cluster registration then contributes only its listeners, routes, and backend
+configuration. The shared Envoy service requests the stable address with
 `${vals_infra_envoyGateway_loadBalancerIP}`.
 
 Deleting a cluster registration must delete both its route directory and Flux
@@ -34,9 +35,8 @@ cluster.
 
 1. A cert-manager `Certificate` containing `<domain>` and `*.<domain>`, issued
    by `letsencrypt-production-cloudflare`.
-2. A `Gateway` using `routing`, with separate apex and wildcard
-   HTTP and HTTPS listeners. Its address is
-   `${vals_infra_envoyGateway_loadBalancerIP}`.
+2. A `Gateway` using `routing`, with separate apex and wildcard HTTP and HTTPS
+   listeners. The shared Envoy service owns the stable load-balancer address.
 3. An Envoy Gateway `Backend` containing an IP or FQDN endpoint reachable from
    the infrastructure cluster. It must not resolve back to this Envoy gateway.
 4. An HTTP `HTTPRoute` that redirects both hostnames to HTTPS.
@@ -120,9 +120,6 @@ metadata:
   name: a
   namespace: routing
 spec:
-  addresses:
-    - type: IPAddress
-      value: ${vals_infra_envoyGateway_loadBalancerIP}
   gatewayClassName: routing
   listeners:
     - hostname: a.example
@@ -216,7 +213,6 @@ spec:
     - group: gateway.envoyproxy.io
       kind: Backend
       name: a
-      sectionName: "443"
   validation:
     hostname: a.example
     wellKnownCACertificates: System

@@ -9,6 +9,8 @@ spec:
     kubernetes:
       envoyDeployment:
         replicas: 2
+      envoyService:
+        loadBalancerIP: "${vals_infra_envoyGateway_loadBalancerIP}"
     type: Kubernetes
 ---
 apiVersion: gateway.networking.k8s.io/v1

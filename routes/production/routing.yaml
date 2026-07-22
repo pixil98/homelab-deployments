@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: routing-production
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: production
+  namespace: routing-production
+spec:
+  dnsNames:
+    - reisman.org
+    - "*.reisman.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt-production-cloudflare
+  privateKey:
+    rotationPolicy: Always
+  secretName: production-tls
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: production
+  namespace: routing-production
+spec:
+  addresses:
+    - type: IPAddress
+      value: "${vals_infra_envoyGateway_loadBalancerIP}"
+  gatewayClassName: infrastructure-routing
+  listeners:
+    - hostname: reisman.org
+      name: http-apex
+      port: 80
+      protocol: HTTP
+    - hostname: "*.reisman.org"
+      name: http-wildcard
+      port: 80
+      protocol: HTTP
+    - hostname: reisman.org
+      name: https-apex
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: production-tls
+        mode: Terminate
+    - hostname: "*.reisman.org"
+      name: https-wildcard
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: production-tls
+        mode: Terminate
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: production
+  namespace: routing-production
+spec:
+  endpoints:
+    - ip:
+        address: 192.168.2.12
+        port: 443
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: production-http-redirect
+  namespace: routing-production
+spec:
+  hostnames:
+    - reisman.org
+    - "*.reisman.org"
+  parentRefs:
+    - name: production
+      sectionName: http-apex
+    - name: production
+      sectionName: http-wildcard
+  rules:
+    - filters:
+        - requestRedirect:
+            scheme: https
+            statusCode: 301
+          type: RequestRedirect
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: production-https
+  namespace: routing-production
+spec:
+  hostnames:
+    - reisman.org
+    - "*.reisman.org"
+  parentRefs:
+    - name: production
+      sectionName: https-apex
+    - name: production
+      sectionName: https-wildcard
+  rules:
+    - backendRefs:
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: production
+---
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: production
+  namespace: routing-production
+spec:
+  targetRefs:
+    - group: gateway.envoyproxy.io
+      kind: Backend
+      name: production
+      sectionName: "443"
+  validation:
+    hostname: reisman.org
+    wellKnownCACertificates: System

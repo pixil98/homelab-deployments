@@ -2,8 +2,8 @@
 
 This branch bootstraps the infrastructure Kubernetes cluster with Flux. It
 selects the focused `./profiles/routing` profile from the shared
-`homelab-flux-core` repository rather than maintaining another copy of shared
-cluster infrastructure.
+`homelab-flux-core` repository and adds the Envoy Gateway resources that are
+specific to this cluster.
 
 ## Shared infrastructure profile
 
@@ -18,8 +18,35 @@ The shared routing profile installs:
 The profile points to the same manifests used by the standard core stack. The
 standard profile lives at `./profiles/standard`; the compatibility
 `./bootstrap` path continues to select it for existing clusters. This cluster
-reconciles only the shared routing prerequisites. A routing proxy is
-intentionally not installed by this change.
+reconciles only the shared routing prerequisites.
+
+## Envoy Gateway
+
+This repository installs Envoy Gateway and owns the
+`infrastructure-routing` `GatewayClass`. Gateways using that class are merged
+onto one Envoy data-plane deployment and one MetalLB `LoadBalancer` service.
+The service uses `192.168.2.10`; the infrastructure MetalLB pool is
+`192.168.2.2-192.168.2.10`.
+
+Envoy terminates client TLS and can establish a separately validated TLS
+connection to a destination cluster. The external `Backend` API is enabled so
+routes can target an IP address or FQDN outside this Kubernetes cluster.
+
+## Cluster registrations
+
+Registrations are checked into this repository rather than applied directly to
+the infrastructure cluster. Each destination cluster owns:
+
+- `routes/<cluster>/`, containing its namespace, certificate, Gateway,
+  Backend, routes, and backend TLS policy.
+- `flux/registrations/<cluster>.yaml`, containing the Flux `Kustomization`
+  that reconciles that route directory after Envoy Gateway and the shared
+  certificate issuers are ready.
+
+This avoids a shared registration index, so independently deployed clusters do
+not need to edit the same file. See
+[the cluster registration contract](docs/cluster-registration.md) for the
+required resources and an artificial example.
 
 ## Flux inputs
 
@@ -42,5 +69,6 @@ Set the MetalLB address pool in the same file; it is published as
 `vals_infra_metallb_ipAddressPool`.
 
 Controller versions and shared infrastructure resources are maintained in
-`homelab-flux-core`. This repository owns only the cluster's selection of the
-routing profile and its Flux inputs.
+`homelab-flux-core`. Envoy Gateway and cluster registration resources are
+maintained here so they can evolve independently and can be migrated to another
+Gateway API implementation later.

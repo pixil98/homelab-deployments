@@ -1,0 +1,24 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: infrastructure-routing
+  namespace: envoy-gateway-system
+spec:
+  mergeGateways: true
+  provider:
+    kubernetes:
+      envoyDeployment:
+        replicas: 2
+    type: Kubernetes
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: infrastructure-routing
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+  parametersRef:
+    group: gateway.envoyproxy.io
+    kind: EnvoyProxy
+    name: infrastructure-routing
+    namespace: envoy-gateway-system

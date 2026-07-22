@@ -1,1 +1,13 @@
-{}
+{
+  "info": {
+    "cluster": {
+      "name": "infrastructure",
+      "email": "aaron@reisman.org"
+    }
+  },
+  "infra": {
+    "metallb": {
+      "ipAddressPool": "192.168.2.200-192.168.2.219"
+    }
+  }
+}

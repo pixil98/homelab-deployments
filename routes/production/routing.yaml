@@ -114,6 +114,7 @@ spec:
     - group: gateway.envoyproxy.io
       kind: Backend
       name: production
+      sectionName: "443"
   validation:
     hostname: reisman.org
     wellKnownCACertificates: System

@@ -5,17 +5,17 @@ module "k8s_cluster" {
   proxmox_password = var.proxmox_password
   proxmox_endpoint = "https://hobbes.lab.reisman.org:8006"
 
-  nodes              = ["hobbes"]
-  namespace          = "production"
+  nodes     = ["hobbes"]
+  namespace = "production"
 
-  kubernetes_controller_ips = [ 
+  kubernetes_controller_ips = [
     "192.168.1.21",
     "192.168.1.22",
     "192.168.1.23"
   ]
 
   kubernetes_worker_ips = [
-    "192.168.1.30", 
+    "192.168.1.30",
     "192.168.1.31",
     "192.168.1.32",
     "192.168.1.33",
@@ -27,9 +27,11 @@ module "k8s_cluster" {
   kubernetes_worker_memory      = 32768
   kubernetes_worker_disk_size   = 50
 
-  flux_enabled       = true
-  flux_github_token  = var.github_token
-  flux_values_json   = file("${path.module}/values.json")
-  flux_secrets_json  = file("${path.module}/secrets.json")
-  flux_core_branch   = "main"
+  flux_enabled      = true
+  flux_github_token = var.github_token
+  flux_values_json  = file("${path.module}/values.json")
+  flux_secrets_json = file("${path.module}/secrets.json")
+  flux_core_branch  = "main"
+
+  infrastructure_gateway_registration_enabled = true
 }

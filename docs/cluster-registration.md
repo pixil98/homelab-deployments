@@ -213,6 +213,7 @@ spec:
     - group: gateway.envoyproxy.io
       kind: Backend
       name: a
+      sectionName: "443"
   validation:
     hostname: a.example
     wellKnownCACertificates: System

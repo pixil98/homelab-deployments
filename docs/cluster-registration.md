@@ -202,6 +202,7 @@ spec:
         - group: gateway.envoyproxy.io
           kind: Backend
           name: a
+          port: 443
 ---
 apiVersion: gateway.networking.k8s.io/v1alpha3
 kind: BackendTLSPolicy

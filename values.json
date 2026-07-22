@@ -3,7 +3,8 @@
     "cluster": {
       "name": "production",
       "domain": "reisman.org",
-      "email": "aaron@reisman.org"
+      "email": "aaron@reisman.org",
+      "publicHost": "madison.reisman.org"
     }
   },
   "apps": {
@@ -21,6 +22,7 @@
       "ipAddress": "192.168.2.15",
       "postfix": {
         "relayHost": "mail.smtp2go.com",
+        "relayPort": "2525",
         "virtualDomains": "hobolife.org scobie.org xcoolgroup.org"
       }
     },
@@ -33,7 +35,7 @@
   },
   "infra": {
     "certManager": {
-      "issuer": "letsencrypt-production"
+      "issuer": "letsencrypt-production-cloudflare"
     },
     "ingress": {
       "ipAddress": "192.168.2.12"

@@ -5,8 +5,8 @@ metadata:
   namespace: routing
 spec:
   dnsNames:
-    - onioncartography.org
-    - "*.onioncartography.org"
+    - onioncartography.com
+    - "*.onioncartography.com"
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
@@ -23,15 +23,15 @@ metadata:
 spec:
   gatewayClassName: routing
   listeners:
-    - hostname: onioncartography.org
+    - hostname: onioncartography.com
       name: http-apex
       port: 80
       protocol: HTTP
-    - hostname: "*.onioncartography.org"
+    - hostname: "*.onioncartography.com"
       name: http-wildcard
       port: 80
       protocol: HTTP
-    - hostname: onioncartography.org
+    - hostname: onioncartography.com
       name: https-apex
       port: 443
       protocol: HTTPS
@@ -41,7 +41,7 @@ spec:
             kind: Secret
             name: ugre-tls
         mode: Terminate
-    - hostname: "*.onioncartography.org"
+    - hostname: "*.onioncartography.com"
       name: https-wildcard
       port: 443
       protocol: HTTPS
@@ -70,8 +70,8 @@ metadata:
   namespace: routing
 spec:
   hostnames:
-    - onioncartography.org
-    - "*.onioncartography.org"
+    - onioncartography.com
+    - "*.onioncartography.com"
   parentRefs:
     - name: ugre
       sectionName: http-apex
@@ -91,8 +91,8 @@ metadata:
   namespace: routing
 spec:
   hostnames:
-    - onioncartography.org
-    - "*.onioncartography.org"
+    - onioncartography.com
+    - "*.onioncartography.com"
   parentRefs:
     - name: ugre
       sectionName: https-apex
@@ -117,5 +117,5 @@ spec:
       name: ugre
       sectionName: "443"
   validation:
-    hostname: onioncartography.org
+    hostname: onioncartography.com
     wellKnownCACertificates: System

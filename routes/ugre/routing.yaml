@@ -1,0 +1,121 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ugre
+  namespace: routing
+spec:
+  dnsNames:
+    - onioncartography.org
+    - "*.onioncartography.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt-production-cloudflare
+  privateKey:
+    rotationPolicy: Always
+  secretName: ugre-tls
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ugre
+  namespace: routing
+spec:
+  gatewayClassName: routing
+  listeners:
+    - hostname: onioncartography.org
+      name: http-apex
+      port: 80
+      protocol: HTTP
+    - hostname: "*.onioncartography.org"
+      name: http-wildcard
+      port: 80
+      protocol: HTTP
+    - hostname: onioncartography.org
+      name: https-apex
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: ugre-tls
+        mode: Terminate
+    - hostname: "*.onioncartography.org"
+      name: https-wildcard
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: ugre-tls
+        mode: Terminate
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: ugre
+  namespace: routing
+spec:
+  endpoints:
+    - ip:
+        address: 192.168.2.220
+        port: 443
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ugre-http-redirect
+  namespace: routing
+spec:
+  hostnames:
+    - onioncartography.org
+    - "*.onioncartography.org"
+  parentRefs:
+    - name: ugre
+      sectionName: http-apex
+    - name: ugre
+      sectionName: http-wildcard
+  rules:
+    - filters:
+        - requestRedirect:
+            scheme: https
+            statusCode: 301
+          type: RequestRedirect
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ugre-https
+  namespace: routing
+spec:
+  hostnames:
+    - onioncartography.org
+    - "*.onioncartography.org"
+  parentRefs:
+    - name: ugre
+      sectionName: https-apex
+    - name: ugre
+      sectionName: https-wildcard
+  rules:
+    - backendRefs:
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: ugre
+          port: 443
+---
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: ugre
+  namespace: routing
+spec:
+  targetRefs:
+    - group: gateway.envoyproxy.io
+      kind: Backend
+      name: ugre
+      sectionName: "443"
+  validation:
+    hostname: onioncartography.org
+    wellKnownCACertificates: System

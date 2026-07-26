@@ -1,36 +1,10 @@
 {
   "info": {
     "cluster": {
-      "name": "production",
-      "domain": "reisman.org",
+      "name": "ugre",
+      "domain": "onioncartography.org",
       "email": "aaron@reisman.org",
       "publicHost": "madison.reisman.org"
-    }
-  },
-  "apps": {
-    "dns": {
-      "authoritative": {
-        "ipAddress": "192.168.2.13"
-      }
-    },
-    "games": {
-      "shared": {
-        "ipAddress": "192.168.2.16"
-      }
-    },
-    "mail": {
-      "ipAddress": "192.168.2.15",
-      "postfix": {
-        "relayHost": "mail.smtp2go.com",
-        "relayPort": "2525",
-        "virtualDomains": "hobolife.org scobie.org xcoolgroup.org"
-      }
-    },
-    "photos": {
-      "immich": {
-        "jobs": {},
-        "logLevel": "log"
-      }
     }
   },
   "infra": {
@@ -38,14 +12,14 @@
       "issuer": "letsencrypt-production-cloudflare"
     },
     "ingress": {
-      "ipAddress": "192.168.2.12"
+      "ipAddress": "192.168.2.220"
     },
     "metallb": {
-      "ipAddressPool": "192.168.2.11-192.168.2.99"
+      "ipAddressPool": "192.168.2.220-192.168.2.230"
     },
     "storage": {
       "backup": {
-        "paused": false,
+        "paused": true,
         "s3Endpoint": "http://192.168.1.10:30157"
       },
       "truenas": {

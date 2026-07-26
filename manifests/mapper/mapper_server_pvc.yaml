@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: config-pvc
-  namespace: plex
+  name: mapper-server-db
+  namespace: mapper
 spec:
   storageClassName: truenas-iscsi
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 25Gi
+      storage: 1Gi

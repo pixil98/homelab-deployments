@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - mapper_server_deployment.yaml
+  - mapper_server_env.yaml
+  - mapper_server_pvc.yaml
+  - mapper_server_service.yaml
+  - mapper_server_vpa.yaml
+  - mapper_client_deployment.yaml
+  - mapper_client_service.yaml
+  - mapper_client_vpa.yaml
+  - mapper_ingress.yaml
+  - volsync_replication.yaml

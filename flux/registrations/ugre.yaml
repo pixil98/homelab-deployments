@@ -1,0 +1,24 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: route-ugre
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-envoy-config
+    - name: flux-core-routing-cert-manager-config
+  interval: 10m
+  path: ./routes/ugre
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: flux-values
+      - kind: Secret
+        name: flux-secrets
+  prune: true
+  retryInterval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 15m
+  wait: true

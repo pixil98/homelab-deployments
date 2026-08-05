@@ -5,10 +5,21 @@ metadata:
   namespace: mapper
 type: Opaque
 stringData:
-  DISCORD_CLIENT_ID: "${secrets_apps_mapper_mapper_discordClientId}"
-  DISCORD_CLIENT_SECRET: "${secrets_apps_mapper_mapper_discordClientSecret}"
-  DISCORD_REDIRECT_URI: "https://${vals_info_cluster_domain}/api/login/discord/callback"
-  DISCORD_BOT_TOKEN: "${secrets_apps_mapper_mapper_discordBotToken}"
-  DISCORD_GUILD_ID: "${secrets_apps_mapper_mapper_discordGuildId}"
-  MAPPER_ROLE_ID: "${secrets_apps_mapper_mapper_discordMapperRoleId}"
+  # Login is delegated to authentik. The provider and the groups referenced
+  # below are defined in manifests/authentik/mapper_provider.yaml.
+  OIDC_ISSUER: "https://auth.${vals_info_cluster_domain}/application/o/mapper/"
+  OIDC_CLIENT_ID: "${secrets_apps_auth_applications_mapper_clientId}"
+  OIDC_CLIENT_SECRET: "${secrets_apps_auth_applications_mapper_clientSecret}"
+  OIDC_REDIRECT_URI: "https://${vals_info_cluster_domain}/api/login/callback"
+  OIDC_SCOPES: "openid profile email groups"
+  OIDC_GROUPS_CLAIM: "groups"
+
+  # Campaign membership is parsed out of the group names, so onboarding another
+  # campaign is adding mapper-<slug>-admin / mapper-<slug>-mapper in authentik
+  # rather than changing anything here. {campaign} is Mapper's own placeholder,
+  # not a Flux substitution.
+  AUTH_GROUP_SOURCE: "claim"
+  AUTH_ADMIN_GROUP_PATTERN: "mapper-{campaign}-admin"
+  AUTH_MAPPER_GROUP_PATTERN: "mapper-{campaign}-mapper"
+
   FRONTEND_URL: "https://${vals_info_cluster_domain}/"

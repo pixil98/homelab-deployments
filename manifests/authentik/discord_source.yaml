@@ -1,0 +1,31 @@
+# authentik OAuth source: delegate login to Discord.
+# Discord app redirect URI: https://auth.${vals_info_cluster_domain}/source/oauth/callback/discord/
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authentik-blueprint-discord-source
+  namespace: auth
+  labels:
+    goauthentik.io/blueprint: "true"
+type: Opaque
+stringData:
+  discord-source.yaml: |
+    # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+    version: 1
+    metadata:
+      name: Custom - Discord source
+    entries:
+      - model: authentik_sources_oauth.oauthsource
+        id: discord_source
+        identifiers: { slug: discord }
+        state: present
+        attrs:
+          name: Discord
+          slug: discord
+          enabled: true
+          provider_type: discord
+          consumer_key: ${secrets_apps_auth_sources_discord_clientId}
+          consumer_secret: ${secrets_apps_auth_sources_discord_clientSecret}
+          authentication_flow: !Find [authentik_flows.flow, [slug, default-source-authentication]]
+          enrollment_flow: !Find [authentik_flows.flow, [slug, default-source-enrollment]]
+          user_matching_mode: email_link

@@ -31,7 +31,7 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: prisma-migrate-deploy
-          image: ghcr.io/bcnoexceptions/mapper-server:0.0.8
+          image: ghcr.io/bcnoexceptions/mapper-server:sha-4ac28aa
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
@@ -54,7 +54,7 @@ spec:
               mountPath: /mapper/db
       containers:
         - name: mapper-server
-          image: ghcr.io/bcnoexceptions/mapper-server:0.0.8
+          image: ghcr.io/bcnoexceptions/mapper-server:sha-4ac28aa
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false

@@ -1,0 +1,87 @@
+# authentik OIDC provider: Mapper delegates login here.
+# Mapper redirect URI: https://${vals_info_cluster_domain}/api/login/callback
+# Discovery: https://auth.${vals_info_cluster_domain}/application/o/mapper/.well-known/openid-configuration
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authentik-blueprint-mapper-provider
+  namespace: auth
+  labels:
+    goauthentik.io/blueprint: "true"
+type: Opaque
+stringData:
+  mapper-provider.yaml: |
+    # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+    version: 1
+    metadata:
+      name: Custom - Mapper provider
+    entries:
+      # Mapper parses the campaign slug out of the group name, so a second
+      # campaign means adding mapper-<slug>-admin and mapper-<slug>-mapper here.
+      # Renaming these means reassigning every member, so treat them as stable.
+      - model: authentik_core.group
+        id: group_mapper_epic_admin
+        identifiers: { name: mapper-epic-admin }
+        state: present
+        attrs:
+          name: mapper-epic-admin
+
+      - model: authentik_core.group
+        id: group_mapper_epic_mapper
+        identifiers: { name: mapper-epic-mapper }
+        state: present
+        attrs:
+          name: mapper-epic-mapper
+
+      # authentik's default "profile" mapping happens to include groups, but
+      # Mapper's entire access control depends on that claim, so it gets an
+      # explicit scope rather than riding on a default that could change.
+      - model: authentik_providers_oauth2.scopemapping
+        id: scope_mapper_groups
+        identifiers: { name: "Mapper - groups" }
+        state: present
+        attrs:
+          name: "Mapper - groups"
+          scope_name: groups
+          description: "Groups you belong to (Mapper grants access based on these)"
+          expression: |
+            return {
+                "groups": [group.name for group in request.user.ak_groups.all()],
+            }
+
+      - model: authentik_providers_oauth2.oauth2provider
+        id: mapper_provider
+        identifiers: { name: mapper }
+        state: present
+        attrs:
+          name: mapper
+          client_type: confidential
+          client_id: ${secrets_apps_auth_applications_mapper_clientId}
+          client_secret: ${secrets_apps_auth_applications_mapper_clientSecret}
+          authorization_flow:
+            !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          # An asymmetric signing key makes authentik issue RS256 ID tokens,
+          # which Mapper verifies against the published JWKS.
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+          sub_mode: hashed_user_id
+          include_claims_in_id_token: true
+          redirect_uris:
+            - matching_mode: strict
+              url: https://${vals_info_cluster_domain}/api/login/callback
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+            - !KeyOf scope_mapper_groups
+
+      - model: authentik_core.application
+        id: mapper_application
+        identifiers: { slug: mapper }
+        state: present
+        attrs:
+          name: Mapper
+          slug: mapper
+          provider: !KeyOf mapper_provider
+          meta_launch_url: https://${vals_info_cluster_domain}/
+          meta_description: Social mapping for organizing campaigns

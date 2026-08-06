@@ -1,0 +1,37 @@
+# authentik groups for the "epic" Mapper campaign.
+# Mapper parses the campaign slug out of the group name (mapper-<slug>-<role>),
+# so a new campaign is a copy of this blueprint with the slug swapped. Renaming
+# a group reassigns every member, so treat these as stable.
+#
+# Both parent to the base "mapper" group (in mapper_provider), so the single app
+# binding there gates access — no per-group bindings needed here.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authentik-blueprint-mapper-epic
+  namespace: auth
+  labels:
+    goauthentik.io/blueprint: "true"
+type: Opaque
+stringData:
+  mapper-epic.yaml: |
+    # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+    version: 1
+    metadata:
+      name: Custom - Mapper epic
+    entries:
+      - model: authentik_core.group
+        id: group_mapper_epic_mapper
+        identifiers: { name: mapper-epic-mapper }
+        state: present
+        attrs:
+          name: mapper-epic-mapper
+          parents: [ !Find [authentik_core.group, [name, mapper]] ]
+
+      - model: authentik_core.group
+        id: group_mapper_epic_officer
+        identifiers: { name: mapper-epic-officer }
+        state: present
+        attrs:
+          name: mapper-epic-officer
+          parents: [ !Find [authentik_core.group, [name, mapper]] ]

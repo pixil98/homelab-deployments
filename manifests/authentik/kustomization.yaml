@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - discord_source.yaml
   - mapper_provider.yaml
+  - mapper_epic.yaml

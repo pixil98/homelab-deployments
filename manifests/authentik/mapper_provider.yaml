@@ -16,22 +16,25 @@ stringData:
     metadata:
       name: Custom - Mapper provider
     entries:
-      # Mapper parses the campaign slug out of the group name, so a second
-      # campaign means adding mapper-<slug>-admin and mapper-<slug>-mapper here.
-      # Renaming these means reassigning every member, so treat them as stable.
+      # Base group: parent of every Mapper role/campaign group. The app binding
+      # targets this one, so any descendant grants access (authentik counts
+      # child-group members as members of the parent). Per-campaign role groups
+      # live in their own blueprint (see mapper_epic) and parent to this.
       - model: authentik_core.group
-        id: group_mapper_epic_admin
-        identifiers: { name: mapper-epic-admin }
+        id: group_mapper
+        identifiers: { name: mapper }
         state: present
         attrs:
-          name: mapper-epic-admin
+          name: mapper
 
+      # Cluster-wide Mapper super-admin (no campaign slug).
       - model: authentik_core.group
-        id: group_mapper_epic_mapper
-        identifiers: { name: mapper-epic-mapper }
+        id: group_mapper_admin
+        identifiers: { name: mapper-admin }
         state: present
         attrs:
-          name: mapper-epic-mapper
+          name: mapper-admin
+          parents: [ !KeyOf group_mapper ]
 
       # authentik's default "profile" mapping happens to include groups, but
       # Mapper's entire access control depends on that claim, so it gets an
@@ -58,12 +61,14 @@ stringData:
           client_type: confidential
           client_id: ${secrets_apps_auth_applications_mapper_clientId}
           client_secret: ${secrets_apps_auth_applications_mapper_clientSecret}
+          authentication_flow: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
           authorization_flow:
-            !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+            !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
           invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
           # An asymmetric signing key makes authentik issue RS256 ID tokens,
-          # which Mapper verifies against the published JWKS.
-          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+          # which Mapper verifies against the published JWKS. Same certificate
+          # every other blueprint in this cluster signs with.
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, auth.${vals_info_cluster_domain}]]
           sub_mode: hashed_user_id
           include_claims_in_id_token: true
           redirect_uris:
@@ -85,3 +90,21 @@ stringData:
           provider: !KeyOf mapper_provider
           meta_launch_url: https://${vals_info_cluster_domain}/
           meta_description: Social mapping for organizing campaigns
+          # "any" so holding either campaign group is enough to pass the
+          # bindings below. Without bindings authentik would let every user
+          # reach the app and leave Mapper to reject them.
+          policy_engine_mode: any
+
+      # One binding on the base group gates the app; every role/campaign group
+      # descends from it. Mapper enforces access too, so this is defence in
+      # depth: it stops authentik issuing codes to users it would only reject
+      # and keeps the app off their dashboard.
+      - model: authentik_policies.policybinding
+        id: binding_mapper
+        identifiers:
+          target: !KeyOf mapper_application
+          group: !KeyOf group_mapper
+          order: 0
+        state: present
+        attrs:
+          enabled: true

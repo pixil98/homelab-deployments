@@ -59,6 +59,15 @@ stringData:
         attrs:
           name: mapper
           client_type: confidential
+          # authentik's grant_types field defaults to an empty list, and the
+          # authorize endpoint rejects every request whose grant type is not
+          # listed with "invalid_request", so it has to be set explicitly.
+          # refresh_token is listed so the refresh grant works if the
+          # offline_access scope is ever added to property_mappings; authentik
+          # only issues refresh tokens when that scope is granted.
+          grant_types:
+            - authorization_code
+            - refresh_token
           client_id: ${secrets_apps_auth_applications_mapper_clientId}
           client_secret: ${secrets_apps_auth_applications_mapper_clientSecret}
           authentication_flow: !Find [authentik_flows.flow, [slug, default-authentication-flow]]

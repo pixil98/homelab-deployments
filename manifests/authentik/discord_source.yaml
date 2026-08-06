@@ -29,3 +29,17 @@ stringData:
           authentication_flow: !Find [authentik_flows.flow, [slug, default-source-authentication]]
           enrollment_flow: !Find [authentik_flows.flow, [slug, default-source-enrollment]]
           user_matching_mode: email_link
+
+      # An enabled source is still invisible until the identification stage
+      # lists it: that stage's "sources" field defaults to empty, so the login
+      # page renders no Discord button. authentik's own default blueprint sets
+      # only user_fields on this stage, so patching sources here is not undone
+      # on upgrade. The username/password form is unaffected — user_fields
+      # governs that, and this only adds the button beside it.
+      - model: authentik_stages_identification.identificationstage
+        identifiers: { name: default-authentication-identification }
+        state: present
+        attrs:
+          sources:
+            - !KeyOf discord_source
+          show_source_labels: true

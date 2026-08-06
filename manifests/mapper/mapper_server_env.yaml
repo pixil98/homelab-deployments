@@ -15,11 +15,15 @@ stringData:
   OIDC_GROUPS_CLAIM: "groups"
 
   # Campaign membership is parsed out of the group names, so onboarding another
-  # campaign is adding mapper-<slug>-admin / mapper-<slug>-mapper in authentik
+  # campaign is copying manifests/authentik/mapper_epic.yaml with a new slug
   # rather than changing anything here. {campaign} is Mapper's own placeholder,
   # not a Flux substitution.
+  #
+  # The base "mapper" group and the campaign-less "mapper-admin" match neither
+  # pattern and so grant nothing on their own; "mapper" only gates access to the
+  # app in authentik.
   AUTH_GROUP_SOURCE: "claim"
-  AUTH_ADMIN_GROUP_PATTERN: "mapper-{campaign}-admin"
+  AUTH_ADMIN_GROUP_PATTERN: "mapper-{campaign}-officer"
   AUTH_MAPPER_GROUP_PATTERN: "mapper-{campaign}-mapper"
 
   FRONTEND_URL: "https://${vals_info_cluster_domain}/"

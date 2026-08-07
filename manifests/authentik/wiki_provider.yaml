@@ -1,5 +1,7 @@
-# authentik OIDC provider: BookStack delegates login here.
-# BookStack redirect URI: https://wiki.${vals_info_cluster_domain}/oidc/callback
+# authentik OIDC provider: Wiki.js delegates login here.
+# Wiki.js builds its callback from the auth strategy's key, so the strategy is
+# created with the fixed UUID below rather than a generated one (see
+# manifests/wiki/README.md) and the redirect URI stays declarative.
 # Discovery: https://auth.${vals_info_cluster_domain}/application/o/wiki/.well-known/openid-configuration
 apiVersion: v1
 kind: Secret
@@ -52,17 +54,16 @@ stringData:
           invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
           signing_key: !Find [authentik_crypto.certificatekeypair, [name, auth.${vals_info_cluster_domain}]]
           sub_mode: hashed_user_id
-          # BookStack reads groups off the ID token, so the claims have to be in it.
           include_claims_in_id_token: true
           redirect_uris:
             - matching_mode: strict
-              url: https://wiki.${vals_info_cluster_domain}/oidc/callback
+              url: https://wiki.${vals_info_cluster_domain}/login/a19a8034-8514-4578-af66-dc085d2334d1/callback
           property_mappings:
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
-            # profile carries preferred_username, which BookStack uses as the
-            # external auth id (OIDC_EXTERNAL_ID_CLAIM).
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+            # Wiki.js reads groups from the userinfo endpoint, so this scope has
+            # to be in the strategy's scope list as well as here.
             - !KeyOf scope_wiki_groups
 
       - model: authentik_core.application
@@ -79,8 +80,8 @@ stringData:
 
       # Bound to the same base "mapper" group as the Mapper app: every campaign
       # role group descends from it, so anyone in any campaign can log in. Which
-      # campaign sections they can actually read is decided by BookStack roles,
-      # which are synced from these same group names.
+      # campaign sections they can actually read is decided by Wiki.js page
+      # rules on groups named after these same authentik groups.
       - model: authentik_policies.policybinding
         id: binding_wiki
         identifiers:

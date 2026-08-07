@@ -2,15 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - namespace.yaml
-  - mariadb_secret.yaml
-  - mariadb_pvc.yaml
-  - mariadb_deployment.yaml
-  - mariadb_service.yaml
-  - mariadb_vpa.yaml
-  - bookstack_env.yaml
-  - bookstack_pvc.yaml
-  - bookstack_deployment.yaml
-  - bookstack_service.yaml
-  - bookstack_ingress.yaml
-  - bookstack_vpa.yaml
-  - volsync_replication.yaml
+  - wikijs_postgresql.yaml
+  - wikijs_env.yaml
+  - wikijs_deployment.yaml
+  - wikijs_service.yaml
+  - wikijs_ingress.yaml
+  - wikijs_vpa.yaml

@@ -1,53 +1,54 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bookstack
+  name: wikijs
   namespace: wiki
   annotations:
     reloader.stakater.com/auto: "true"
   labels:
     app.kubernetes.io/instance: wiki
-    app.kubernetes.io/name: bookstack
+    app.kubernetes.io/name: wikijs
 spec:
-  # Single replica: sessions, cache and uploads all live on the RWO /config volume.
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/instance: wiki
-      app.kubernetes.io/name: bookstack
+      app.kubernetes.io/name: wikijs
   template:
     metadata:
       labels:
         app.kubernetes.io/instance: wiki
-        app.kubernetes.io/name: bookstack
+        app.kubernetes.io/name: wikijs
     spec:
       securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: bookstack
-          image: lscr.io/linuxserver/bookstack:26.05.3
+        - name: wikijs
+          image: ghcr.io/requarks/wiki:2.5.314
           imagePullPolicy: IfNotPresent
-          env:
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
-            - name: TZ
-              value: "America/Chicago"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           envFrom:
             - secretRef:
-                name: bookstack-env
+                name: wikijs-env
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 3000
               protocol: TCP
-          # /status reports database, cache and session health as JSON.
+          # /healthz returns 503 when the database pool has no connections.
           readinessProbe:
             httpGet:
-              path: /status
+              path: /healthz
               port: http
             initialDelaySeconds: 10
             periodSeconds: 10
@@ -55,17 +56,17 @@ spec:
             failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /status
+              path: /healthz
               port: http
             initialDelaySeconds: 30
             periodSeconds: 20
             timeoutSeconds: 3
             failureThreshold: 5
-          # The container waits on the database and runs artisan migrate before
-          # serving, which is slow on a cold start and on version bumps.
+          # First boot creates the schema and sideloads locales, which is well
+          # past the liveness threshold.
           startupProbe:
             httpGet:
-              path: /status
+              path: /healthz
               port: http
             periodSeconds: 10
             timeoutSeconds: 3
@@ -78,9 +79,10 @@ spec:
               cpu: 1000m
               memory: 1Gi
           volumeMounts:
-            - name: config
-              mountPath: /config
+            - name: data
+              mountPath: /wiki/data
       volumes:
-        - name: config
-          persistentVolumeClaim:
-            claimName: bookstack-config
+        # Pages and uploaded assets live in Postgres; this path is only the
+        # regenerable asset cache, so it does not need a PVC or a backup.
+        - name: data
+          emptyDir: {}

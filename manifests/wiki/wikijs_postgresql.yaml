@@ -1,0 +1,99 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: wiki-postgresql
+  namespace: wiki
+spec:
+  instances: 1
+
+  postgresql:
+    parameters:
+      shared_buffers: "128MB"
+      effective_cache_size: "1GB"
+      maintenance_work_mem: "64MB"
+      checkpoint_completion_target: "0.9"
+
+  superuserSecret:
+    name: wiki-postgresql-superuser
+
+  bootstrap:
+    initdb:
+      database: wiki
+      owner: wikijs
+      secret:
+        name: wiki-postgresql-appuser
+
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: cnpg-backup
+
+  storage:
+    storageClass: truenas-iscsi
+    size: 10Gi
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: cnpg-backup
+  namespace: wiki
+spec:
+  configuration:
+    destinationPath: "s3://${vals_info_cluster_name}/cnpg/"
+    endpointURL: "${vals_infra_storage_backup_s3Endpoint}"
+    s3Credentials:
+      accessKeyId:
+        name: cnpg-backup-credentials
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: cnpg-backup-credentials
+        key: SECRET_ACCESS_KEY
+    wal:
+      compression: gzip
+  retentionPolicy: "30d"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cnpg-backup-credentials
+  namespace: wiki
+type: Opaque
+stringData:
+  ACCESS_KEY_ID: "${secrets_infra_storage_backup_awsAccessKeyId}"
+  SECRET_ACCESS_KEY: "${secrets_infra_storage_backup_awsSecretAccessKey}"
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: wiki-postgresql-backup
+  namespace: wiki
+spec:
+  suspend: ${vals_infra_storage_backup_paused}
+  schedule: "0 3 * * *"
+  backupOwnerReference: self
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+  cluster:
+    name: wiki-postgresql
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wiki-postgresql-appuser
+  namespace: wiki
+type: kubernetes.io/basic-auth
+stringData:
+  username: wikijs
+  password: ${secrets_apps_wiki_wikijs_postgresql_app_password}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wiki-postgresql-superuser
+  namespace: wiki
+type: kubernetes.io/basic-auth
+stringData:
+  username: postgres
+  password: ${secrets_apps_wiki_wikijs_postgresql_superuser_password}

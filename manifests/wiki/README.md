@@ -1,104 +1,172 @@
 # Wiki
 
-BookStack at `wiki.${cluster_domain}`, backed by its own MariaDB (BookStack is
-MySQL-only, so it does not use the cluster's CloudNativePG operator).
+Wiki.js 2 at `wiki.${cluster_domain}`, on a CloudNativePG cluster like every
+other Postgres app in the homelab. Pages and uploaded assets are stored in the
+database, so there is no PVC here and barman WAL archiving is the whole backup
+story.
 
 Access is driven by the same authentik groups as Mapper. authentik puts the
-user's group names in the `groups` claim; BookStack matches each one to a role
-and, on every login, syncs the user's roles to exactly that set
-(`OIDC_REMOVE_FROM_GROUPS=true`). Dropping someone from `mapper-epic-officer`
-in authentik therefore revokes their Epic wiki access the next time they log in.
+user's group names in the `groups` claim, Wiki.js maps each one to a Wiki.js
+group of the same name, and each group's page rules decide which paths it can
+read. A campaign lives under its own path prefix, so campaigns cannot see each
+other.
+
+## The one awkward part
+
+Wiki.js takes only database and transport settings from the environment.
+Everything else — the OIDC strategy, groups, page rules — lives in the database
+and is applied over GraphQL, not through these manifests. So the deployment is
+declarative but its configuration is not; treat the bootstrap below as part of
+the install, and keep the campaign service as the only thing that writes
+groups and page rules afterwards.
 
 ## Permission model
 
-Isolation comes from campaign roles holding **no** `*-view-all` system
-permissions. A role with no view-all sees nothing except what an entity-level
-override explicitly grants it, so campaigns cannot see each other by default —
-new content is private unless a shelf/book override opens it up.
+Isolation comes from no group having a global read rule. Each campaign group
+gets exactly one allow rule scoped to its own path prefix:
 
-| authentik group          | BookStack role           | Grant on the campaign shelf/books |
-|--------------------------|--------------------------|-----------------------------------|
-| `mapper-<slug>-mapper`   | `mapper-<slug>-mapper`   | view                              |
-| `mapper-<slug>-officer`  | `mapper-<slug>-officer`  | view, create, update, delete      |
-| `mapper-admin`           | `Admin` (built-in)       | everything                        |
+| authentik group         | Wiki.js group           | Page rule                                |
+|-------------------------|-------------------------|------------------------------------------|
+| `mapper-<slug>-mapper`  | `mapper-<slug>-mapper`  | allow `read` where path starts `<slug>/`  |
+| `mapper-<slug>-officer` | `mapper-<slug>-officer` | allow `read,write,manage` on `<slug>/`    |
+| `mapper-admin`          | `mapper-admin`          | everything                                |
+
+Note the admin row: it is a normal group named `mapper-admin`, **not** the
+built-in `Administrators` group. Group sync reconciles an OIDC user's groups to
+exactly the claim on every login, and `Administrators` never appears in the
+claim, so mapping to it would strip the user's admin rights on their next
+login. Give `mapper-admin` the `manage:system` permission instead.
+
+Leave the built-in **Guests** group with no read rule, otherwise anonymous
+visitors can read the whole wiki. The built-in **Users** group is likewise
+where an accidental global read rule would come from — check it after install.
 
 `mapper` is the base group every campaign group descends from; the authentik
-app binding uses it, so any campaign member can reach the wiki. What they can
-read once inside is decided entirely by the roles above.
+app binding uses it, so any campaign member can log in. What they can read once
+inside is decided entirely by the page rules above.
 
 ## Bootstrap (one-time, after first deploy)
 
-Auth is OIDC-only, so there is no password login to fall back on. Point the
-built-in Admin role at the `mapper-admin` group **before** the first login —
-otherwise group sync strips Admin from whoever logs in first:
+1. Visit `https://wiki.<domain>/` and complete the setup wizard. This creates
+   the local administrator account — keep it, it is the only way back in if
+   OIDC breaks.
 
-```sh
-kubectl -n wiki exec deploy/bookstack -- \
-  s6-setuidgid abc php /app/www/artisan tinker --execute \
-  "DB::table('roles')->where('display_name','Admin')->update(['external_auth_id'=>'mapper-admin']);"
+2. Add the OpenID Connect strategy. It **must** be created with the key
+   `a19a8034-8514-4578-af66-dc085d2334d1`, because the authentik provider
+   pins the callback URL that this key produces:
+
+   ```
+   https://wiki.<domain>/login/a19a8034-8514-4578-af66-dc085d2334d1/callback
+   ```
+
+   The UI generates a random key instead, so create it over GraphQL at
+   `/graphql` with the admin's JWT, using `authentication { updateStrategies }`
+   and passing the key explicitly. Settings that matter:
+
+   - Client ID / Secret: from `apps.auth.applications.wiki` in `secrets.json`
+   - Issuer: `https://auth.<domain>/application/o/wiki/`
+   - Scope: `openid profile email groups` — `groups` is required, Wiki.js reads
+     the claim off the userinfo endpoint
+   - **Map Groups**: on, Groups Claim: `groups`
+   - Assign to group: leave empty, so users only ever hold their authentik
+     groups
+
+3. Confirm Guests and Users have no read rule, then log in through authentik.
+
+## How group sync actually behaves
+
+From `server/modules/authentication/oidc/authentication.js`:
+
+```js
+const expectedGroups = Object.values(WIKI.auth.groups).filter(g => groups.includes(g.name)).map(g => g.id)
 ```
 
-Then log in at `https://wiki.<domain>/` as a member of `mapper-admin`. Group
-sync creates the user and grants Admin.
+It walks Wiki.js's own groups and keeps the ones whose name appears in the
+claim, then relates what is missing and unrelates everything else. Three
+consequences worth designing around:
 
-Finally, create the campaign service's credentials: add a user with a role
-holding `access-api` plus `users-manage` and `restrictions-manage-all`, and
-generate an API token under its profile. API tokens can only be created through
-the UI, so this step cannot be automated.
+- A claim value with no matching **Wiki.js** group is dropped silently — not
+  auto-created, and nothing is logged. Creating the Wiki.js group is step 1 of
+  provisioning for that reason.
+- Sync is a full reconcile, so any group not in the claim is removed. Anything
+  assigned by hand to an OIDC user will not survive their next login.
+- It self-heals: a user who logged in before their group existed picks it up on
+  their next login, so a late group creation is recoverable.
 
-If OIDC ever breaks, `/login?prevent_auto_init=true` stops the automatic
-redirect to authentik.
+The reconcile only runs for logins through this strategy, so the local
+administrator account from the setup wizard is untouched by it.
 
 ## Provisioning a campaign from the service
 
-Auth header for every call: `Authorization: Token <token_id>:<token_secret>`.
+Everything is the GraphQL endpoint at `https://wiki.<domain>/graphql`.
 
-1. **Roles** — `POST /api/roles`, once per campaign role. Set
-   `external_auth_id` to the authentik group name rather than relying on the
-   display name; BookStack lower-cases and hyphenates claim values before
-   matching, and an explicit id survives a later rename.
+**Credentials.** Enable the API in Admin → API, then mint a key for the
+service:
 
-   ```json
-   { "display_name": "mapper-epic-officer",
-     "external_auth_id": "mapper-epic-officer",
-     "permissions": ["page-create-own", "page-update-own", "page-delete-own"] }
+```graphql
+mutation {
+  authentication {
+    createApiKey(name: "campaign-service", expiration: "1y", fullAccess: true) {
+      key
+      responseResult { succeeded message }
+    }
+  }
+}
+```
+
+The key goes back in `Authorization: Bearer <key>` and is shown once. `group:
+Int` scopes a non-full-access key to a single group's permissions; the group
+mutations below need `manage:groups` or `manage:system` either way. Keys carry
+an expiry, so the service should fail loudly on a 401 rather than treat it as
+"no groups yet".
+
+1. **Groups** — `groups { create(name: "mapper-<slug>-officer") }`, which takes
+   a name and nothing else, and returns the new `group { id }`. Do this before
+   anyone in the campaign logs in; until it exists their claim entry is dropped
+   silently, though a later login picks it up once it does.
+
+2. **Page rules** — `groups { update(...) }`. Every argument is non-null
+   (`name`, `redirectOnLogin`, `permissions`, `pageRules`), so this is a full
+   replace rather than a patch: read the group with `groups { single(id:) }`
+   and send the complete merged object back, or you will silently blank its
+   other rules.
+
+   ```graphql
+   mutation {
+     groups {
+       update(
+         id: 5
+         name: "mapper-epic-officer"
+         redirectOnLogin: "/"
+         permissions: ["read:pages", "write:pages", "manage:pages", "read:assets", "write:assets"]
+         pageRules: [{
+           id: "epic-content"
+           deny: false
+           match: START
+           path: "epic/"
+           roles: ["read:pages", "write:pages", "manage:pages"]
+           locales: []
+         }]
+       ) { responseResult { succeeded message } }
+     }
+   }
    ```
 
-   Keep `*-view-all` / `*-update-all` out of this list — those would expose
-   every other campaign.
+   `permissions` is the global capability list and `pageRules` scopes where
+   those capabilities apply — a group needs the permission globally *and* a
+   rule granting it on the path. `match` accepts `START`, `EXACT`, `END`,
+   `REGEX` or `TAG`; `START` is the prefix match campaigns want. Rule `id` is
+   any string you choose, so keep it stable per campaign to make updates
+   idempotent.
 
-2. **Container** — `POST /api/books` for the campaign's book, then
-   `POST /api/shelves` with the book id if you want a shelf per campaign.
+3. **Seed from template** — keep a template tree under a path the campaign
+   groups cannot read, list it with `pages { list(...) }`, fetch each page with
+   `pages { single(id:) }` for its `content`, and recreate them with
+   `pages { create(...) }` under `<slug>/`. Pass the template's `editor` and
+   `contentType` through unchanged so markdown pages do not come back as HTML.
 
-3. **Permissions** — `PUT /api/content-permissions/{contentType}/{contentId}`,
-   where `contentType` is `book`, `chapter`, `page`, or `bookshelf` (not
-   `shelf`). Setting `fallback_permissions.inheriting: false` with everything
-   false is what makes the item private to the listed roles:
+## Notes
 
-   ```json
-   { "role_permissions": [
-       { "role_id": 5, "view": true,  "create": false, "update": false, "delete": false },
-       { "role_id": 6, "view": true,  "create": true,  "update": true,  "delete": true }
-     ],
-     "fallback_permissions": { "inheriting": false, "view": false, "create": false, "update": false, "delete": false } }
-   ```
-
-   An empty `role_permissions` array **clears** all existing overrides, so read
-   the current permissions and send the merged result when updating rather than
-   replacing.
-
-   Shelf permissions do not cascade to books automatically — apply the override
-   to each book as it is created.
-
-4. **Seed from template** — there is no copy endpoint. Keep a template book in
-   BookStack, read its structure with `GET /api/books/{id}` and each page with
-   `GET /api/pages/{id}` (returns `markdown` and `html`), then recreate them
-   with `POST /api/chapters` and `POST /api/pages` against the new book. Send
-   `markdown` if the template was authored in markdown, otherwise pages come
-   back as converted HTML and round-trip lossily.
-
-## Backups
-
-Both PVCs go to restic via volsync. The MariaDB backup is a volume snapshot of
-a live InnoDB datadir, so a restore is crash-consistent and replays the redo
-log; it is not a logical dump.
+Wiki.js 2 is in maintenance mode upstream — 2.5.x still gets fixes but v3 has
+no release date. This was a deliberate trade for staying on Postgres rather
+than running MariaDB for BookStack.

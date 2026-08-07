@@ -1,0 +1,18 @@
+# Wiki.js only takes database and transport settings from the environment; the
+# OIDC strategy, groups and page rules live in the database and are applied
+# once at bootstrap over GraphQL. See README.md.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wikijs-env
+  namespace: wiki
+type: Opaque
+stringData:
+  DB_TYPE: "postgres"
+  DB_HOST: "wiki-postgresql-rw"
+  DB_PORT: "5432"
+  DB_NAME: "wiki"
+  DB_USER: "wikijs"
+  DB_PASS: "${secrets_apps_wiki_wikijs_postgresql_app_password}"
+  DB_SSL: "false"
+  LOG_LEVEL: "info"

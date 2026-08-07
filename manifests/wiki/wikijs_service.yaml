@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: bookstack
+  name: wikijs
   namespace: wiki
   labels:
     app.kubernetes.io/instance: wiki
-    app.kubernetes.io/name: bookstack
+    app.kubernetes.io/name: wikijs
 spec:
   selector:
     app.kubernetes.io/instance: wiki
-    app.kubernetes.io/name: bookstack
+    app.kubernetes.io/name: wikijs
   ports:
     - name: http
       port: 80

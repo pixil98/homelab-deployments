@@ -1,21 +1,20 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: bookstack
+  name: wikijs
   namespace: wiki
   labels:
     app.kubernetes.io/instance: wiki
   annotations:
     cert-manager.io/cluster-issuer: ${vals_infra_certManager_issuer}
     external-dns.alpha.kubernetes.io/target: ${vals_info_cluster_publicHost}
-    # Matches the image's php upload_max_filesize default of 100M.
-    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
         - wiki.${vals_info_cluster_domain}
-      secretName: bookstack-tls
+      secretName: wikijs-tls
   rules:
     - host: wiki.${vals_info_cluster_domain}
       http:
@@ -24,6 +23,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: bookstack
+                name: wikijs
                 port:
                   name: http

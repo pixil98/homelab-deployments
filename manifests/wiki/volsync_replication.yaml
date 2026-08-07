@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: volsync-restic-mariadb
+  namespace: wiki
+type: Opaque
+stringData:
+  RESTIC_REPOSITORY: "s3:${vals_infra_storage_backup_s3Endpoint}/${vals_info_cluster_name}/wiki-mariadb-data"
+  RESTIC_PASSWORD: "${secrets_infra_storage_backup_resticPassword}"
+  AWS_ACCESS_KEY_ID: "${secrets_infra_storage_backup_awsAccessKeyId}"
+  AWS_SECRET_ACCESS_KEY: "${secrets_infra_storage_backup_awsSecretAccessKey}"
+---
+# Snapshot of a live InnoDB datadir, so restores are crash-consistent and
+# recover through the redo log rather than being a logical dump.
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: wiki-mariadb-data-backup
+  namespace: wiki
+spec:
+  paused: ${vals_infra_storage_backup_paused}
+  sourcePVC: wiki-mariadb-data
+  trigger:
+    schedule: "0 2 * * *"
+  restic:
+    pruneIntervalDays: 14
+    repository: volsync-restic-mariadb
+    volumeSnapshotClassName: truenas-iscsi
+    copyMethod: Snapshot
+    storageClassName: truenas-iscsi-ephemeral
+    cacheStorageClassName: truenas-iscsi-ephemeral
+    retain:
+      daily: 7
+      weekly: 4
+      monthly: 3
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: volsync-restic-bookstack
+  namespace: wiki
+type: Opaque
+stringData:
+  RESTIC_REPOSITORY: "s3:${vals_infra_storage_backup_s3Endpoint}/${vals_info_cluster_name}/bookstack-config"
+  RESTIC_PASSWORD: "${secrets_infra_storage_backup_resticPassword}"
+  AWS_ACCESS_KEY_ID: "${secrets_infra_storage_backup_awsAccessKeyId}"
+  AWS_SECRET_ACCESS_KEY: "${secrets_infra_storage_backup_awsSecretAccessKey}"
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: bookstack-config-backup
+  namespace: wiki
+spec:
+  paused: ${vals_infra_storage_backup_paused}
+  sourcePVC: bookstack-config
+  trigger:
+    # Half an hour after the database so a pair of restores lands close together.
+    schedule: "30 2 * * *"
+  restic:
+    pruneIntervalDays: 14
+    repository: volsync-restic-bookstack
+    volumeSnapshotClassName: truenas-iscsi
+    copyMethod: Snapshot
+    storageClassName: truenas-iscsi-ephemeral
+    cacheStorageClassName: truenas-iscsi-ephemeral
+    retain:
+      daily: 7
+      weekly: 4
+      monthly: 3

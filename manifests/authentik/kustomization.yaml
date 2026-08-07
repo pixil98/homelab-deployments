@@ -2,5 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - discord_source.yaml
+  - google_source.yaml
+  - login_sources.yaml
   - mapper_provider.yaml
   - mapper_epic.yaml
+  - wiki_provider.yaml

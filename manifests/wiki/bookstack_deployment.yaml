@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookstack
+  namespace: wiki
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    app.kubernetes.io/instance: wiki
+    app.kubernetes.io/name: bookstack
+spec:
+  # Single replica: sessions, cache and uploads all live on the RWO /config volume.
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: wiki
+      app.kubernetes.io/name: bookstack
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: wiki
+        app.kubernetes.io/name: bookstack
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: bookstack
+          image: lscr.io/linuxserver/bookstack:26.05.3
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "America/Chicago"
+          envFrom:
+            - secretRef:
+                name: bookstack-env
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          # /status reports database, cache and session health as JSON.
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 5
+          # The container waits on the database and runs artisan migrate before
+          # serving, which is slow on a cold start and on version bumps.
+          startupProbe:
+            httpGet:
+              path: /status
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 60
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: bookstack-config

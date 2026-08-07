@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bookstack-env
+  namespace: wiki
+type: Opaque
+stringData:
+  # The image sets clear_env=no in php-fpm, so everything here reaches Laravel's
+  # env() directly and wins over the .env file the container seeds into /config.
+  APP_URL: "https://wiki.${vals_info_cluster_domain}"
+  APP_KEY: "${secrets_apps_wiki_bookstack_appKey}"
+  # Only the ingress can reach this pod, so trusting the forwarded headers is
+  # what makes BookStack generate https URLs instead of http ones.
+  APP_PROXIES: "*"
+
+  DB_HOST: "wiki-mariadb"
+  DB_PORT: "3306"
+  DB_DATABASE: "bookstack"
+  DB_USERNAME: "bookstack"
+  DB_PASSWORD: "${secrets_apps_wiki_mariadb_password}"
+
+  # Login is delegated to authentik. The provider is defined in
+  # manifests/authentik/wiki_provider.yaml.
+  AUTH_METHOD: "oidc"
+  # Skips the local login form. If OIDC ever breaks, /login?prevent_auto_init=true
+  # still renders it.
+  AUTH_AUTO_INITIATE: "true"
+  OIDC_NAME: "authentik"
+  OIDC_DISPLAY_NAME_CLAIMS: "name"
+  OIDC_ISSUER: "https://auth.${vals_info_cluster_domain}/application/o/wiki/"
+  OIDC_ISSUER_DISCOVER: "true"
+  OIDC_CLIENT_ID: "${secrets_apps_auth_applications_wiki_clientId}"
+  OIDC_CLIENT_SECRET: "${secrets_apps_auth_applications_wiki_clientSecret}"
+  OIDC_END_SESSION_ENDPOINT: "true"
+  # Users are keyed on the authentik username rather than the hashed sub, so
+  # bookstack:create-admin --external-auth-id can name a real person.
+  OIDC_EXTERNAL_ID_CLAIM: "preferred_username"
+
+  # The whole point of this deployment: authentik group names arrive in the
+  # groups claim and BookStack matches them to role names (lower-cased, spaces
+  # to hyphens) or to a role's External Authentication IDs. Campaign roles are
+  # named after the mapper-<slug>-{mapper,officer} groups, so a campaign's
+  # shelf is visible only to that campaign's members.
+  #
+  # REMOVE_FROM_GROUPS is on so dropping someone from a campaign group in
+  # authentik revokes their wiki access at next login rather than leaving it.
+  OIDC_ADDITIONAL_SCOPES: "groups"
+  OIDC_USER_TO_GROUPS: "true"
+  OIDC_GROUPS_CLAIM: "groups"
+  OIDC_REMOVE_FROM_GROUPS: "true"
+
+  # Async jobs (search indexing, exports) run in the image's queue worker.
+  QUEUE_CONNECTION: "database"

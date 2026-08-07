@@ -1,0 +1,35 @@
+# Sources offered on the login page. The stage's "sources" list is replaced
+# wholesale, so every source is listed here rather than patched in per source.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authentik-blueprint-login-sources
+  namespace: auth
+  labels:
+    goauthentik.io/blueprint: "true"
+type: Opaque
+stringData:
+  login-sources.yaml: |
+    # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+    version: 1
+    metadata:
+      name: Custom - Login sources
+    entries:
+      # Both source blueprints must have applied before !Find can resolve them.
+      - model: authentik_blueprints.metaapplyblueprint
+        identifiers: { name: "Custom - Discord source" }
+        attrs: { required: true }
+      - model: authentik_blueprints.metaapplyblueprint
+        identifiers: { name: "Custom - Google source" }
+        attrs: { required: true }
+
+      # An enabled source stays invisible until this stage lists it. authentik's
+      # default blueprint sets only user_fields here, so this survives upgrades.
+      - model: authentik_stages_identification.identificationstage
+        identifiers: { name: default-authentication-identification }
+        state: present
+        attrs:
+          sources:
+            - !Find [authentik_sources_oauth.oauthsource, [slug, discord]]
+            - !Find [authentik_sources_oauth.oauthsource, [slug, google]]
+          show_source_labels: true

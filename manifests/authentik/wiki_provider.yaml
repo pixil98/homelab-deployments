@@ -1,0 +1,92 @@
+# authentik OIDC provider: BookStack delegates login here.
+# BookStack redirect URI: https://wiki.${vals_info_cluster_domain}/oidc/callback
+# Discovery: https://auth.${vals_info_cluster_domain}/application/o/wiki/.well-known/openid-configuration
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authentik-blueprint-wiki-provider
+  namespace: auth
+  labels:
+    goauthentik.io/blueprint: "true"
+type: Opaque
+stringData:
+  wiki-provider.yaml: |
+    # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+    version: 1
+    metadata:
+      name: Custom - Wiki provider
+    entries:
+      # Its own copy of the groups scope rather than a !Find into
+      # mapper_provider.yaml, so neither blueprint depends on the other's apply
+      # order. Both emit the same "groups" claim; only the mapping name differs.
+      - model: authentik_providers_oauth2.scopemapping
+        id: scope_wiki_groups
+        identifiers: { name: "Wiki - groups" }
+        state: present
+        attrs:
+          name: "Wiki - groups"
+          scope_name: groups
+          description: "Groups you belong to (the wiki grants access based on these)"
+          expression: |
+            return {
+                "groups": [group.name for group in request.user.ak_groups.all()],
+            }
+
+      - model: authentik_providers_oauth2.oauth2provider
+        id: wiki_provider
+        identifiers: { name: wiki }
+        state: present
+        attrs:
+          name: wiki
+          client_type: confidential
+          # Same reason as the mapper provider: authentik rejects every
+          # authorize request whose grant type is not listed explicitly.
+          grant_types:
+            - authorization_code
+            - refresh_token
+          client_id: ${secrets_apps_auth_applications_wiki_clientId}
+          client_secret: ${secrets_apps_auth_applications_wiki_clientSecret}
+          authentication_flow: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+          authorization_flow:
+            !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, auth.${vals_info_cluster_domain}]]
+          sub_mode: hashed_user_id
+          # BookStack reads groups off the ID token, so the claims have to be in it.
+          include_claims_in_id_token: true
+          redirect_uris:
+            - matching_mode: strict
+              url: https://wiki.${vals_info_cluster_domain}/oidc/callback
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+            # profile carries preferred_username, which BookStack uses as the
+            # external auth id (OIDC_EXTERNAL_ID_CLAIM).
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+            - !KeyOf scope_wiki_groups
+
+      - model: authentik_core.application
+        id: wiki_application
+        identifiers: { slug: wiki }
+        state: present
+        attrs:
+          name: Wiki
+          slug: wiki
+          provider: !KeyOf wiki_provider
+          meta_launch_url: https://wiki.${vals_info_cluster_domain}/
+          meta_description: Campaign wikis, one section per campaign
+          policy_engine_mode: any
+
+      # Bound to the same base "mapper" group as the Mapper app: every campaign
+      # role group descends from it, so anyone in any campaign can log in. Which
+      # campaign sections they can actually read is decided by BookStack roles,
+      # which are synced from these same group names.
+      - model: authentik_policies.policybinding
+        id: binding_wiki
+        identifiers:
+          target: !KeyOf wiki_application
+          group: !Find [authentik_core.group, [name, mapper]]
+          order: 0
+        state: present
+        attrs:
+          enabled: true

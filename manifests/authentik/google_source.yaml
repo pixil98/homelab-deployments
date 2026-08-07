@@ -1,19 +1,19 @@
-# authentik OAuth source: delegate login to Discord.
-# Discord app redirect URI: https://auth.${vals_info_cluster_domain}/source/oauth/callback/discord/
+# authentik OAuth source: delegate login to Google.
+# Google OAuth client redirect URI: https://auth.${vals_info_cluster_domain}/source/oauth/callback/google/
 apiVersion: v1
 kind: Secret
 metadata:
-  name: authentik-blueprint-discord-source
+  name: authentik-blueprint-google-source
   namespace: auth
   labels:
     goauthentik.io/blueprint: "true"
 type: Opaque
 stringData:
-  discord-source.yaml: |
+  google-source.yaml: |
     # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
     version: 1
     metadata:
-      name: Custom - Discord source
+      name: Custom - Google source
     entries:
       # Blueprints apply concurrently, so force the flows this source references
       # to exist before !Find runs against them.
@@ -25,16 +25,16 @@ stringData:
         attrs: { required: true }
 
       - model: authentik_sources_oauth.oauthsource
-        id: discord_source
-        identifiers: { slug: discord }
+        id: google_source
+        identifiers: { slug: google }
         state: present
         attrs:
-          name: Discord
-          slug: discord
+          name: Google
+          slug: google
           enabled: true
-          provider_type: discord
-          consumer_key: ${secrets_apps_auth_sources_discord_clientId}
-          consumer_secret: ${secrets_apps_auth_sources_discord_clientSecret}
+          provider_type: google
+          consumer_key: ${secrets_apps_auth_sources_google_clientId}
+          consumer_secret: ${secrets_apps_auth_sources_google_clientSecret}
           authentication_flow: !Find [authentik_flows.flow, [slug, default-source-authentication]]
           enrollment_flow: !Find [authentik_flows.flow, [slug, default-source-enrollment]]
           user_matching_mode: email_link

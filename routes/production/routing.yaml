@@ -104,14 +104,6 @@ spec:
           kind: Backend
           name: production
           port: 443
-      # Envoy applies a 15s timeout covering the whole request-response
-      # transaction when this is unset, which truncates large uploads and
-      # long-lived media streams. The destination cluster ingress caps idle
-      # time rather than total duration. "0s" disables the cap and matches
-      # that behavior; Envoy's stream idle timeout still closes genuinely
-      # stalled connections.
-      timeouts:
-        request: "0s"
 ---
 apiVersion: gateway.networking.k8s.io/v1alpha3
 kind: BackendTLSPolicy

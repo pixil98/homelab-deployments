@@ -114,6 +114,11 @@ spec:
           kind: Backend
           name: production-zingde
           port: 443
+      # This catch-all route fronts streaming and other long-running services.
+      # Disable Envoy's 15s total request timeout; its stream idle timeout still
+      # terminates stalled streams.
+      timeouts:
+        request: "0s"
 ---
 apiVersion: gateway.networking.k8s.io/v1alpha3
 kind: BackendTLSPolicy

@@ -138,6 +138,13 @@ def apply_oidc(token):
     instead. Local is parked at 99 rather than 1 so that anything added later
     still sorts ahead of it and the redirect keeps working.
     """
+    # Endpoints come from the provider's discovery document rather than being
+    # built off the issuer. authentik serves authorize, token and userinfo from
+    # /application/o/ while only end-session sits under the application slug, so
+    # deriving them from the issuer produces URLs that 404.
+    disco = json.loads(urllib.request.urlopen(
+        OIDC_ISSUER + ".well-known/openid-configuration", timeout=30).read())
+
     query = """mutation ($s: [AuthenticationStrategyInput]!) {
       authentication { updateStrategies(strategies: $s) {
         responseResult { succeeded message } } } }"""
@@ -151,16 +158,15 @@ def apply_oidc(token):
          "config": [
              {"key": "clientId", "value": json.dumps({"v": OIDC_CLIENT_ID})},
              {"key": "clientSecret", "value": json.dumps({"v": OIDC_CLIENT_SECRET})},
-             {"key": "authorizationURL", "value": json.dumps({"v": OIDC_ISSUER + "authorize/"})},
-             {"key": "tokenURL", "value": json.dumps({"v": OIDC_ISSUER + "token/"})},
-             {"key": "userInfoURL", "value": json.dumps({"v": OIDC_ISSUER + "userinfo/"})},
-             {"key": "issuer", "value": json.dumps({"v": OIDC_ISSUER})},
+             {"key": "authorizationURL", "value": json.dumps({"v": disco["authorization_endpoint"]})},
+             {"key": "tokenURL", "value": json.dumps({"v": disco["token_endpoint"]})},
+             {"key": "userInfoURL", "value": json.dumps({"v": disco["userinfo_endpoint"]})},
+             {"key": "issuer", "value": json.dumps({"v": disco["issuer"]})},
              {"key": "emailClaim", "value": json.dumps({"v": "email"})},
              {"key": "displayNameClaim", "value": json.dumps({"v": "name"})},
              {"key": "mapGroups", "value": json.dumps({"v": True})},
              {"key": "groupsClaim", "value": json.dumps({"v": "groups"})},
-             {"key": "logoutURL", "value": json.dumps({"v": OIDC_ISSUER + "end-session/"})},
-             {"key": "scope", "value": json.dumps({"v": "openid profile email groups"})},
+             {"key": "logoutURL", "value": json.dumps({"v": disco.get("end_session_endpoint", "")})},
          ]},
     ]
     graphql(query, token, {"s": strategies})

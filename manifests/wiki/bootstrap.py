@@ -130,16 +130,23 @@ def login():
 
 
 def apply_oidc(token):
-    """updateStrategies is a full replace, so local auth is sent alongside."""
+    """updateStrategies is a full replace, so local auth is sent alongside.
+
+    authentik is ordered ahead of local because auto-login redirects to the
+    lowest-ordered strategy and only when that one is not form-based. With
+    local first the redirect is silently skipped and the login page renders
+    instead. Local is parked at 99 rather than 1 so that anything added later
+    still sorts ahead of it and the redirect keeps working.
+    """
     query = """mutation ($s: [AuthenticationStrategyInput]!) {
       authentication { updateStrategies(strategies: $s) {
         responseResult { succeeded message } } } }"""
     strategies = [
         {"key": "local", "strategyKey": "local", "displayName": "Local",
-         "order": 0, "isEnabled": True, "config": [],
+         "order": 99, "isEnabled": True, "config": [],
          "selfRegistration": False, "domainWhitelist": [], "autoEnrollGroups": []},
         {"key": OIDC_KEY, "strategyKey": "oidc", "displayName": "authentik",
-         "order": 1, "isEnabled": True, "selfRegistration": True,
+         "order": 0, "isEnabled": True, "selfRegistration": True,
          "domainWhitelist": [], "autoEnrollGroups": [],
          "config": [
              {"key": "clientId", "value": json.dumps({"v": OIDC_CLIENT_ID})},

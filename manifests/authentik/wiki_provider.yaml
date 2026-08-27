@@ -20,18 +20,35 @@ stringData:
     entries:
       # Its own copy of the groups scope rather than a !Find into
       # mapper_provider.yaml, so neither blueprint depends on the other's apply
-      # order. Both emit the same "groups" claim; only the mapping name differs.
+      # order. Flat names only - Wiki.js matches claim strings against its own
+      # group names and cannot read a structured claim.
+      #
+      # Bound to "profile" rather than "groups" because Wiki.js 2.5 builds its
+      # passport strategy with no scope option and only ever asks for
+      # "openid profile email"; a custom scope is never requested, so a mapping
+      # under it never runs.
+      #
+      # The claim is "wiki_groups", not "groups", because authentik's stock
+      # profile mapping already emits "groups" and claims from all mappings on
+      # a scope are merged. Two mappings writing the same key would leave the
+      # winner down to processing order. Wiki.js is pointed at this key via its
+      # groupsClaim setting, so the stock direct-only claim is simply ignored.
       - model: authentik_providers_oauth2.scopemapping
         id: scope_wiki_groups
         identifiers: { name: "Wiki - groups" }
         state: present
         attrs:
           name: "Wiki - groups"
-          scope_name: groups
+          scope_name: profile
           description: "Groups you belong to (the wiki grants access based on these)"
           expression: |
+            # all_groups() walks ancestors; the base "mapper" group grants the handbook.
+            groups = [
+                g for g in request.user.all_groups().order_by("name")
+                if g.name == "mapper" or g.name.startswith("mapper-")
+            ]
             return {
-                "groups": [group.name for group in request.user.ak_groups.all()],
+                "wiki_groups": [g.name for g in groups],
             }
 
       - model: authentik_providers_oauth2.oauth2provider
@@ -49,8 +66,9 @@ stringData:
           client_id: ${secrets_apps_auth_applications_wiki_clientId}
           client_secret: ${secrets_apps_auth_applications_wiki_clientSecret}
           authentication_flow: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+          # Implicit consent: wiki is our own app, so don't prompt to authorize it.
           authorization_flow:
-            !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+            !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
           invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
           signing_key: !Find [authentik_crypto.certificatekeypair, [name, auth.${vals_info_cluster_domain}]]
           sub_mode: hashed_user_id

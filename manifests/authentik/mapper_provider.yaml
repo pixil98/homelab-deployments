@@ -35,10 +35,16 @@ stringData:
         attrs:
           name: mapper-admin
           parents: [ !KeyOf group_mapper ]
+          # No campaign slug: marks a cluster-wide admin in the claim.
+          attributes:
+            role: admin
 
       # authentik's default "profile" mapping happens to include groups, but
       # Mapper's entire access control depends on that claim, so it gets an
       # explicit scope rather than riding on a default that could change.
+      #
+      # Two shapes of the same fact: "campaigns" from group attributes is the
+      # record, "groups" is the flat list Wiki.js needs. Names are never parsed.
       - model: authentik_providers_oauth2.scopemapping
         id: scope_mapper_groups
         identifiers: { name: "Mapper - groups" }
@@ -48,8 +54,26 @@ stringData:
           scope_name: groups
           description: "Groups you belong to (Mapper grants access based on these)"
           expression: |
+            # all_groups() walks ancestors; the filter bounds token size. See README.
+            groups = [
+                g for g in request.user.all_groups().order_by("name")
+                if g.name == "mapper" or g.name.startswith("mapper-")
+            ]
+
+            campaigns = {}
+            is_admin = False
+            for group in groups:
+                attrs = group.attributes or {}
+                slug, role = attrs.get("campaign"), attrs.get("role")
+                if role == "admin" and not slug:
+                    is_admin = True
+                elif slug and role:
+                    campaigns.setdefault(slug, set()).add(role)
+
             return {
-                "groups": [group.name for group in request.user.ak_groups.all()],
+                "groups": [g.name for g in groups],
+                "campaigns": {s: sorted(r) for s, r in campaigns.items()},
+                "mapper_admin": is_admin,
             }
 
       - model: authentik_providers_oauth2.oauth2provider
@@ -71,8 +95,9 @@ stringData:
           client_id: ${secrets_apps_auth_applications_mapper_clientId}
           client_secret: ${secrets_apps_auth_applications_mapper_clientSecret}
           authentication_flow: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+          # Implicit consent: mapper is our own app, so don't prompt to authorize it.
           authorization_flow:
-            !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+            !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
           invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
           # An asymmetric signing key makes authentik issue RS256 ID tokens,
           # which Mapper verifies against the published JWKS. Same certificate
@@ -105,9 +130,10 @@ stringData:
           policy_engine_mode: any
 
       # One binding on the base group gates the app; every role/campaign group
-      # descends from it. Mapper enforces access too, so this is defence in
-      # depth: it stops authentik issuing codes to users it would only reject
-      # and keeps the app off their dashboard.
+      # descends from it. The deployed Mapper build does no group checking, so
+      # this binding is the ONLY access control — not defence in depth. Both
+      # login sources self-enroll, so it is what stands between any Google or
+      # Discord account and every campaign's data. Do not relax it.
       - model: authentik_policies.policybinding
         id: binding_mapper
         identifiers:

@@ -1,10 +1,13 @@
 # authentik groups for the "epic" Mapper campaign.
-# Mapper parses the campaign slug out of the group name (mapper-<slug>-<role>),
-# so a new campaign is a copy of this blueprint with the slug swapped. Renaming
-# a group reassigns every member, so treat these as stable.
+# Campaign and role come from each group's attributes, not from the name — the
+# name is a label that Wiki.js matches on. Renaming a group reassigns every
+# member, so treat these as stable.
 #
 # Both parent to the base "mapper" group (in mapper_provider), so the single app
 # binding there gates access — no per-group bindings needed here.
+#
+# Reference copy: once the campaign service exists it creates these over the
+# authentik API rather than adding a blueprint per campaign.
 apiVersion: v1
 kind: Secret
 metadata:
@@ -27,6 +30,9 @@ stringData:
         attrs:
           name: mapper-epic-mapper
           parents: [ !Find [authentik_core.group, [name, mapper]] ]
+          attributes:
+            campaign: epic
+            role: mapper
 
       - model: authentik_core.group
         id: group_mapper_epic_officer
@@ -35,3 +41,6 @@ stringData:
         attrs:
           name: mapper-epic-officer
           parents: [ !Find [authentik_core.group, [name, mapper]] ]
+          attributes:
+            campaign: epic
+            role: officer

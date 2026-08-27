@@ -9,7 +9,7 @@ Access is driven by the same authentik groups as Mapper. authentik puts the
 user's group names in the `groups` claim, Wiki.js maps each one to a Wiki.js
 group of the same name, and each group's page rules decide which paths it can
 read. A campaign lives under its own path prefix, so campaigns cannot see each
-other.
+other. One shared section, `handbook/`, is readable by every campaign.
 
 ## The one awkward part
 
@@ -23,10 +23,12 @@ groups and page rules afterwards.
 ## Permission model
 
 Isolation comes from no group having a global read rule. Each campaign group
-gets exactly one allow rule scoped to its own path prefix:
+gets exactly one allow rule scoped to its own path prefix, and the base group
+carries the shared handbook:
 
-| authentik group         | Wiki.js group           | Page rule                                |
-|-------------------------|-------------------------|------------------------------------------|
+| authentik group         | Wiki.js group           | Page rule                                  |
+|-------------------------|-------------------------|--------------------------------------------|
+| `mapper`                | `mapper`                | allow `read` where path starts `handbook/` |
 | `mapper-<slug>-mapper`  | `mapper-<slug>-mapper`  | allow `read` where path starts `<slug>/`  |
 | `mapper-<slug>-officer` | `mapper-<slug>-officer` | allow `read,write,manage` on `<slug>/`    |
 | `mapper-admin`          | `mapper-admin`          | everything                                |
@@ -42,8 +44,28 @@ visitors can read the whole wiki. The built-in **Users** group is likewise
 where an accidental global read rule would come from — check it after install.
 
 `mapper` is the base group every campaign group descends from; the authentik
-app binding uses it, so any campaign member can log in. What they can read once
-inside is decided entirely by the page rules above.
+app binding uses it, so any campaign member can log in. It is also the only
+group with content of its own — the handbook — and that is why both scope
+mappings call `all_groups()` rather than listing direct memberships. A user in
+`mapper-<slug>-officer` is not *directly* in `mapper`; only walking ancestors
+puts it in their claim. authentik's own default mapping uses
+`request.user.groups.all()`, which is direct-only and would silently drop it,
+leaving the handbook invisible to everyone but admins.
+
+## Content layout
+
+```
+handbook/     shared reference, read-only, maintained by us
+<slug>/       one per campaign, private to that campaign's groups
+templates/    source for seeding; no group has a rule granting it
+```
+
+Seeded pages fork the moment they are copied — improve a guide six months later
+and existing campaigns never see it. So the split is by whether a page is meant
+to be edited: working documents a campaign fills in (charts, lists, meeting
+notes) get copied into `<slug>/` at provisioning time; reference material that
+should stay canonical lives in `handbook/` and is never copied. Every campaign
+reads the same handbook page, and improving it improves it for all of them.
 
 ## Bootstrap (one-time, after first deploy)
 
@@ -73,6 +95,12 @@ inside is decided entirely by the page rules above.
 
 3. Confirm Guests and Users have no read rule, then log in through authentik.
 
+All three steps are scriptable — nothing here requires the UI. `POST /finalize`
+takes `adminEmail`, `adminPassword`, `siteUrl` and `telemetry`; from there
+`authentication { login(strategy: "local") }` returns a JWT that authorises
+`setApiState`, `updateStrategies` and `createApiKey`. The install is only
+non-declarative, not manual.
+
 ## How group sync actually behaves
 
 From `server/modules/authentication/oidc/authentication.js`:
@@ -100,8 +128,8 @@ administrator account from the setup wizard is untouched by it.
 
 Everything is the GraphQL endpoint at `https://wiki.<domain>/graphql`.
 
-**Credentials.** Enable the API in Admin → API, then mint a key for the
-service:
+**Credentials.** Turn the API on with `authentication { setApiState(enabled:
+true) }` — there is no UI-only step here — then mint a key for the service:
 
 ```graphql
 mutation {
@@ -124,6 +152,12 @@ an expiry, so the service should fail loudly on a 401 rather than treat it as
    a name and nothing else, and returns the new `group { id }`. Do this before
    anyone in the campaign logs in; until it exists their claim entry is dropped
    silently, though a later login picks it up once it does.
+
+   The name has to match the authentik group's name exactly, since that is all
+   Wiki.js matches on. On the authentik side the campaign and role live in the
+   group's `attributes` (see `manifests/authentik/mapper_epic.yaml`) and the
+   name is only a label — so the service should build both from the same
+   record rather than parsing one out of the other.
 
 2. **Page rules** — `groups { update(...) }`. Every argument is non-null
    (`name`, `redirectOnLogin`, `permissions`, `pageRules`), so this is a full
@@ -159,11 +193,15 @@ an expiry, so the service should fail loudly on a 401 rather than treat it as
    any string you choose, so keep it stable per campaign to make updates
    idempotent.
 
-3. **Seed from template** — keep a template tree under a path the campaign
-   groups cannot read, list it with `pages { list(...) }`, fetch each page with
-   `pages { single(id:) }` for its `content`, and recreate them with
-   `pages { create(...) }` under `<slug>/`. Pass the template's `editor` and
-   `contentType` through unchanged so markdown pages do not come back as HTML.
+3. **Seed from template** — copy only the working documents. List `templates/`
+   with `pages { list(...) }`, fetch each page with `pages { single(id:) }` for
+   its `content`, and recreate them with `pages { create(...) }` under
+   `<slug>/`. Pass the template's `editor` and `contentType` through unchanged
+   so markdown pages do not come back as HTML.
+
+   `handbook/` is not seeded and not copied — the rule on the base `mapper`
+   group already grants it, so a new campaign can read it the moment its
+   members can log in.
 
 ## Notes
 

@@ -165,7 +165,11 @@ def apply_oidc(token):
              {"key": "emailClaim", "value": json.dumps({"v": "email"})},
              {"key": "displayNameClaim", "value": json.dumps({"v": "name"})},
              {"key": "mapGroups", "value": json.dumps({"v": True})},
-             {"key": "groupsClaim", "value": json.dumps({"v": "groups"})},
+             # Not "groups": authentik's stock profile mapping emits that one
+             # from direct memberships only. The blueprint adds wiki_groups
+             # alongside it, walking parents so campaign members carry the base
+             # mapper group, and a distinct key keeps the two from colliding.
+             {"key": "groupsClaim", "value": json.dumps({"v": "wiki_groups"})},
              {"key": "logoutURL", "value": json.dumps({"v": disco.get("end_session_endpoint", "")})},
          ]},
     ]

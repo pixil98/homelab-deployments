@@ -1,0 +1,120 @@
+# Wiki.js keeps its OIDC strategy, groups and page rules in the database rather
+# than in the environment, so they are applied here over GraphQL once the
+# deployment is up. See README.md for what the API expects and why the strategy
+# key is pinned. Flux recreates this Job whenever its spec changes, which
+# includes the script, so every step is written to be safe to repeat.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: wikijs-bootstrap
+  namespace: wiki
+---
+# The admin password is generated here and the API key is shown exactly once,
+# so both are read back and stored through the Kubernetes API. That is the only
+# reason this talks to the API server at all.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: wikijs-bootstrap
+  namespace: wiki
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["wikijs-admin", "wikijs-campaign-service"]
+    verbs: ["get", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: wikijs-bootstrap
+  namespace: wiki
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: wikijs-bootstrap
+subjects:
+  - kind: ServiceAccount
+    name: wikijs-bootstrap
+    namespace: wiki
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wikijs-bootstrap
+  namespace: wiki
+spec:
+  # A failure here means the wiki is unconfigured or, worse, readable by guests.
+  # Flux reports the Job as unhealthy rather than retrying into a broken state.
+  backoffLimit: 2
+  template:
+    spec:
+      serviceAccountName: wikijs-bootstrap
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: bootstrap
+          image: python:3.13-alpine
+          imagePullPolicy: IfNotPresent
+          command: ["python3", "/script/bootstrap.py"]
+          env:
+            # The API is reached in-cluster so bootstrap does not depend on the
+            # ingress, but wiki.js records siteUrl and builds its OIDC callback
+            # from the public name.
+            - name: WIKI_URL
+              value: "http://wikijs.wiki.svc.cluster.local"
+            - name: SITE_URL
+              value: "https://wiki.${vals_info_cluster_domain}"
+            - name: OIDC_ISSUER
+              value: "https://auth.${vals_info_cluster_domain}/application/o/wiki/"
+            - name: NAMESPACE
+              value: wiki
+            - name: API_KEY_SECRET
+              value: wikijs-campaign-service
+            - name: ADMIN_SECRET
+              value: wikijs-admin
+            - name: ADMIN_EMAIL
+              value: "${vals_info_cluster_email}"
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: wikijs-bootstrap-credentials
+                  key: oidcClientId
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: wikijs-bootstrap-credentials
+                  key: oidcClientSecret
+          volumeMounts:
+            - name: script
+              mountPath: /script
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+      volumes:
+        - name: script
+          configMap:
+            name: wikijs-bootstrap-script
+---
+# Only the OIDC credentials come from secrets.json. The local administrator's
+# password is generated at bootstrap and kept in the wikijs-admin Secret, so
+# there is nothing here that claims to be rotatable but is not.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wikijs-bootstrap-credentials
+  namespace: wiki
+type: Opaque
+stringData:
+  oidcClientId: "${secrets_apps_auth_applications_wiki_clientId}"
+  oidcClientSecret: "${secrets_apps_auth_applications_wiki_clientSecret}"

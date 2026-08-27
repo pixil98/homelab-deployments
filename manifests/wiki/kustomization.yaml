@@ -8,3 +8,12 @@ resources:
   - wikijs_service.yaml
   - wikijs_ingress.yaml
   - wikijs_vpa.yaml
+  - wikijs_bootstrap.yaml
+# Hashing the script into the ConfigMap name is what makes the Job re-run:
+# editing bootstrap.py changes the name, which changes the Job spec, which
+# Flux then recreates.
+configMapGenerator:
+  - name: wikijs-bootstrap-script
+    namespace: wiki
+    files:
+      - bootstrap.py

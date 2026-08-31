@@ -20,5 +20,9 @@
         "/plexinc/pms-docker/"
       ]
     }
+  ],
+  "ignorePaths": [
+    "flux/flux-system/",
+    "flux/removed/"
   ]
 }

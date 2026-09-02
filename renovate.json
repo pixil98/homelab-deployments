@@ -1,0 +1,28 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "datasourceTemplate": "docker",
+      "managerFilePatterns": [
+        "/^.*\\.yaml$/"
+      ],
+      "matchStrings": [
+        "image: registry\\.lab\\.reisman\\.org\\/proxy\\.(?<depName>.+?):(?<currentValue>.+)"
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "ignoreUnstable": false,
+      "matchPackageNames": [
+        "/plexinc/pms-docker/"
+      ]
+    }
+  ],
+  "ignorePaths": [
+    "flux/flux-system/",
+    "flux/removed/"
+  ]
+}

@@ -1,26 +1,26 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "datasourceTemplate": "docker",
-      "managerFilePatterns": [
-        "/^.*\\.yaml$/"
-      ],
-      "matchStrings": [
-        "image: registry\\.lab\\.reisman\\.org\\/proxy\\.(?<depName>.+?):(?<currentValue>.+)"
-      ]
-    }
+  "extends": [
+    "config:recommended"
   ],
-  "packageRules": [
-    {
-      "ignoreUnstable": false,
-      "matchPackageNames": [
-        "/plexinc/pms-docker/"
-      ]
-    }
+  "automerge": false,
+  "enabledManagers": [
+    "flux", 
+    "kubernetes"
   ],
+  "registryAliases": {
+    "registry.lab.reisman.org/proxy.ghcr.io": "ghcr.io",
+    "registry.lab.reisman.org/proxy.docker.io": "docker.io",
+    "registry.lab.reisman.org/proxy.quay.io": "quay.io",
+    "registry.lab.reisman.org/proxy.gcr.io": "gcr.io",
+    "registry.lab.reisman.org/proxy.registry.k8s.io": "registry.k8s.io"
+  },
+  "flux": {
+    "managerFilePatterns": ["/^.+\\.ya?ml$/"]
+  },
+  "kubernetes": {
+    "managerFilePatterns": ["/^.+\\.ya?ml$/"]
+  },
   "ignorePaths": [
     "flux/flux-system/",
     "flux/removed/"

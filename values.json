@@ -19,8 +19,11 @@
       }
     },
     "mail": {
-      "ipAddress": "192.168.2.15",
+      "dovecot": {
+        "ipAddress": "192.168.2.15"
+      },
       "postfix": {
+        "ipAddress": "192.168.2.14",
         "relayHost": "mail.smtp2go.com",
         "relayPort": "2525",
         "virtualDomains": "hobolife.org scobie.org xcoolgroup.org"

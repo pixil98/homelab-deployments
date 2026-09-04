@@ -31,7 +31,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -67,7 +67,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -103,7 +103,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -139,7 +139,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -178,7 +178,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -217,7 +217,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -256,7 +256,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -295,7 +295,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -331,7 +331,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -370,7 +370,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -421,7 +421,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -457,7 +457,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -493,7 +493,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c
@@ -529,7 +529,7 @@ spec:
         runAsUser: 0
       containers:
         - name: rsync
-          image: docker.io/library/alpine:3.23.4
+          image: docker.io/library/alpine:3.24.1
           command:
             - sh
             - -c

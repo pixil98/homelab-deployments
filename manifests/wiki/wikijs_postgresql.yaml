@@ -49,6 +49,8 @@ spec:
       secretAccessKey:
         name: cnpg-backup-credentials
         key: SECRET_ACCESS_KEY
+    data:
+      compression: gzip
     wal:
       compression: gzip
   retentionPolicy: "30d"
@@ -70,7 +72,7 @@ metadata:
   namespace: wiki
 spec:
   suspend: ${vals_infra_storage_backup_paused}
-  schedule: "0 3 * * *"
+  schedule: "0 0 3 * * *"
   backupOwnerReference: self
   method: plugin
   pluginConfiguration:

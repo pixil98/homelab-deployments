@@ -24,5 +24,12 @@
   "ignorePaths": [
     "flux/flux-system/",
     "flux/removed/"
+  ],
+  "packageRules": [
+    {
+      "description": "Plex tags end in a per-release commit hash, which docker versioning treats as an incompatible suffix",
+      "matchPackageNames": ["docker.io/plexinc/pms-docker"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)-[0-9a-f]+$"
+    }
   ]
 }

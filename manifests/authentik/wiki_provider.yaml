@@ -94,6 +94,7 @@ stringData:
           provider: !KeyOf wiki_provider
           meta_launch_url: https://wiki.${vals_info_cluster_domain}/
           meta_description: Campaign wikis, one section per campaign
+          icon: icons/wikijs.svg
           policy_engine_mode: any
 
       # Bound to the same base "mapper" group as the Mapper app: every campaign

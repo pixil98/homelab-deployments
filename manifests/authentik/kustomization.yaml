@@ -7,3 +7,4 @@ resources:
   - mapper_provider.yaml
   - mapper_epic.yaml
   - wiki_provider.yaml
+  - wiki_icon.yaml

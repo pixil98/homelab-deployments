@@ -31,7 +31,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: wikijs
-          image: ghcr.io/requarks/wiki:2.5.316
+          image: ghcr.io/requarks/wiki:2.5.317
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false

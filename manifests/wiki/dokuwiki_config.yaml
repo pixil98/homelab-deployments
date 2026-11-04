@@ -58,11 +58,17 @@ stringData:
 
     // authentik serves authorize, token and userinfo from /application/o/;
     // only end-session sits under the application slug.
+    //
+    // The browser visits authorize and end-session, so those use the public
+    // name. DokuWiki calls token and userinfo itself, and its HTTP client only
+    // speaks HTTP/1.0, which the shared front proxy answers with "426 Upgrade
+    // Required". Those two go straight to authentik's Service instead, as
+    // libation-register's userinfo call does.
     $conf['plugin']['oauthgeneric']['key'] = '${secrets_apps_auth_applications_wiki_clientId}';
     $conf['plugin']['oauthgeneric']['secret'] = '${secrets_apps_auth_applications_wiki_clientSecret}';
     $conf['plugin']['oauthgeneric']['authurl'] = 'https://auth.${vals_info_cluster_domain}/application/o/authorize/';
-    $conf['plugin']['oauthgeneric']['tokenurl'] = 'https://auth.${vals_info_cluster_domain}/application/o/token/';
-    $conf['plugin']['oauthgeneric']['userurl'] = 'https://auth.${vals_info_cluster_domain}/application/o/userinfo/';
+    $conf['plugin']['oauthgeneric']['tokenurl'] = 'http://authentik-server.auth.svc.cluster.local/application/o/token/';
+    $conf['plugin']['oauthgeneric']['userurl'] = 'http://authentik-server.auth.svc.cluster.local/application/o/userinfo/';
     $conf['plugin']['oauthgeneric']['logouturl'] = 'https://auth.${vals_info_cluster_domain}/application/o/wiki/end-session/';
     // 1 sends the access token as a bearer header on the userinfo request.
     $conf['plugin']['oauthgeneric']['authmethod'] = 1;

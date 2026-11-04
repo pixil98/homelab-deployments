@@ -92,6 +92,9 @@ should stay canonical lives in `handbook:` and is never copied.
 
 ## Provisioning a campaign from the service
 
+The wiki's part of it. `CAMPAIGN_SERVICE.md` at the root of this branch covers
+the whole service, including authentik and inviting people.
+
 Everything goes through DokuWiki's JSON-RPC API at
 `https://wiki.<domain>/lib/exe/jsonrpc.php`.
 

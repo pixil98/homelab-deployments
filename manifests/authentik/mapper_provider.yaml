@@ -44,7 +44,8 @@ stringData:
       # explicit scope rather than riding on a default that could change.
       #
       # Two shapes of the same fact: "campaigns" from group attributes is the
-      # record, "groups" is the flat list the wiki matches on. Names are never parsed.
+      # record, "groups" is the flat list the wiki matches on. Mapper currently reads
+      # campaign and role from the names in "groups" (see mapper_server_env.yaml).
       - model: authentik_providers_oauth2.scopemapping
         id: scope_mapper_groups
         identifiers: { name: "Mapper - groups" }

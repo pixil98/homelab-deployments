@@ -23,7 +23,7 @@ in `mapper_provider.yaml` gates both applications — authentik counts members o
 a child group as members of the parent, so there are no per-campaign bindings
 to maintain.
 
-## Attributes are the record, names are labels
+## Attributes are the record, names are an interface
 
 Campaign and role live in each group's `attributes`:
 
@@ -33,11 +33,13 @@ attributes:
   role: officer
 ```
 
-The group's *name* is not parsed for them. It exists because the wiki's ACL
-rules name groups as plain strings and have no other way to identify one — so
-the name has to be stable and has to match, but it carries no meaning the code
-depends on. Keeping the two separate means a slug like
-`trader-joes-local-1` cannot break anything, which name parsing would.
+The attributes are the record, and the `campaigns` claim is built from them.
+The group's *name* still matters, though. The wiki's ACL rules name groups as
+plain strings and have no other way to identify one. Mapper, as configured in
+`manifests/mapper/mapper_server_env.yaml`, reads campaign and role out of the
+names with the patterns `mapper-{campaign}-mapper` and
+`mapper-{campaign}-officer` rather than from the `campaigns` claim. So the
+name has to be stable and has to follow those patterns exactly.
 
 Renaming a group reassigns every member, so treat names as immutable once a
 campaign has people in it.
@@ -90,7 +92,9 @@ blocks. Once the campaign service exists it creates the groups over the
 authentik API instead, and that file stays as the reference for the shape.
 
 Either way the same slug has to be used for the wiki namespace and its ACL
-rules — see `manifests/wiki/README.md`.
+rules. `CAMPAIGN_SERVICE.md` at the root of this branch lists every step
+across authentik, Mapper and the wiki, for creating a campaign and for
+inviting someone into one.
 
 ## Note on slugs
 

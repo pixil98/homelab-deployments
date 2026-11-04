@@ -1,0 +1,85 @@
+# DokuWiki's settings, as the two "protected" config files it reads. DokuWiki
+# applies these after anything saved through the admin UI and shows each
+# setting here as locked, so git stays the source of truth for them while the
+# admin UI can still change everything else.
+#
+# Mounted file by file into /storage/conf (see dokuwiki_deployment.yaml) rather
+# than copied there, so the OIDC client secret never lands on the volume or in
+# its backups.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dokuwiki-config
+  namespace: wiki
+type: Opaque
+stringData:
+  local.protected.php: |
+    <?php
+    $conf['title'] = 'Wiki';
+    $conf['baseurl'] = 'https://wiki.${vals_info_cluster_domain}';
+    // Organizing material, not something to badge with a public license.
+    $conf['license'] = '0';
+
+    // Nothing is readable without a rule in acl.auth.php; mapper-admin bypasses
+    // the rules entirely.
+    $conf['useacl'] = 1;
+    $conf['authtype'] = 'oauth';
+    $conf['superuser'] = '@mapper-admin';
+    // Accounts come only from authentik, so there is no sign-up, password or
+    // profile to manage here.
+    $conf['disableactions'] = 'register,resendpwd,profile,profile_delete';
+    // How long a session trusts its groups before the oauth plugin fetches them
+    // from authentik again. This bounds how long someone removed from a
+    // campaign in authentik can keep reading it.
+    $conf['auth_security_timeout'] = 900;
+
+    // A campaign's existence is itself sensitive (see
+    // manifests/authentik/README.md). Without sneaky_index the page index lists
+    // every namespace, including ones the reader has no access to.
+    $conf['sneaky_index'] = 1;
+    $conf['sitemap'] = 0;
+
+    // No calls out: updates arrive through Renovate rather than dokuwiki.org,
+    // and visitor addresses are not reverse-resolved for the change log.
+    $conf['updatecheck'] = 0;
+    $conf['dnslookups'] = 0;
+
+    // authentik is the only way in. singleService skips the login form and
+    // redirects straight to it; register-on-auth creates the account on first
+    // login, since the register action is disabled above.
+    $conf['plugin']['oauth']['singleService'] = 1;
+    $conf['plugin']['oauth']['register-on-auth'] = 1;
+    // Replace the user's groups with the claim each time it is fetched, so
+    // authentik stays the only record of who is in which campaign.
+    $conf['plugin']['oauth']['overwrite-groups'] = 1;
+    // Pinned rather than derived from the request, because the authentik
+    // provider matches it strictly.
+    $conf['plugin']['oauth']['custom-redirectURI'] = 'https://wiki.${vals_info_cluster_domain}/doku.php';
+
+    // authentik serves authorize, token and userinfo from /application/o/;
+    // only end-session sits under the application slug.
+    $conf['plugin']['oauthgeneric']['key'] = '${secrets_apps_auth_applications_wiki_clientId}';
+    $conf['plugin']['oauthgeneric']['secret'] = '${secrets_apps_auth_applications_wiki_clientSecret}';
+    $conf['plugin']['oauthgeneric']['authurl'] = 'https://auth.${vals_info_cluster_domain}/application/o/authorize/';
+    $conf['plugin']['oauthgeneric']['tokenurl'] = 'https://auth.${vals_info_cluster_domain}/application/o/token/';
+    $conf['plugin']['oauthgeneric']['userurl'] = 'https://auth.${vals_info_cluster_domain}/application/o/userinfo/';
+    $conf['plugin']['oauthgeneric']['logouturl'] = 'https://auth.${vals_info_cluster_domain}/application/o/wiki/end-session/';
+    // 1 sends the access token as a bearer header on the userinfo request.
+    $conf['plugin']['oauthgeneric']['authmethod'] = 1;
+    // offline_access is what makes authentik issue a refresh token, which the
+    // plugin uses to fetch the groups again once the access token runs out.
+    $conf['plugin']['oauthgeneric']['scopes'] = array('openid', 'profile', 'email', 'groups', 'offline_access');
+    $conf['plugin']['oauthgeneric']['needs-state'] = 1;
+    $conf['plugin']['oauthgeneric']['json-user'] = 'preferred_username';
+    $conf['plugin']['oauthgeneric']['json-name'] = 'name';
+    $conf['plugin']['oauthgeneric']['json-mail'] = 'email';
+    // Not "groups": see manifests/authentik/wiki_provider.yaml.
+    $conf['plugin']['oauthgeneric']['json-grps'] = 'wiki_groups';
+    $conf['plugin']['oauthgeneric']['label'] = 'authentik';
+  plugins.protected.php: |
+    <?php
+    // Login depends on these, so the extension manager must not disable them.
+    $plugins['oauth'] = 1;
+    $plugins['oauthgeneric'] = 1;
+    // Sends usage statistics to dokuwiki.org when an admin submits its form.
+    $plugins['popularity'] = 0;

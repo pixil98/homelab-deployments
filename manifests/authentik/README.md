@@ -6,8 +6,8 @@ it as blueprint secrets, picked up by the `goauthentik.io/blueprint` label.
 
 authentik is the identity provider **and** the membership record: which
 campaigns a person belongs to, and in what role, is stored here and nowhere
-else. Mapper learns it from the `groups` scope at login; Wiki.js cannot
-request a custom scope, so it learns it from `profile` (see below).
+else. Mapper and the wiki each learn it from their own `groups` scope at
+login (see below).
 
 ## Group model
 
@@ -33,10 +33,10 @@ attributes:
   role: officer
 ```
 
-The group's *name* is not parsed for them. It exists because Wiki.js matches
-claim strings against its own group names and has no other way to identify a
-group — so the name has to be stable and has to match, but it carries no
-meaning the code depends on. Keeping the two separate means a slug like
+The group's *name* is not parsed for them. It exists because the wiki's ACL
+rules name groups as plain strings and have no other way to identify one — so
+the name has to be stable and has to match, but it carries no meaning the code
+depends on. Keeping the two separate means a slug like
 `trader-joes-local-1` cannot break anything, which name parsing would.
 
 Renaming a group reassigns every member, so treat names as immutable once a
@@ -55,18 +55,19 @@ campaign has people in it.
 ```
 
 `Wiki - groups` (in `wiki_provider.yaml`) emits a flat `wiki_groups` list,
-because Wiki.js cannot read a structured claim. Both are the same underlying
-fact.
+because DokuWiki's ACL rules match plain group names. Both are the same
+underlying fact.
 
-It sits on the `profile` scope rather than `groups`. Wiki.js 2.5 builds its
-passport strategy with no scope option and only ever requests
-`openid profile email`, so a mapping under a custom scope never runs — the
-one here did nothing until it was moved. The claim is named `wiki_groups`
-rather than `groups` because authentik's stock `profile` mapping already
-emits `groups`, and claims from every mapping on a scope are merged: two
-mappings writing the same key would leave the winner down to processing
-order. Wiki.js is pointed at `wiki_groups` through its `groupsClaim`
-setting, so the stock direct-only claim is ignored.
+The claim is named `wiki_groups` rather than `groups` because the wiki also
+requests `profile`, whose stock mapping already emits a direct-only `groups`,
+and claims from every granted scope are merged: two mappings writing the same
+key would leave the winner down to processing order. DokuWiki is pointed at
+`wiki_groups` through the oauthgeneric `json-grps` setting, so the stock claim
+is ignored.
+
+The wiki also requests `offline_access` for a refresh token, which it uses to
+re-read `wiki_groups` every 15 minutes of a session. Removing someone from a
+campaign here therefore reaches the wiki without waiting for a fresh login.
 
 Two things the expressions do deliberately:
 
@@ -88,8 +89,8 @@ Today: copy `mapper_epic.yaml`, change the slug and the two `attributes`
 blocks. Once the campaign service exists it creates the groups over the
 authentik API instead, and that file stays as the reference for the shape.
 
-Either way the same slug has to be used for the Wiki.js groups and the wiki
-path prefix — see `manifests/wiki/README.md`.
+Either way the same slug has to be used for the wiki namespace and its ACL
+rules — see `manifests/wiki/README.md`.
 
 ## Note on slugs
 

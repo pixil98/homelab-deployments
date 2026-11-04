@@ -1,7 +1,6 @@
-# authentik OIDC provider: Wiki.js delegates login here.
-# Wiki.js builds its callback from the auth strategy's key, so the strategy is
-# created with the fixed UUID below rather than a generated one (see
-# manifests/wiki/README.md) and the redirect URI stays declarative.
+# authentik OIDC provider: DokuWiki's oauth plugin delegates login here.
+# The plugin's callback is doku.php itself, pinned in
+# manifests/wiki/dokuwiki_config.yaml so the strict match below holds.
 # Discovery: https://auth.${vals_info_cluster_domain}/application/o/wiki/.well-known/openid-configuration
 apiVersion: v1
 kind: Secret
@@ -20,26 +19,22 @@ stringData:
     entries:
       # Its own copy of the groups scope rather than a !Find into
       # mapper_provider.yaml, so neither blueprint depends on the other's apply
-      # order. Flat names only - Wiki.js matches claim strings against its own
-      # group names and cannot read a structured claim.
-      #
-      # Bound to "profile" rather than "groups" because Wiki.js 2.5 builds its
-      # passport strategy with no scope option and only ever asks for
-      # "openid profile email"; a custom scope is never requested, so a mapping
-      # under it never runs.
+      # order. Flat names only - DokuWiki's ACL rules name groups as plain
+      # strings, and the oauth plugin reads a list of them.
       #
       # The claim is "wiki_groups", not "groups", because authentik's stock
-      # profile mapping already emits "groups" and claims from all mappings on
-      # a scope are merged. Two mappings writing the same key would leave the
-      # winner down to processing order. Wiki.js is pointed at this key via its
-      # groupsClaim setting, so the stock direct-only claim is simply ignored.
+      # profile mapping, which the wiki also requests, already emits a direct-only
+      # "groups", and claims from every granted scope are merged. Two mappings
+      # writing the same key would leave the winner down to processing order.
+      # DokuWiki is pointed at this key through the oauthgeneric json-grps
+      # setting, so the stock claim is simply ignored.
       - model: authentik_providers_oauth2.scopemapping
         id: scope_wiki_groups
         identifiers: { name: "Wiki - groups" }
         state: present
         attrs:
           name: "Wiki - groups"
-          scope_name: profile
+          scope_name: groups
           description: "Groups you belong to (the wiki grants access based on these)"
           expression: |
             # all_groups() walks ancestors; the base "mapper" group grants the handbook.
@@ -75,13 +70,17 @@ stringData:
           include_claims_in_id_token: true
           redirect_uris:
             - matching_mode: strict
-              url: https://wiki.${vals_info_cluster_domain}/login/a19a8034-8514-4578-af66-dc085d2334d1/callback
+              url: https://wiki.${vals_info_cluster_domain}/doku.php
           property_mappings:
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
-            # Wiki.js reads groups from the userinfo endpoint, so this scope has
-            # to be in the strategy's scope list as well as here.
+            # The refresh token this grants is how the wiki re-reads a session's
+            # groups every few minutes, so a removal here reaches it without a
+            # fresh login.
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, offline_access]]
+            # DokuWiki reads groups from the userinfo endpoint, so this scope has
+            # to be in its requested scopes as well as here.
             - !KeyOf scope_wiki_groups
 
       - model: authentik_core.application
@@ -94,13 +93,13 @@ stringData:
           provider: !KeyOf wiki_provider
           meta_launch_url: https://wiki.${vals_info_cluster_domain}/
           meta_description: Campaign wikis, one section per campaign
-          icon: icons/wikijs.svg
+          icon: icons/dokuwiki.svg
           policy_engine_mode: any
 
       # Bound to the same base "mapper" group as the Mapper app: every campaign
       # role group descends from it, so anyone in any campaign can log in. Which
-      # campaign sections they can actually read is decided by Wiki.js page
-      # rules on groups named after these same authentik groups.
+      # campaign sections they can actually read is decided by DokuWiki ACL
+      # rules on these same authentik group names.
       - model: authentik_policies.policybinding
         id: binding_wiki
         identifiers:

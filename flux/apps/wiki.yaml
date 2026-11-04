@@ -21,5 +21,3 @@ spec:
     name: flux-system
   timeout: 10m
   wait: true
-  # The bootstrap Job is immutable; recreate it when its spec changes.
-  force: true

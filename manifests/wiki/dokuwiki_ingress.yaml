@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: wikijs
+  name: dokuwiki
   namespace: wiki
   labels:
     app.kubernetes.io/instance: wiki
@@ -14,7 +14,7 @@ spec:
   tls:
     - hosts:
         - wiki.${vals_info_cluster_domain}
-      secretName: wikijs-tls
+      secretName: dokuwiki-tls
   rules:
     - host: wiki.${vals_info_cluster_domain}
       http:
@@ -23,6 +23,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: wikijs
+                name: dokuwiki
                 port:
                   name: http

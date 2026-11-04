@@ -1,6 +1,6 @@
 # authentik groups for the "epic" Mapper campaign.
 # Campaign and role come from each group's attributes, not from the name — the
-# name is a label that Wiki.js matches on. Renaming a group reassigns every
+# name is a label the wiki's ACL rules match on. Renaming a group reassigns every
 # member, so treat these as stable.
 #
 # Both parent to the base "mapper" group (in mapper_provider), so the single app

@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dokuwiki
+  namespace: wiki
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    app.kubernetes.io/instance: wiki
+    app.kubernetes.io/name: dokuwiki
+spec:
+  replicas: 1
+  # One ReadWriteOnce volume, and DokuWiki's flat files assume a single writer.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: wiki
+      app.kubernetes.io/name: dokuwiki
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: wiki
+        app.kubernetes.io/name: dokuwiki
+    spec:
+      # www-data, the user the image itself drops to when started as root.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+        runAsGroup: 33
+        fsGroup: 33
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        # Same image as the app, for its curl and tar.
+        - name: prepare-storage
+          image: docker.io/dokuwiki/dokuwiki:stable@sha256:cdff2da12458b91ad7bb2bd14a1b45c451f1a112891d7a29b5f63b6c160bc8c2
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash", "/config/prepare-storage.sh"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          volumeMounts:
+            - name: data
+              mountPath: /storage
+            - name: storage-config
+              mountPath: /config
+              readOnly: true
+      containers:
+        # Tracks "stable" by digest because release tags carry a hotfix letter
+        # (2026-07-14c) that Renovate's versioning cannot order, so a tag pin
+        # would miss hotfixes. Every new release or rebuild arrives as a digest
+        # update instead.
+        - name: dokuwiki
+          image: docker.io/dokuwiki/dokuwiki:stable@sha256:cdff2da12458b91ad7bb2bd14a1b45c451f1a112891d7a29b5f63b6c160bc8c2
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          env:
+            # Matches the ingress's proxy-body-size.
+            - name: PHP_UPLOADLIMIT
+              value: 50M
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          # health.php boots DokuWiki with its full configuration, auth plugin
+          # included, so a broken config or a missing plugin fails it.
+          readinessProbe:
+            httpGet:
+              path: /health.php
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health.php
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          volumeMounts:
+            - name: data
+              mountPath: /storage
+            - name: config
+              mountPath: /storage/conf/local.protected.php
+              subPath: local.protected.php
+              readOnly: true
+            - name: config
+              mountPath: /storage/conf/plugins.protected.php
+              subPath: plugins.protected.php
+              readOnly: true
+      volumes:
+        # Pages, media, users, ACLs, plugins and the search index all live here
+        # as plain files; volsync_replication.yaml backs it up.
+        - name: data
+          persistentVolumeClaim:
+            claimName: dokuwiki-data
+        - name: config
+          secret:
+            secretName: dokuwiki-config
+        - name: storage-config
+          configMap:
+            name: dokuwiki-storage

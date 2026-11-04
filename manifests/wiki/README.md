@@ -1,210 +1,129 @@
 # Wiki
 
-Wiki.js 2 at `wiki.${cluster_domain}`, on a CloudNativePG cluster like every
-other Postgres app in the homelab. Pages and uploaded assets are stored in the
-database, so there is no PVC here and barman WAL archiving is the whole backup
-story.
+DokuWiki at `wiki.${cluster_domain}`. There is no database: pages, media,
+accounts, ACL rules and plugins are plain files on one volume
+(`dokuwiki-data`), backed up nightly by VolSync the same way as Mapper's.
 
 Access is driven by the same authentik groups as Mapper. authentik puts the
-user's group names in the `groups` claim, Wiki.js maps each one to a Wiki.js
-group of the same name, and each group's page rules decide which paths it can
-read. A campaign lives under its own path prefix, so campaigns cannot see each
-other. One shared section, `handbook/`, is readable by every campaign.
+user's group names in the `wiki_groups` claim, DokuWiki replaces the account's
+groups with that list, and ACL rules on each namespace decide who can read it.
+A campaign lives in its own namespace, so campaigns cannot see each other. One
+shared namespace, `handbook:`, is readable by every campaign.
 
-## The one awkward part
+## Where things live
 
-Wiki.js takes only database and transport settings from the environment.
-Everything else — the OIDC strategy, groups, page rules — lives in the database
-and is applied over GraphQL, not through these manifests. So the deployment is
-declarative but its configuration is not; treat the bootstrap below as part of
-the install, and keep the campaign service as the only thing that writes
-groups and page rules afterwards.
+| What | Where | Changed by |
+|------|-------|------------|
+| Settings (login, privacy, access defaults) | `dokuwiki_config.yaml`, mounted as `conf/local.protected.php` and `conf/plugins.protected.php` | git only; the admin UI shows them as locked |
+| Plugins (`oauth`, `oauthgeneric`) | pinned `tag@commit` in `prepare-storage.sh` | Renovate |
+| Base ACL rules | `acl.auth.php` here | git; rewritten into the volume on every start |
+| Campaign ACL rules | `conf/acl.auth.php` on the volume | the campaign service, or the ACL manager |
+| Accounts | `conf/users.auth.php` on the volume | the oauth plugin, from authentik, at every login |
+| Pages and media | `data/` on the volume | people |
+
+`prepare-storage.sh` runs as an init container before every start. It installs
+the pinned plugins, rewrites the base ACL rules while carrying every other rule
+over, and creates the empty user file on first start. Editing it or
+`acl.auth.php` changes the generated ConfigMap's name, which rolls the pod.
 
 ## Permission model
 
-Isolation comes from no group having a global read rule. Each campaign group
-gets exactly one allow rule scoped to its own path prefix, and the base group
-carries the shared handbook:
+Nothing is readable unless a rule grants it (`* @ALL 0`). Each campaign gets
+rules on its own namespace only, and the base group carries the handbook:
 
-| authentik group         | Wiki.js group           | Page rule                                  |
-|-------------------------|-------------------------|--------------------------------------------|
-| `mapper`                | `mapper`                | allow `read` where path starts `handbook/` |
-| `mapper-<slug>-mapper`  | `mapper-<slug>-mapper`  | allow `read` where path starts `<slug>/`  |
-| `mapper-<slug>-officer` | `mapper-<slug>-officer` | allow `read,write,manage` on `<slug>/`    |
-| `mapper-admin`          | `mapper-admin`          | everything                                |
+| authentik group         | ACL rule, as stored                              | Grants                              |
+|-------------------------|--------------------------------------------------|-------------------------------------|
+| `mapper`                | `handbook:* @mapper 1`, `start @mapper 1`        | read the handbook and landing page  |
+| `mapper-<slug>-mapper`  | `<slug>:* @mapper%2d<slug>%2dmapper 1`           | read the campaign                   |
+| `mapper-<slug>-officer` | `<slug>:* @mapper%2d<slug>%2dofficer 16`         | read, edit, create, upload, delete  |
+| `mapper-admin`          | `superuser` setting, no rule                     | everything, including the admin UI  |
 
-Note the admin row: it is a normal group named `mapper-admin`, **not** the
-built-in `Administrators` group. Group sync reconciles an OIDC user's groups to
-exactly the claim on every login, and `Administrators` never appears in the
-claim, so mapping to it would strip the user's admin rights on their next
-login. Give `mapper-admin` the `manage:system` permission instead.
+DokuWiki stores group names in ACL rules URL-encoded, hyphens included, hence
+the `%2d`. The ACL manager and the API encode for you; only a rule written by
+hand needs it.
 
-Leave the built-in **Guests** group with no read rule, otherwise anonymous
-visitors can read the whole wiki. The built-in **Users** group is likewise
-where an accidental global read rule would come from — check it after install.
+Because a campaign's existence is itself sensitive (see
+`manifests/authentik/README.md`), the rules are backed by settings that keep
+other campaigns out of sight, not just out of reach. These were checked as a
+member of one campaign, in a local run of this image and config, before
+switching over:
 
-`mapper` is the base group every campaign group descends from; the authentik
-app binding uses it, so any campaign member can log in. It is also the only
-group with content of its own — the handbook — and that is why both scope
-mappings call `all_groups()` rather than listing direct memberships. A user in
-`mapper-<slug>-officer` is not *directly* in `mapper`; only walking ancestors
-puts it in their claim. authentik's own default mapping uses
-`request.user.groups.all()`, which is direct-only and would silently drop it,
-leaving the handbook invisible to everyone but admins.
+- Search, title lookup, recent changes and the page index list only readable
+  pages. The index needs `sneaky_index`, which is set; without it, every
+  namespace name shows up there.
+- A page in another campaign and a page in a namespace that does not exist both
+  answer "permission denied", so guessing slugs reveals nothing.
+- `conf/` and `data/` are not reachable over HTTP; media goes through
+  DokuWiki's ACL check like pages do.
+
+The landing page `start` is readable by everyone, so do not link campaigns from
+it — a link shows the slug even to people who cannot follow it.
+
+## How group sync actually behaves
+
+From the oauth plugin's `OAuthManager.php`:
+
+- The first login creates the account, matched on email afterwards, so the
+  `email` claim is required. There is no sign-up, password or profile page.
+- Each time the plugin fetches the claims it replaces the account's groups with
+  `wiki_groups`, keeping only DokuWiki's own `user` and `generic` groups, which
+  no rule mentions. It fetches them at login, and again whenever a session older
+  than `auth_security_timeout` (15 minutes) is used, using the refresh token
+  that `offline_access` grants. Someone removed from a campaign in authentik
+  therefore loses it here within about 15 minutes, without logging in again. If
+  authentik refuses the refresh, the session is logged out.
+- Nothing has to be created on the wiki side for a group. DokuWiki groups are
+  just names on the account and in the rules, so a claim value with no rule
+  grants nothing, and a rule added before anyone logs in simply waits.
 
 ## Content layout
 
 ```
-handbook/     shared reference, read-only, maintained by us
-<slug>/       one per campaign, private to that campaign's groups
-templates/    source for seeding; no group has a rule granting it
+handbook:     shared reference, read-only, maintained by us
+<slug>:       one per campaign, private to that campaign's groups
+templates:    source for seeding; no rule grants it, so only admins see it
 ```
 
 Seeded pages fork the moment they are copied — improve a guide six months later
 and existing campaigns never see it. So the split is by whether a page is meant
 to be edited: working documents a campaign fills in (charts, lists, meeting
-notes) get copied into `<slug>/` at provisioning time; reference material that
-should stay canonical lives in `handbook/` and is never copied. Every campaign
-reads the same handbook page, and improving it improves it for all of them.
-
-## Bootstrap (one-time, after first deploy)
-
-1. Visit `https://wiki.<domain>/` and complete the setup wizard. This creates
-   the local administrator account — keep it, it is the only way back in if
-   OIDC breaks.
-
-2. Add the OpenID Connect strategy. It **must** be created with the key
-   `a19a8034-8514-4578-af66-dc085d2334d1`, because the authentik provider
-   pins the callback URL that this key produces:
-
-   ```
-   https://wiki.<domain>/login/a19a8034-8514-4578-af66-dc085d2334d1/callback
-   ```
-
-   The UI generates a random key instead, so create it over GraphQL at
-   `/graphql` with the admin's JWT, using `authentication { updateStrategies }`
-   and passing the key explicitly. Settings that matter:
-
-   - Client ID / Secret: from `apps.auth.applications.wiki` in `secrets.json`
-   - Issuer: `https://auth.<domain>/application/o/wiki/`
-   - Scope: `openid profile email groups` — `groups` is required, Wiki.js reads
-     the claim off the userinfo endpoint
-   - **Map Groups**: on, Groups Claim: `groups`
-   - Assign to group: leave empty, so users only ever hold their authentik
-     groups
-
-3. Confirm Guests and Users have no read rule, then log in through authentik.
-
-All three steps are scriptable — nothing here requires the UI. `POST /finalize`
-takes `adminEmail`, `adminPassword`, `siteUrl` and `telemetry`; from there
-`authentication { login(strategy: "local") }` returns a JWT that authorises
-`setApiState`, `updateStrategies` and `createApiKey`. The install is only
-non-declarative, not manual.
-
-## How group sync actually behaves
-
-From `server/modules/authentication/oidc/authentication.js`:
-
-```js
-const expectedGroups = Object.values(WIKI.auth.groups).filter(g => groups.includes(g.name)).map(g => g.id)
-```
-
-It walks Wiki.js's own groups and keeps the ones whose name appears in the
-claim, then relates what is missing and unrelates everything else. Three
-consequences worth designing around:
-
-- A claim value with no matching **Wiki.js** group is dropped silently — not
-  auto-created, and nothing is logged. Creating the Wiki.js group is step 1 of
-  provisioning for that reason.
-- Sync is a full reconcile, so any group not in the claim is removed. Anything
-  assigned by hand to an OIDC user will not survive their next login.
-- It self-heals: a user who logged in before their group existed picks it up on
-  their next login, so a late group creation is recoverable.
-
-The reconcile only runs for logins through this strategy, so the local
-administrator account from the setup wizard is untouched by it.
+notes) get copied into `<slug>:` at provisioning time; reference material that
+should stay canonical lives in `handbook:` and is never copied.
 
 ## Provisioning a campaign from the service
 
-Everything is the GraphQL endpoint at `https://wiki.<domain>/graphql`.
+Everything goes through DokuWiki's JSON-RPC API at
+`https://wiki.<domain>/lib/exe/jsonrpc.php`.
 
-**Credentials.** Turn the API on with `authentication { setApiState(enabled:
-true) }` — there is no UI-only step here — then mint a key for the service:
+1. **Rules** — `plugin.acl.addAcl` with scope `<slug>:*`, once for
+   `@mapper-<slug>-mapper` at level 1 and once for `@mapper-<slug>-officer` at
+   level 16. It adds or updates, so repeating it is safe, and it does the name
+   encoding itself.
+2. **Seed from template** — `core.listPages` on `templates`, then
+   `core.getPage` and `core.savePage` for each working document under
+   `<slug>:`.
 
-```graphql
-mutation {
-  authentication {
-    createApiKey(name: "campaign-service", expiration: "1y", fullAccess: true) {
-      key
-      responseResult { succeeded message }
-    }
-  }
-}
-```
+The API is off (`remote = 0`) until the service exists. Turning it on means
+setting `remote` and `remoteuser` in `dokuwiki_config.yaml` and settling how
+the service authenticates: every account here comes from authentik and has no
+usable password.
 
-The key goes back in `Authorization: Bearer <key>` and is shown once. `group:
-Int` scopes a non-full-access key to a single group's permissions; the group
-mutations below need `manage:groups` or `manage:system` either way. Keys carry
-an expiry, so the service should fail loudly on a 401 rather than treat it as
-"no groups yet".
+## Break-glass
 
-1. **Groups** — `groups { create(name: "mapper-<slug>-officer") }`, which takes
-   a name and nothing else, and returns the new `group { id }`. Do this before
-   anyone in the campaign logs in; until it exists their claim entry is dropped
-   silently, though a later login picks it up once it does.
+There is no local administrator. `mapper-admin` in authentik is the superuser,
+and if authentik is unreachable nobody can log in. The way in is then the files
+themselves: pages are plain text under `/storage/data/pages/<namespace>/`, and
+`kubectl -n wiki exec deploy/dokuwiki` reaches them. Settings are read-only
+mounts, so changes to them go through git.
 
-   The name has to match the authentik group's name exactly, since that is all
-   Wiki.js matches on. On the authentik side the campaign and role live in the
-   group's `attributes` (see `manifests/authentik/mapper_epic.yaml`) and the
-   name is only a label — so the service should build both from the same
-   record rather than parsing one out of the other.
+## Upgrades
 
-2. **Page rules** — `groups { update(...) }`. Every argument is non-null
-   (`name`, `redirectOnLogin`, `permissions`, `pageRules`), so this is a full
-   replace rather than a patch: read the group with `groups { single(id:) }`
-   and send the complete merged object back, or you will silently blank its
-   other rules.
+The image tracks `stable` by digest rather than a release tag. DokuWiki's tags
+carry a hotfix letter (`2026-07-14c`) that Renovate's versioning cannot order,
+so a tag pin would miss hotfixes; with the digest, every release and rebuild
+arrives as an image digest PR. The image refreshes DokuWiki's bundled files
+on start, so an upgrade needs nothing else.
 
-   ```graphql
-   mutation {
-     groups {
-       update(
-         id: 5
-         name: "mapper-epic-officer"
-         redirectOnLogin: "/"
-         permissions: ["read:pages", "write:pages", "manage:pages", "read:assets", "write:assets"]
-         pageRules: [{
-           id: "epic-content"
-           deny: false
-           match: START
-           path: "epic/"
-           roles: ["read:pages", "write:pages", "manage:pages"]
-           locales: []
-         }]
-       ) { responseResult { succeeded message } }
-     }
-   }
-   ```
-
-   `permissions` is the global capability list and `pageRules` scopes where
-   those capabilities apply — a group needs the permission globally *and* a
-   rule granting it on the path. `match` accepts `START`, `EXACT`, `END`,
-   `REGEX` or `TAG`; `START` is the prefix match campaigns want. Rule `id` is
-   any string you choose, so keep it stable per campaign to make updates
-   idempotent.
-
-3. **Seed from template** — copy only the working documents. List `templates/`
-   with `pages { list(...) }`, fetch each page with `pages { single(id:) }` for
-   its `content`, and recreate them with `pages { create(...) }` under
-   `<slug>/`. Pass the template's `editor` and `contentType` through unchanged
-   so markdown pages do not come back as HTML.
-
-   `handbook/` is not seeded and not copied — the rule on the base `mapper`
-   group already grants it, so a new campaign can read it the moment its
-   members can log in.
-
-## Notes
-
-Wiki.js 2 is in maintenance mode upstream — 2.5.x still gets fixes but v3 has
-no release date. This was a deliberate trade for staying on Postgres rather
-than running MariaDB for BookStack.
+Plugin pins are tracked by a custom manager in `renovate.json` on the
+production branch, which is where Renovate reads its configuration for every
+branch.

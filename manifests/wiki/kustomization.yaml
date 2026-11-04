@@ -6,6 +6,7 @@ resources:
   - dokuwiki_pvc.yaml
   - dokuwiki_deployment.yaml
   - dokuwiki_service.yaml
+  - dokuwiki_ingress.yaml
   - dokuwiki_vpa.yaml
   - volsync_replication.yaml
 # Hashing these into the ConfigMap name rolls the Deployment whenever either

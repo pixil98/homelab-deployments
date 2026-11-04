@@ -74,8 +74,10 @@ username and display name.
    within 15 minutes; Mapper at the person's next login.
 2. **Otherwise, create an invitation** with
    `POST /api/v3/stages/invitation/invitations/`:
-   - `flow`: the `invitation-enrollment` flow (flux-core
-     `20_platform/auth/authentik_enrollment_blueprint.yaml`)
+   - `flow`: a campaign enrollment flow of its own (see below). Until that
+     exists, the platform's generic `invitation-enrollment` flow (flux-core
+     `20_platform/auth/authentik_enrollment_blueprint.yaml`) works the same
+     way.
    - `single_use: true`, and an `expires` a few days out
    - `fixed_data`:
      ```json
@@ -99,13 +101,22 @@ username and display name.
    subject is "You have been invited to auth.<domain>", which names no
    campaign.
 
-   authentik on ugre cannot send mail yet (see `MAIL.md`). Until it can, hand
-   out the link directly:
-   `https://auth.<domain>/if/flow/invitation-enrollment/?itoken=<invitation pk>`.
+   authentik on ugre cannot send mail yet: `mail.onioncartography.com` has no
+   DNS record (see `MAIL.md`). Until it can, hand out the link directly:
+   `https://auth.<domain>/if/flow/<flow slug>/?itoken=<invitation pk>`.
 
-Redeeming the invite asks for a username, display name and password, consumes
-the invitation, creates the account in the invited group, and logs the person
-in.
+With the generic flow, redeeming the invite asks for a username, display name
+and password, consumes the invitation, creates the account in the invited
+group, and logs the person in.
+
+**Campaign invites get their own enrollment flow.** People joining a campaign
+will probably be invited somewhat differently from the platform's general
+invites, so the service should not share the generic `invitation-enrollment`
+flow. It belongs in this branch's `manifests/authentik`, next to the other
+campaign blueprints, rather than in flux-core. What it does differently is
+not decided yet (see below). Whatever it is, it has to keep the generic
+flow's two guarantees: the email comes only from the invitation, and groups
+come only from the invitation's `fixed_data`, never from the form.
 
 **Watch for the Google and Discord buttons.** Those sources enroll anyone who
 signs in through them, with no groups. An invitee who uses one instead of the
@@ -133,6 +144,9 @@ that point, since the enrollment flow always creates a new user.
 
 ## Not decided yet
 
+- **What the campaign enrollment flow does differently** from the generic
+  one: which fields it asks for, whether it offers Google or Discord instead
+  of a password, and what the invite says.
 - **Who may use it.** Admins only, or officers inviting into their own
   campaign? If officers, the service has to check the caller's
   `mapper-<slug>-officer` membership itself.

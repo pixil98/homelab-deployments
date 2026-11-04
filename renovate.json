@@ -8,6 +8,16 @@
     "flux/flux-system/",
     "flux/removed/"
   ],
+  "customManagers": [
+    {
+      "description": "DokuWiki plugins on ugre are fetched from GitHub at a pinned tag@commit; their tags are release dates",
+      "customType": "regex",
+      "managerFilePatterns": ["/^manifests/wiki/prepare-storage\\.sh$/"],
+      "matchStrings": ["install_plugin \\S+ (?<depName>[\\w.-]+/[\\w.-]+) (?<currentValue>\\d{4}-\\d{2}-\\d{2})@(?<currentDigest>[a-f0-9]{40})"],
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "regex:^(?<major>\\d{4})-(?<minor>\\d{2})-(?<patch>\\d{2})$"
+    }
+  ],
   "packageRules": [
     {
       "description": "Plex tags end in a per-release commit hash, which docker versioning treats as an incompatible suffix",

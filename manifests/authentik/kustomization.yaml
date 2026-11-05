@@ -8,3 +8,5 @@ resources:
   - mapper_epic.yaml
   - wiki_provider.yaml
   - wiki_icon.yaml
+  - campaign_manager_provider.yaml
+  - campaign_manager_account.yaml

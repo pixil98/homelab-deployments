@@ -1,0 +1,69 @@
+# campaign-manager's own authentik account: a service account whose API token
+# the service calls authentik with. Its role allows only what the service
+# does: find users, make groups and add people to them, and make, email and
+# delete invitations.
+#
+# authentik will not let it make a group superuser or add anyone to one, which
+# needs a permission it does not have. Its permissions do reach every ordinary
+# group, though, so treat the token as nearly an admin credential.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authentik-blueprint-campaign-manager-account
+  namespace: auth
+  labels:
+    goauthentik.io/blueprint: "true"
+type: Opaque
+stringData:
+  campaign-manager-account.yaml: |
+    # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+    version: 1
+    metadata:
+      name: Custom - Campaign manager account
+    entries:
+      # One permission per call the service makes. Sending an invitation's
+      # email counts as adding to it.
+      - model: authentik_rbac.role
+        id: campaign_manager_role
+        identifiers: { name: campaign-manager }
+        state: present
+        attrs:
+          name: campaign-manager
+          permissions:
+            - authentik_core.view_user
+            - authentik_core.view_group
+            - authentik_core.add_group
+            - authentik_core.add_user_to_group
+            - authentik_flows.view_flow
+            - authentik_stages_invitation.view_invitation
+            - authentik_stages_invitation.add_invitation
+            - authentik_stages_invitation.delete_invitation
+
+      - model: authentik_core.user
+        id: campaign_manager_user
+        identifiers: { username: campaign-manager }
+        state: present
+        attrs:
+          username: campaign-manager
+          name: Campaign manager
+          type: service_account
+          path: service-accounts
+          is_active: true
+          roles:
+            - !KeyOf campaign_manager_role
+
+      # Skipped while the key is empty, which is what Flux substitutes when
+      # flux-secrets has no such key yet: a token with an empty key must
+      # never exist.
+      - model: authentik_core.token
+        identifiers: { identifier: campaign-manager-api }
+        state: present
+        conditions:
+          - "${secrets_apps_campaignManager_authentikToken}"
+        attrs:
+          identifier: campaign-manager-api
+          user: !KeyOf campaign_manager_user
+          intent: api
+          key: "${secrets_apps_campaignManager_authentikToken}"
+          expiring: false
+          description: API token for campaign-manager (manifests/campaign-manager)

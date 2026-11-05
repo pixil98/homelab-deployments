@@ -1,0 +1,111 @@
+# authentik OAuth2 provider for campaign-manager's callers. A caller sends an
+# access token from this provider, and the service reads their roles from its
+# campaigns and mapper_admin claims (see manifests/campaign-manager/README.md).
+#
+# There is no UI yet, so the way to a token is the client_credentials grant
+# with a username and one of that user's app passwords. Add authorization_code,
+# with redirect URIs, once something has a login page to send people to.
+# Discovery: https://auth.${vals_info_cluster_domain}/application/o/campaign-manager/.well-known/openid-configuration
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authentik-blueprint-campaign-manager-provider
+  namespace: auth
+  labels:
+    goauthentik.io/blueprint: "true"
+type: Opaque
+stringData:
+  campaign-manager-provider.yaml: |
+    # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+    version: 1
+    metadata:
+      name: Custom - Campaign manager provider
+    entries:
+      # Its own copy of Mapper's campaigns claim rather than a !Find into
+      # mapper_provider.yaml, so neither blueprint depends on the other's apply
+      # order. Built from the groups' attributes, the record of who is in what,
+      # and filtered to mapper groups like the others, to bound token size.
+      - model: authentik_providers_oauth2.scopemapping
+        id: scope_campaigns
+        identifiers: { name: "Campaign manager - campaigns" }
+        state: present
+        attrs:
+          name: "Campaign manager - campaigns"
+          scope_name: campaigns
+          description: "Your campaigns, and your role in each"
+          expression: |
+            # all_groups() walks ancestors, as the other mappings do.
+            campaigns = {}
+            is_admin = False
+            for group in request.user.all_groups():
+                if group.name != "mapper" and not group.name.startswith("mapper-"):
+                    continue
+                attrs = group.attributes or {}
+                slug, role = attrs.get("campaign"), attrs.get("role")
+                if role == "admin" and not slug:
+                    is_admin = True
+                elif slug and role:
+                    campaigns.setdefault(slug, set()).add(role)
+            return {
+                "campaigns": {s: sorted(r) for s, r in campaigns.items()},
+                "mapper_admin": is_admin,
+            }
+
+      - model: authentik_providers_oauth2.oauth2provider
+        id: campaign_manager_provider
+        identifiers: { name: campaign-manager }
+        state: present
+        attrs:
+          name: campaign-manager
+          # Confidential, with a client secret authentik generates and nobody
+          # is given. The grant's built-in path makes up a user for whoever
+          # presents that secret, so it stays closed. Callers prove who they
+          # are with a username and app password, which needs no secret.
+          client_type: confidential
+          # Not a secret for this provider; the service checks tokens were
+          # issued to it.
+          client_id: campaign-manager
+          grant_types:
+            - client_credentials
+          authentication_flow: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+          authorization_flow:
+            !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          # Asymmetric, so the service verifies tokens against the published
+          # keys and never needs a secret of the provider's.
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, auth.${vals_info_cluster_domain}]]
+          sub_mode: hashed_user_id
+          # authentik only puts scope claims in access tokens with this on,
+          # and the service reads roles from the access token.
+          include_claims_in_id_token: true
+          # Roles are read from the token, so its life is how long someone
+          # removed as an officer can still invite.
+          access_token_validity: minutes=5
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+            - !KeyOf scope_campaigns
+
+      - model: authentik_core.application
+        id: campaign_manager_application
+        identifiers: { slug: campaign-manager }
+        state: present
+        attrs:
+          name: Campaign manager
+          slug: campaign-manager
+          provider: !KeyOf campaign_manager_provider
+          # An API, not something to open: blank://blank keeps it out of the
+          # app library.
+          meta_launch_url: blank://blank
+          policy_engine_mode: any
+
+      # Anyone on the platform may have a token. What they can do with it is
+      # the service's decision, made per campaign.
+      - model: authentik_policies.policybinding
+        identifiers:
+          target: !KeyOf campaign_manager_application
+          group: !Find [authentik_core.group, [name, mapper]]
+          order: 0
+        state: present
+        attrs:
+          enabled: true

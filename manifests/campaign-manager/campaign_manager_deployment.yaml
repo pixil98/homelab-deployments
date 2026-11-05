@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: campaign-manager
+  namespace: campaign-manager
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    app.kubernetes.io/instance: campaign-manager
+    app.kubernetes.io/name: campaign-manager
+spec:
+  replicas: 1
+  # One reconciler at a time; two would both try to settle the same
+  # invitations during a rollout.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: campaign-manager
+      app.kubernetes.io/name: campaign-manager
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: campaign-manager
+        app.kubernetes.io/name: campaign-manager
+    spec:
+      # It talks to authentik and the wiki, never to the Kubernetes API.
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: campaign-manager
+          # Published by github.com/pixil98/campaign-manager's CI on every push
+          # to main. Renovate pins the digest once the image exists.
+          image: ghcr.io/pixil98/campaign-manager:main
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: authentik-token
+              mountPath: /secrets/authentik
+              readOnly: true
+            - name: wiki-token
+              mountPath: /secrets/wiki
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: campaign-manager-config
+        - name: authentik-token
+          secret:
+            secretName: campaign-manager-authentik
+        # Written by the wiki's init container, not by Flux (see
+        # wiki_token_rbac.yaml). The pod waits for it to exist.
+        - name: wiki-token
+          secret:
+            secretName: campaign-manager-wiki-token

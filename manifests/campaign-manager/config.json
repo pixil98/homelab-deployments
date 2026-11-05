@@ -1,0 +1,21 @@
+{
+  "listen": ":8080",
+  "oidc": {
+    "issuer": "https://auth.${vals_info_cluster_domain}/application/o/campaign-manager/",
+    "client_id": "campaign-manager"
+  },
+  "authentik": {
+    "url": "https://auth.${vals_info_cluster_domain}",
+    "token_file": "/secrets/authentik/token",
+    "base_group": "mapper",
+    "invitation_flow": "invitation-enrollment",
+    "invitation_lifetime": "168h",
+    "send_invitation_email": false
+  },
+  "wiki": {
+    "url": "http://dokuwiki.wiki.svc.cluster.local",
+    "token_file": "/secrets/wiki/token",
+    "templates_namespace": "templates"
+  },
+  "reconcile_interval": "1m"
+}

@@ -1,0 +1,30 @@
+# Public, so officers can reach it from wherever they invite people. Every
+# route but /healthz needs an authentik token, and answers the same way for a
+# campaign that does not exist as for one the caller is not in.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: campaign-manager
+  namespace: campaign-manager
+  labels:
+    app.kubernetes.io/instance: campaign-manager
+  annotations:
+    cert-manager.io/cluster-issuer: ${vals_infra_certManager_issuer}
+    external-dns.kubernetes.io/target: ${vals_info_cluster_publicHost}
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - campaigns.${vals_info_cluster_domain}
+      secretName: campaign-manager-tls
+  rules:
+    - host: campaigns.${vals_info_cluster_domain}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: campaign-manager
+                port:
+                  name: http

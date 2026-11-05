@@ -1,0 +1,34 @@
+# The wiki's init container mints campaign-manager's wiki API token and
+# delivers it here as the campaign-manager-wiki-token Secret (see
+# manifests/wiki/prepare-storage.sh). The token can only be minted inside the
+# wiki, where its signing salt lives on the volume. This lets the wiki's
+# service account write that Secret. Kubernetes cannot limit "create" to one
+# name, so it could also create others in this namespace, but it can read or
+# change none of them.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: wiki-token-writer
+  namespace: campaign-manager
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["campaign-manager-wiki-token"]
+    verbs: ["get", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: wiki-token-writer
+  namespace: campaign-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: wiki-token-writer
+subjects:
+  - kind: ServiceAccount
+    name: dokuwiki
+    namespace: wiki

@@ -5,8 +5,9 @@ person into one, what it needs before it can, and how to do the same by hand
 meanwhile.
 
 It is built as `campaign-manager` (github.com/pixil98/campaign-manager,
-`~/src/campaign-manager` until it is pushed) but not deployed yet. Status as
-of 2026-11-05.
+`~/src/campaign-manager` until it is pushed) and deployed by
+`manifests/campaign-manager`, whose README covers what it is made of and how to
+call it. Status as of 2026-11-05.
 
 The service is the only thing meant to write campaign state once it runs.
 Until then, everything below is done by hand (see the end of this file).
@@ -158,6 +159,9 @@ or already invited to it, in another role is refused rather than moved.
 
 ## What the service needs first
 
+All of these now exist in this branch; `manifests/campaign-manager/README.md`
+says where.
+
 - **An authentik provider of its own**, for callers' tokens, with
   `include_claims_in_id_token` on and a scope mapping emitting `campaigns`
   and `mapper_admin`. authentik's access tokens carry the ID token's claims,
@@ -185,8 +189,6 @@ or already invited to it, in another role is refused rather than moved.
 - **What the campaign enrollment flow does differently** from the generic
   one: which fields it asks for, whether it offers Google or Discord instead
   of a password, and what the invite says.
-- **Where it runs.** It is its own service, not part of Mapper, but its
-  deployment on ugre is not written yet.
 - **Whether Mapper keeps per-campaign data of its own** that needs creating.
   Nothing in this repo shows that it does.
 - **Removing a person and changing roles.** Remove the group membership in

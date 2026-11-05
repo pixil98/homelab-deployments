@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - campaign_manager_secret.yaml
+  - wiki_token_rbac.yaml
+  - campaign_manager_deployment.yaml
+  - campaign_manager_service.yaml
+  - campaign_manager_ingress.yaml
+  - campaign_manager_vpa.yaml
+# The config's hash in its name rolls the Deployment whenever it changes.
+configMapGenerator:
+  - name: campaign-manager-config
+    namespace: campaign-manager
+    files:
+      - config.json

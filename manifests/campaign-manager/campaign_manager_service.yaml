@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: campaign-manager
+  namespace: campaign-manager
+  labels:
+    app.kubernetes.io/instance: campaign-manager
+    app.kubernetes.io/name: campaign-manager
+spec:
+  selector:
+    app.kubernetes.io/instance: campaign-manager
+    app.kubernetes.io/name: campaign-manager
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP

@@ -5,7 +5,6 @@ resources:
   - google_source.yaml
   - login_sources.yaml
   - mapper_provider.yaml
-  - mapper_epic.yaml
   - wiki_provider.yaml
   - wiki_icon.yaml
   - campaign_manager_provider.yaml

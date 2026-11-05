@@ -87,14 +87,14 @@ Two things the expressions do deliberately:
 
 ## Adding a campaign
 
-Today: copy `mapper_epic.yaml`, change the slug and the two `attributes`
-blocks. Once the campaign service exists it creates the groups over the
-authentik API instead, and that file stays as the reference for the shape.
+`mpr campaign create <slug>` has campaign-manager create the two groups over
+the authentik API, in the shape above, and the wiki namespace's ACL rules
+under the same slug. No campaign is declared in git: `epic` began as a
+blueprint, removed once the service had taken it over.
 
-Either way the same slug has to be used for the wiki namespace and its ACL
-rules. `CAMPAIGN_SERVICE.md` at the root of this branch lists every step
-across authentik, Mapper and the wiki, for creating a campaign and for
-inviting someone into one.
+`CAMPAIGN_SERVICE.md` at the root of this branch lists every step across
+authentik, Mapper and the wiki, for creating a campaign and for inviting
+someone into one.
 
 ## Note on slugs
 

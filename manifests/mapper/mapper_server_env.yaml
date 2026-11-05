@@ -15,8 +15,8 @@ stringData:
   OIDC_GROUPS_CLAIM: "groups"
 
   # Campaign membership is parsed out of the group names, so onboarding another
-  # campaign is copying manifests/authentik/mapper_epic.yaml with a new slug
-  # rather than changing anything here. {campaign} is Mapper's own placeholder,
+  # campaign is "mpr campaign create <slug>", which makes its groups, rather
+  # than changing anything here. {campaign} is Mapper's own placeholder,
   # not a Flux substitution.
   #
   # The base "mapper" group and the campaign-less "mapper-admin" match neither

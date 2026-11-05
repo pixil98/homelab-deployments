@@ -19,7 +19,7 @@ stringData:
       # Base group: parent of every Mapper role/campaign group. The app binding
       # targets this one, so any descendant grants access (authentik counts
       # child-group members as members of the parent). Per-campaign role groups
-      # live in their own blueprint (see mapper_epic) and parent to this.
+      # are made by campaign-manager, not in git, and parent to this.
       - model: authentik_core.group
         id: group_mapper
         identifiers: { name: mapper }

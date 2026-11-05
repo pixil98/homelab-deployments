@@ -1,16 +1,15 @@
 # Campaign service
 
 This records what the service does to create a campaign and to invite a
-person into one, what it needs before it can, and how to do the same by hand
-meanwhile.
+person into one, and what it needs before it can.
 
-It is built as `campaign-manager` (github.com/pixil98/campaign-manager,
-`~/src/campaign-manager` until it is pushed) and deployed by
+It is built as `campaign-manager` (github.com/pixil98/campaign-manager) and
+deployed by
 `manifests/campaign-manager`, whose README covers what it is made of and how to
 call it. Status as of 2026-11-05.
 
-The service is the only thing meant to write campaign state once it runs.
-Until then, everything below is done by hand (see the end of this file).
+The service is the only thing meant to write campaign state, and `mpr` is
+how people ask it to (see the end of this file).
 
 ## Who may use it
 
@@ -49,11 +48,10 @@ Constraints that follow from that:
   are the record; the names still have to match exactly.
 - **authentik is the only membership record.** The service never writes
   membership into Mapper or the wiki; both pick it up from the login claim.
-- **One writer per object.** Once the service exists, it owns the campaign
-  groups and the campaign ACL rules. Any campaign still declared in git (a
-  blueprint like `manifests/authentik/mapper_epic.yaml`, or rules in
-  `manifests/wiki/acl.auth.php`) moves out of git when the service takes it
-  over. Removing a blueprint does not delete the groups it created.
+- **One writer per object.** The service owns the campaign groups and the
+  campaign ACL rules, and no campaign is declared in git. `epic` began as a
+  blueprint, which was removed once the service had taken it over; removing a
+  blueprint does not delete the groups it created.
 
 ## Creating a campaign
 
@@ -200,19 +198,11 @@ says where.
   anyone. They can reach nothing without a campaign group, but the accounts
   exist.
 
-## Today, by hand
+## Today, with mpr
 
-1. Copy `manifests/authentik/mapper_epic.yaml` to `mapper_<slug>.yaml`.
-   Change the Secret and blueprint names, both group names and both
-   `campaign` attributes, then add it to `manifests/authentik/kustomization.yaml`.
-2. Add the two rules to `manifests/wiki/acl.auth.php` with the names encoded,
-   e.g. `<slug>:* @mapper%2d<slug>%2dmapper 1` and
-   `<slug>:* @mapper%2d<slug>%2dofficer 16`. Committing them rolls the wiki pod,
-   which writes them. Alternatively, add them in the wiki's ACL manager as
-   `mapper-admin`, in which case they live only on the volume.
-3. Invite people from the authentik admin UI (Directory → Invitations), with
-   the `invitation-enrollment` flow and the `fixed_data` shown above. Or add
-   existing accounts to the group directly.
-4. An officer creates `<slug>:start` and copies working documents from
-   `templates:`. Don't link the campaign from the root `start` page: everyone
-   can read it.
+1. `mpr campaign create <slug> --name "<real name>"`, as a `mapper-admin`. It
+   makes the groups and the wiki rules and copies in the working pages, and
+   running it again fills in anything missing without overwriting.
+2. `mpr invite <slug> <email> --role officer` for the first officer, who can
+   then invite the rest.
+3. Don't link the campaign from the root `start` page: everyone can read it.

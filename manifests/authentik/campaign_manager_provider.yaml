@@ -67,6 +67,9 @@ stringData:
           client_id: campaign-manager
           grant_types:
             - client_credentials
+          # Required even though client_credentials never redirects; add the
+          # UI's callback here along with authorization_code.
+          redirect_uris: []
           authentication_flow: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
           authorization_flow:
             !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]

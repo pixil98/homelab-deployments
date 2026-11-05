@@ -20,11 +20,19 @@ stringData:
     // Organizing material, not something to badge with a public license.
     $conf['license'] = '0';
 
-    // Nothing is readable without a rule in acl.auth.php; mapper-admin bypasses
-    // the rules entirely.
+    // Nothing is readable without a rule in acl.auth.php; superusers bypass
+    // the rules entirely. campaign-manager has to be one to add campaigns'
+    // ACL rules. Its group is safe to trust: only the local account
+    // prepare-storage.sh makes is in it, since the wiki_groups claim only
+    // carries mapper groups.
     $conf['useacl'] = 1;
     $conf['authtype'] = 'oauth';
-    $conf['superuser'] = '@mapper-admin';
+    $conf['superuser'] = '@mapper-admin,@campaign-manager';
+
+    // The API is for campaign-manager alone, which signs in with the token
+    // prepare-storage.sh mints for its account.
+    $conf['remote'] = 1;
+    $conf['remoteuser'] = '@campaign-manager';
     // Accounts come only from authentik, so there is no sign-up, password or
     // profile to manage here.
     $conf['disableactions'] = 'register,resendpwd,profile,profile_delete';

@@ -19,6 +19,8 @@ shared namespace, `handbook:`, is readable by every campaign.
 | Base ACL rules | `acl.auth.php` here | git; rewritten into the volume on every start |
 | Campaign ACL rules | `conf/acl.auth.php` on the volume | the campaign service, or the ACL manager |
 | Accounts | `conf/users.auth.php` on the volume | the oauth plugin, from authentik, at every login |
+| campaign-manager's account | the same file | `prepare-storage.sh`, once |
+| campaign-manager's API token | minted on the volume, delivered as the Secret `campaign-manager/campaign-manager-wiki-token` | `prepare-storage.sh`, on every start |
 | Pages and media | `data/` on the volume | people |
 
 `prepare-storage.sh` runs as an init container before every start. It installs
@@ -106,10 +108,21 @@ Everything goes through DokuWiki's JSON-RPC API at
    `core.getPage` and `core.savePage` for each working document under
    `<slug>:`.
 
-The API is off (`remote = 0`) until the service exists. Turning it on means
-setting `remote` and `remoteuser` in `dokuwiki_config.yaml` and settling how
-the service authenticates: every account here comes from authentik and has no
-usable password.
+The API is on for campaign-manager alone (`remote` and `remoteuser` in
+`dokuwiki_config.yaml`); everyone else gets 401. Its account is a local one,
+`campaign-manager`, with no usable password and the `campaign-manager` group,
+which is a superuser so it can add ACL rules. It signs in with an API token,
+which DokuWiki checks before the authentik login runs. No authentik user can
+carry that group, since the `wiki_groups` claim only holds mapper groups.
+
+The token is signed with a salt on the volume, so it cannot be made outside
+the wiki. `prepare-storage.sh` mints it on every start (DokuWiki hands back
+the stored one while it is valid) and writes it into the Secret
+`campaign-manager/campaign-manager-wiki-token`. It does this with a service
+account token mounted into the init container alone, so the PHP app itself
+has no Kubernetes credentials. If that fails, for example because
+campaign-manager is not deployed yet, the wiki starts anyway with a warning.
+Restarting the wiki publishes the token again.
 
 ## Break-glass
 

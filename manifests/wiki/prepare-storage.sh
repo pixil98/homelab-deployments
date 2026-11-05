@@ -9,6 +9,11 @@ set -euo pipefail
 storage=/storage
 conf=$storage/conf
 plugins=$storage/lib/plugins
+
+# The image's own storage setup, which the app container runs again when it
+# starts. Running it here first gives a fresh volume DokuWiki's data
+# directories, which minting the API token below needs.
+/dokuwiki-storagesetup.sh > /dev/null
 mkdir -p "$conf" "$plugins"
 
 # The image keeps conf/ on the volume without the .htaccess that ships with
@@ -65,3 +70,47 @@ if [ ! -f "$users" ]; then
     '#' '# Written by the oauth plugin from authentik on each login.' > "$users"
   echo "created empty user file"
 fi
+
+# campaign-manager's wiki account. Its password field is "!", which matches no
+# password: it only ever signs in with the API token below, which DokuWiki
+# checks before any other login. Its group is a superuser and the only one
+# allowed the API (dokuwiki_config.yaml). The address is unroutable on
+# purpose; the oauth plugin matches accounts by email, so it must be one no
+# authentik user has.
+account=campaign-manager
+if ! grep -q "^$account:" "$users"; then
+  printf '%s:!:Campaign manager:%s@wiki.invalid:%s\n' "$account" "$account" "$account" >> "$users"
+  echo "added the $account account"
+fi
+
+# Delivers the account's API token to campaign-manager, as the Secret
+# campaign-manager/campaign-manager-wiki-token. DokuWiki hands back the stored
+# token for as long as it is valid, so this is the same token every start.
+# The token is signed with a salt that lives on this volume, which is why it is
+# minted here rather than kept in git.
+publish_token() {
+  local kube=/var/run/secrets/kube-api
+  local api=https://kubernetes.default.svc/api/v1/namespaces/campaign-manager/secrets
+  local name=campaign-manager-wiki-token
+  local token body
+
+  token=$(php -r 'define("DOKU_INC", "/var/www/html/"); require DOKU_INC . "inc/init.php";
+                  echo "\n", \dokuwiki\JWT::fromUser("campaign-manager")->getToken(), "\n";' | tail -n 1) || return 1
+  case "$token" in
+    eyJ*.*.*) ;;
+    *) echo "minting gave no token" >&2; return 1 ;;
+  esac
+
+  body=$(printf '{"apiVersion": "v1", "kind": "Secret", "metadata": {"name": "%s"}, "type": "Opaque", "stringData": {"token": "%s"}}' "$name" "$token")
+  kube_api() {
+    curl --fail --silent --show-error --output /dev/null --cacert "$kube/ca.crt" \
+      -H "Authorization: Bearer $(cat "$kube/token")" -H "Content-Type: application/json" "$@"
+  }
+  # Replace it if it exists, otherwise create it.
+  kube_api -X PUT --data "$body" "$api/$name" 2> /dev/null || kube_api -X POST --data "$body" "$api" || return 1
+  echo "published the $account API token"
+}
+
+# A failure only warns: the wiki has to start whether or not campaign-manager
+# is deployed yet. Restarting the wiki publishes it again.
+publish_token || echo "warning: could not publish the $account API token" >&2

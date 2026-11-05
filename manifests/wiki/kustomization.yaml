@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - dokuwiki_config.yaml
+  - dokuwiki_serviceaccount.yaml
   - dokuwiki_pvc.yaml
   - dokuwiki_deployment.yaml
   - dokuwiki_service.yaml

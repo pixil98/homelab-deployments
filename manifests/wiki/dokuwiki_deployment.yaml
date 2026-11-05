@@ -23,6 +23,10 @@ spec:
         app.kubernetes.io/instance: wiki
         app.kubernetes.io/name: dokuwiki
     spec:
+      # Only the init container talks to the Kubernetes API, to deliver
+      # campaign-manager's token, so only it is given a service account token.
+      serviceAccountName: dokuwiki
+      automountServiceAccountToken: false
       # www-data, the user the image itself drops to when started as root.
       securityContext:
         runAsNonRoot: true
@@ -54,6 +58,9 @@ spec:
               mountPath: /storage
             - name: storage-config
               mountPath: /config
+              readOnly: true
+            - name: kube-api
+              mountPath: /var/run/secrets/kube-api
               readOnly: true
       containers:
         # Tracks "stable" by digest because release tags carry a hotfix letter
@@ -124,3 +131,16 @@ spec:
         - name: storage-config
           configMap:
             name: dokuwiki-storage
+        # A short-lived service account token and the cluster's CA, the same
+        # as the automatic mount, but for the init container alone.
+        - name: kube-api
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: token
+                  expirationSeconds: 600
+              - configMap:
+                  name: kube-root-ca.crt
+                  items:
+                    - key: ca.crt
+                      path: ca.crt

@@ -1,11 +1,28 @@
 # Campaign service
 
-Not built yet. This records what it has to do to create a campaign and to
-invite a person into one, what it needs before it can, and how to do the same
-by hand until then. Status as of 2026-11-04.
+This records what the service does to create a campaign and to invite a
+person into one, what it needs before it can, and how to do the same by hand
+meanwhile.
 
-The service is the only thing meant to write campaign state once it exists.
+It is built as `campaign-manager` (github.com/pixil98/campaign-manager,
+`~/src/campaign-manager` until it is pushed) but not deployed yet. Status as
+of 2026-11-05.
+
+The service is the only thing meant to write campaign state once it runs.
 Until then, everything below is done by hand (see the end of this file).
+
+## Who may use it
+
+Callers authenticate with an authentik token for the service's own provider.
+Their roles come from the token's `campaigns` and `mapper_admin` claims, the
+same ones Mapper's scope mapping builds from group attributes. A person can be
+in several campaigns with a different role in each, so every check is for one
+campaign at a time:
+
+- **Creating a campaign:** `mapper-admin` only.
+- **Inviting into a campaign:** `mapper-admin`, or an officer of that
+  campaign, in either role. Being an officer of one campaign gives nothing in
+  another.
 
 ## What a campaign is
 
@@ -68,7 +85,9 @@ DokuWiki does not need the groups to exist first: its rules are just names.
 Input: slug, role (`mapper` or `officer`), email, and optionally a suggested
 username and display name.
 
-1. **Existing account?** `GET /api/v3/core/users/?email=<email>`. If one exists,
+1. **Existing account?** `GET /api/v3/core/users/?search=<email>`, keeping
+   only exact matches ignoring case (the `email` filter is case-sensitive,
+   and would miss an account stored as `Alice@`). If one exists,
    add it to `mapper-<slug>-<role>` with
    `POST /api/v3/core/groups/<pk>/add_user/` and stop. The wiki picks this up
    within 15 minutes; Mapper at the person's next login.
@@ -118,14 +137,31 @@ not decided yet (see below). Whatever it is, it has to keep the generic
 flow's two guarantees: the email comes only from the invitation, and groups
 come only from the invitation's `fixed_data`, never from the form.
 
-**Watch for the Google and Discord buttons.** Those sources enroll anyone who
-signs in through them, with no groups. An invitee who uses one instead of the
-link ends up with an account but no campaign. Running the invite again then
-takes step 1 and adds the group. The unused invitation should be deleted at
-that point, since the enrollment flow always creates a new user.
+**One invitation per person per campaign.** Inviting someone new into two
+campaigns makes two invitations, each naming only its own campaign's group.
+They are never merged: the inviter is handed the link, and a shared link
+would let them into the other campaign. Asking again for the same person and
+campaign finds the existing invitation rather than making another.
+
+**Settling invitations once the person has an account.** The enrollment flow
+only ever makes new accounts, so a pending invitation is useless once its
+invitee has one. That happens when they redeem one campaign's invitation
+while another's is pending, or when they sign in through Google or Discord
+instead of using the link, which enrolls them with no groups. The service
+checks its pending invitations every minute. For each invitee who has an
+account by then, it adds the groups the invitation names and deletes the
+invitation. It also deletes expired ones. It only touches invitations whose
+names start with `campaign-`.
+
+**Roles do not change through an invite.** Someone already in the campaign,
+or already invited to it, in another role is refused rather than moved.
 
 ## What the service needs first
 
+- **An authentik provider of its own**, for callers' tokens, with
+  `include_claims_in_id_token` on and a scope mapping emitting `campaigns`
+  and `mapper_admin`. authentik's access tokens carry the ID token's claims,
+  which the service reads.
 - **An authentik identity.** A service account with an API token and a role
   that can read users, create groups and change their membership, and create,
   send and delete invitations, and nothing else. All of it can be declared in
@@ -139,7 +175,9 @@ that point, since the enrollment flow always creates a new user.
   normally minted on the profile page, which is disabled here, so it has to be
   minted once from inside the pod (`dokuwiki\JWT::fromUser`) and stored as a
   Secret. Tokens are signed with the wiki's cookie salt, which lives on the
-  volume.
+  volume. DokuWiki keeps one token per account, and the token is standard
+  base64 that can contain `+`, `/` and `=`. All of this was checked against
+  this image and config with the service's client.
 - **Email on ugre**, for `send_email`, as planned in `MAIL.md`.
 
 ## Not decided yet
@@ -147,10 +185,8 @@ that point, since the enrollment flow always creates a new user.
 - **What the campaign enrollment flow does differently** from the generic
   one: which fields it asks for, whether it offers Google or Discord instead
   of a password, and what the invite says.
-- **Who may use it.** Admins only, or officers inviting into their own
-  campaign? If officers, the service has to check the caller's
-  `mapper-<slug>-officer` membership itself.
-- **Where it runs**, and whether it lives inside Mapper.
+- **Where it runs.** It is its own service, not part of Mapper, but its
+  deployment on ugre is not written yet.
 - **Whether Mapper keeps per-campaign data of its own** that needs creating.
   Nothing in this repo shows that it does.
 - **Removing a person and changing roles.** Remove the group membership in

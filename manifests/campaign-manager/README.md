@@ -41,9 +41,11 @@ logs in there, and mpr keeps a refresh token for 30 days. It reads the issuer
 and client id from the service's `GET /auth`. The device page needs the
 brand's device code flow, which the provider blueprint sets.
 
-Access tokens last five minutes, since the roles in them are what the service
-trusts. mpr refreshes them as they run out, and each refresh reads the roles
-anew.
+The service asks authentik's userinfo endpoint about every token, so a revoked
+token, or a deactivated user's, stops working at once, and roles are read
+fresh on each request. Access tokens last five minutes, which is only how often
+mpr refreshes them; `access_token_validity` in the provider blueprint can be
+raised without letting anyone keep access they have lost.
 
 ## Starting it up
 

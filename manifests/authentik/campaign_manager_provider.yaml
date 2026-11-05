@@ -2,9 +2,10 @@
 # access token from this provider, and the service reads their roles from its
 # campaigns and mapper_admin claims (see manifests/campaign-manager/README.md).
 #
-# There is no UI yet, so the way to a token is the client_credentials grant
-# with a username and one of that user's app passwords. Add authorization_code,
-# with redirect URIs, once something has a login page to send people to.
+# Callers log in with mpr, the service's command line, through the device code
+# grant: mpr prints a link, the person logs in there, and mpr keeps a refresh
+# token. Add authorization_code, with redirect URIs, once something has a login
+# page to send people to.
 # Discovery: https://auth.${vals_info_cluster_domain}/application/o/campaign-manager/.well-known/openid-configuration
 apiVersion: v1
 kind: Secret
@@ -57,18 +58,18 @@ stringData:
         state: present
         attrs:
           name: campaign-manager
-          # Confidential, with a client secret authentik generates and nobody
-          # is given. The grant's built-in path makes up a user for whoever
-          # presents that secret, so it stays closed. Callers prove who they
-          # are with a username and app password, which needs no secret.
-          client_type: confidential
+          # Public: mpr runs on people's own machines, so it cannot keep a
+          # client secret. client_credentials stays off, since its built-in
+          # path makes up a user for whoever presents the client secret.
+          client_type: public
           # Not a secret for this provider; the service checks tokens were
-          # issued to it.
+          # issued to it, and tells mpr it through GET /auth.
           client_id: campaign-manager
           grant_types:
-            - client_credentials
-          # Required even though client_credentials never redirects; add the
-          # UI's callback here along with authorization_code.
+            - urn:ietf:params:oauth:grant-type:device_code
+            - refresh_token
+          # Required even though the device code grant never redirects; add
+          # the UI's callback here along with authorization_code.
           redirect_uris: []
           authentication_flow: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
           authorization_flow:
@@ -82,11 +83,17 @@ stringData:
           # and the service reads roles from the access token.
           include_claims_in_id_token: true
           # Roles are read from the token, so its life is how long someone
-          # removed as an officer can still invite.
+          # removed as an officer can still invite. A refresh reads them anew.
           access_token_validity: minutes=5
+          # How long a device login waits for the person to finish in their
+          # browser. The default minute is too short.
+          access_code_validity: minutes=10
+          # How long mpr stays logged in without being used.
+          refresh_token_validity: days=30
           property_mappings:
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, offline_access]]
             - !KeyOf scope_campaigns
 
       - model: authentik_core.application
@@ -112,3 +119,27 @@ stringData:
         state: present
         attrs:
           enabled: true
+
+      # authentik's device page, where a device login's link leads, answers 404
+      # unless the brand has a device code flow. The flow only asks for the
+      # code when the link lacks it; authentik adds that stage itself, then
+      # sends the person through the provider's own login and authorization,
+      # so the flow is empty and needs no login of its own.
+      - model: authentik_flows.flow
+        id: device_code_flow
+        identifiers: { slug: device-code }
+        state: present
+        attrs:
+          name: Device code
+          slug: device-code
+          title: Log in on another device
+          designation: stage_configuration
+          authentication: none
+
+      # Only the device code flow is set, so the default brand blueprint, which
+      # creates the brand and nothing after, keeps the rest.
+      - model: authentik_brands.brand
+        identifiers: { domain: authentik-default }
+        state: present
+        attrs:
+          flow_device_code: !KeyOf device_code_flow

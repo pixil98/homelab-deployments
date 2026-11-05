@@ -26,22 +26,24 @@ link is returned to the inviter to pass on.
 
 ## Calling it
 
-There is no UI yet, so callers get a token with authentik's
-`client_credentials` grant, using their username and an app password made in
-authentik's user settings:
+With `mpr`, the service's command line (released from the campaign-manager
+repository):
 
 ```sh
-token=$(curl -s https://auth.<domain>/application/o/token/ \
-  -d grant_type=client_credentials -d client_id=campaign-manager \
-  -d username=<username> -d password=<app password> \
-  -d 'scope=openid profile campaigns' | jq -r .access_token)
-
-curl -H "Authorization: Bearer $token" https://campaigns.<domain>/me
+mpr login --server https://campaigns.<domain>
+mpr whoami
+mpr campaign create <slug> --name "<real name>"
+mpr invite <slug> <email> --role mapper
 ```
 
-The `campaigns` scope has to be asked for, or the token carries no roles.
-Tokens last five minutes, since the roles in them are what the service
-trusts.
+`mpr login` uses authentik's device code login: it prints a link, the person
+logs in there, and mpr keeps a refresh token for 30 days. It reads the issuer
+and client id from the service's `GET /auth`. The device page needs the
+brand's device code flow, which the provider blueprint sets.
+
+Access tokens last five minutes, since the roles in them are what the service
+trusts. mpr refreshes them as they run out, and each refresh reads the roles
+anew.
 
 ## Starting it up
 

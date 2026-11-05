@@ -1,6 +1,7 @@
 # authentik OAuth2 provider for campaign-manager's callers. A caller sends an
-# access token from this provider, and the service reads their roles from its
-# campaigns and mapper_admin claims (see manifests/campaign-manager/README.md).
+# access token from this provider, and the service asks authentik's userinfo
+# endpoint about it, reading their roles from its campaigns and mapper_admin
+# claims (see manifests/campaign-manager/README.md).
 #
 # Callers log in with mpr, the service's command line, through the device code
 # grant: mpr prints a link, the person logs in there, and mpr keeps a refresh
@@ -79,11 +80,12 @@ stringData:
           # keys and never needs a secret of the provider's.
           signing_key: !Find [authentik_crypto.certificatekeypair, [name, auth.${vals_info_cluster_domain}]]
           sub_mode: hashed_user_id
-          # authentik only puts scope claims in access tokens with this on,
-          # and the service reads roles from the access token.
-          include_claims_in_id_token: true
-          # Roles are read from the token, so its life is how long someone
-          # removed as an officer can still invite. A refresh reads them anew.
+          # The service reads roles from authentik's userinfo endpoint, not
+          # from the token, so the token need not carry them.
+          include_claims_in_id_token: false
+          # The service asks authentik about every token, so revoking one, or
+          # taking someone out of a campaign, counts at once. This can be
+          # longer; it is only how often mpr refreshes.
           access_token_validity: minutes=5
           # How long a device login waits for the person to finish in their
           # browser. The default minute is too short.

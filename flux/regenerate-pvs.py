@@ -82,10 +82,13 @@ def main():
 
     # Retain excludes the ephemeral volsync cache volumes (truenas-*-ephemeral,
     # Delete policy), which are recreated dynamically and must not be pinned.
+    # Bound excludes Released volumes left behind when a PVC was recreated:
+    # they share the live volume's claimRef, so a rebuild could bind either.
     pvs = [
         clean(pv) for pv in items
         if (pv["spec"].get("csi") or {}).get("driver", "").startswith(DRIVER_PREFIX)
         and pv["spec"].get("persistentVolumeReclaimPolicy") == "Retain"
+        and pv["status"].get("phase") == "Bound"
     ]
     pvs.sort(key=lambda p: p["metadata"]["name"])
 

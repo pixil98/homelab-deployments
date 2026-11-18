@@ -193,6 +193,41 @@ metadata:
     pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
     volume.kubernetes.io/provisioner-deletion-secret-name: ''
     volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  name: pvc-1c291e7d-c78a-4f2e-8f2e-e7ed2bb6a7d4
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 15Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: roundcube-postgresql-1
+    namespace: mail
+  csi:
+    driver: org.democratic-csi.iscsi
+    fsType: ext4
+    volumeAttributes:
+      interface: ''
+      iqn: iqn.2005-10.org.freenas.ctl:csi-pvc-1c291e7d-c78a-4f2e-8f2e-e7ed2bb6a7d4
+      lun: '0'
+      node_attach_driver: iscsi
+      portal: 192.168.1.10:3260
+      portals: ''
+      provisioner_driver: freenas-api-iscsi
+    volumeHandle: pvc-1c291e7d-c78a-4f2e-8f2e-e7ed2bb6a7d4
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
   labels:
     kustomize.toolkit.fluxcd.io/name: flux-system
     kustomize.toolkit.fluxcd.io/namespace: flux-system
@@ -257,6 +292,76 @@ spec:
       portals: ''
       provisioner_driver: freenas-api-iscsi
     volumeHandle: pvc-55f1c69f-bf04-4599-bf80-69ffb7ea6a2f
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  name: pvc-609666b8-cf92-4042-900b-e98258fb04f8
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: opencloud-config
+    namespace: storage
+  csi:
+    driver: org.democratic-csi.iscsi
+    fsType: ext4
+    volumeAttributes:
+      interface: ''
+      iqn: iqn.2005-10.org.freenas.ctl:csi-pvc-609666b8-cf92-4042-900b-e98258fb04f8
+      lun: '0'
+      node_attach_driver: iscsi
+      portal: 192.168.1.10:3260
+      portals: ''
+      provisioner_driver: freenas-api-iscsi
+    volumeHandle: pvc-609666b8-cf92-4042-900b-e98258fb04f8
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  name: pvc-623e3142-0a3f-47b8-a439-1d91a0786dd0
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 15Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: paperless-postgresql-1
+    namespace: paperless
+  csi:
+    driver: org.democratic-csi.iscsi
+    fsType: ext4
+    volumeAttributes:
+      interface: ''
+      iqn: iqn.2005-10.org.freenas.ctl:csi-pvc-623e3142-0a3f-47b8-a439-1d91a0786dd0
+      lun: '0'
+      node_attach_driver: iscsi
+      portal: 192.168.1.10:3260
+      portals: ''
+      provisioner_driver: freenas-api-iscsi
+    volumeHandle: pvc-623e3142-0a3f-47b8-a439-1d91a0786dd0
   persistentVolumeReclaimPolicy: Retain
   storageClassName: truenas-iscsi
   volumeMode: Filesystem
@@ -339,6 +444,38 @@ kind: PersistentVolume
 metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    pv.kubernetes.io/provisioned-by: org.democratic-csi.nfs
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  name: pvc-904f9741-c9ea-4cc5-8a8c-dfd2db7457cb
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1Ti
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: romm-library
+    namespace: games
+  csi:
+    driver: org.democratic-csi.nfs
+    fsType: nfs
+    volumeAttributes:
+      node_attach_driver: nfs
+      provisioner_driver: freenas-api-nfs
+      server: 192.168.1.10
+      share: /mnt/main/kubernetes/production/pvc-904f9741-c9ea-4cc5-8a8c-dfd2db7457cb
+    volumeHandle: pvc-904f9741-c9ea-4cc5-8a8c-dfd2db7457cb
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-nfs
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
     pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
     volume.kubernetes.io/provisioner-deletion-secret-name: ''
     volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
@@ -368,6 +505,41 @@ spec:
       portals: ''
       provisioner_driver: freenas-api-iscsi
     volumeHandle: pvc-91e9df23-f130-4c78-83e2-65bd3f1c3d4b
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-iscsi
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  name: pvc-92142f8f-2faf-47bd-b860-911de81b374d
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 20Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: opencloud-data
+    namespace: storage
+  csi:
+    driver: org.democratic-csi.iscsi
+    fsType: ext4
+    volumeAttributes:
+      interface: ''
+      iqn: iqn.2005-10.org.freenas.ctl:csi-pvc-92142f8f-2faf-47bd-b860-911de81b374d
+      lun: '0'
+      node_attach_driver: iscsi
+      portal: 192.168.1.10:3260
+      portals: ''
+      provisioner_driver: freenas-api-iscsi
+    volumeHandle: pvc-92142f8f-2faf-47bd-b860-911de81b374d
   persistentVolumeReclaimPolicy: Retain
   storageClassName: truenas-iscsi
   volumeMode: Filesystem
@@ -426,7 +598,7 @@ spec:
   accessModes:
   - ReadWriteOnce
   capacity:
-    storage: 1Gi
+    storage: 10Gi
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
@@ -494,6 +666,9 @@ metadata:
     pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
     volume.kubernetes.io/provisioner-deletion-secret-name: ''
     volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
   name: pvc-a7298c2b-3223-4c91-8156-4a156343d30c
 spec:
   accessModes:
@@ -529,10 +704,7 @@ metadata:
     pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
     volume.kubernetes.io/provisioner-deletion-secret-name: ''
     volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
-  labels:
-    kustomize.toolkit.fluxcd.io/name: flux-system
-    kustomize.toolkit.fluxcd.io/namespace: flux-system
-  name: pvc-adcfb338-0cf9-4c84-8e3f-1ff542e002bd
+  name: pvc-af52cfa2-c082-4f87-8ef5-04669c539505
 spec:
   accessModes:
   - ReadWriteOnce
@@ -541,20 +713,20 @@ spec:
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: paperless-postgresql-1
-    namespace: paperless
+    name: romm-postgresql-1
+    namespace: games
   csi:
     driver: org.democratic-csi.iscsi
     fsType: ext4
     volumeAttributes:
       interface: ''
-      iqn: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-adcfb338-0cf9-4c84-8e3f-1ff542e002bd
+      iqn: iqn.2005-10.org.freenas.ctl:csi-pvc-af52cfa2-c082-4f87-8ef5-04669c539505
       lun: '0'
       node_attach_driver: iscsi
       portal: 192.168.1.10:3260
       portals: ''
       provisioner_driver: freenas-api-iscsi
-    volumeHandle: pvc-adcfb338-0cf9-4c84-8e3f-1ff542e002bd
+    volumeHandle: pvc-af52cfa2-c082-4f87-8ef5-04669c539505
   persistentVolumeReclaimPolicy: Retain
   storageClassName: truenas-iscsi
   volumeMode: Filesystem
@@ -602,37 +774,31 @@ kind: PersistentVolume
 metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
-    pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
+    pv.kubernetes.io/provisioned-by: org.democratic-csi.nfs
     volume.kubernetes.io/provisioner-deletion-secret-name: ''
     volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
-  labels:
-    kustomize.toolkit.fluxcd.io/name: flux-system
-    kustomize.toolkit.fluxcd.io/namespace: flux-system
-  name: pvc-b6f700c1-dccc-4037-a95b-f47c71d84b0d
+  name: pvc-b7589459-3755-4f0c-b0ab-44f41bcb9512
 spec:
   accessModes:
-  - ReadWriteOnce
+  - ReadWriteMany
   capacity:
-    storage: 15Gi
+    storage: 50Gi
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: roundcube-postgresql-1
-    namespace: mail
+    name: romm-assets
+    namespace: games
   csi:
-    driver: org.democratic-csi.iscsi
-    fsType: ext4
+    driver: org.democratic-csi.nfs
+    fsType: nfs
     volumeAttributes:
-      interface: ''
-      iqn: iqn.2005-10.org.freenas.ctl:csi-ssd-kubernetes-production-pvc-b6f700c1-dccc-4037-a95b-f47c71d84b0d
-      lun: '0'
-      node_attach_driver: iscsi
-      portal: 192.168.1.10:3260
-      portals: ''
-      provisioner_driver: freenas-api-iscsi
-    volumeHandle: pvc-b6f700c1-dccc-4037-a95b-f47c71d84b0d
+      node_attach_driver: nfs
+      provisioner_driver: freenas-api-nfs
+      server: 192.168.1.10
+      share: /mnt/main/kubernetes/production/pvc-b7589459-3755-4f0c-b0ab-44f41bcb9512
+    volumeHandle: pvc-b7589459-3755-4f0c-b0ab-44f41bcb9512
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: truenas-iscsi
+  storageClassName: truenas-nfs
   volumeMode: Filesystem
 ---
 apiVersion: v1
@@ -824,6 +990,9 @@ metadata:
     pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
     volume.kubernetes.io/provisioner-deletion-secret-name: ''
     volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  labels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
   name: pvc-e27c9385-8a47-4135-9e34-f2feef2adff8
 spec:
   accessModes:
@@ -882,6 +1051,38 @@ spec:
       server: 192.168.1.10
       share: /mnt/main/kubernetes/production/pvc-f66c14ad-2728-4fe4-b82b-ad3981ecc781
     volumeHandle: pvc-f66c14ad-2728-4fe4-b82b-ad3981ecc781
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: truenas-nfs
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+    pv.kubernetes.io/provisioned-by: org.democratic-csi.nfs
+    volume.kubernetes.io/provisioner-deletion-secret-name: ''
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: ''
+  name: pvc-f8300d1b-b44c-4f09-999a-45ec354e9c48
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 200Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: romm-resources
+    namespace: games
+  csi:
+    driver: org.democratic-csi.nfs
+    fsType: nfs
+    volumeAttributes:
+      node_attach_driver: nfs
+      provisioner_driver: freenas-api-nfs
+      server: 192.168.1.10
+      share: /mnt/main/kubernetes/production/pvc-f8300d1b-b44c-4f09-999a-45ec354e9c48
+    volumeHandle: pvc-f8300d1b-b44c-4f09-999a-45ec354e9c48
   persistentVolumeReclaimPolicy: Retain
   storageClassName: truenas-nfs
   volumeMode: Filesystem

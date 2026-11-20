@@ -39,7 +39,7 @@ spec:
       initContainers:
         # Same image as the app, for its curl and tar.
         - name: prepare-storage
-          image: docker.io/dokuwiki/dokuwiki:stable@sha256:a289deab45e2d4cbc8b6db1c228955d4dccac0d78da9dcf482adfa12e6641ed1
+          image: docker.io/dokuwiki/dokuwiki:stable@sha256:a93c5cd4eb20e311e5fcf3b0e6bc1df86f496abe487abebfa2368934a7cf611e
           imagePullPolicy: IfNotPresent
           command: ["/bin/bash", "/config/prepare-storage.sh"]
           securityContext:
@@ -68,7 +68,7 @@ spec:
         # would miss hotfixes. Every new release or rebuild arrives as a digest
         # update instead.
         - name: dokuwiki
-          image: docker.io/dokuwiki/dokuwiki:stable@sha256:a289deab45e2d4cbc8b6db1c228955d4dccac0d78da9dcf482adfa12e6641ed1
+          image: docker.io/dokuwiki/dokuwiki:stable@sha256:a93c5cd4eb20e311e5fcf3b0e6bc1df86f496abe487abebfa2368934a7cf611e
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false

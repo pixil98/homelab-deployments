@@ -36,7 +36,7 @@ spec:
         - name: campaign-manager
           # Published by github.com/pixil98/campaign-manager's CI on every push
           # to main. Renovate pins the digest once the image exists.
-          image: ghcr.io/pixil98/campaign-manager:main@sha256:b1097c14409e5463f6a8eac9413ee78c1437292ac20949743ad48b74a9481134
+          image: ghcr.io/pixil98/campaign-manager:main@sha256:25a88f09b100d54b7156c8a63fc2a0d51f2d400f4161c8c4d81407b824cf9ecc
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
